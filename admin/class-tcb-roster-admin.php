@@ -53,6 +53,9 @@ class Tcb_Roster_Admin {
 		$this->version = $version;
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-display.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-prepare-field.php';
+
+		add_filter( 'acf/prepare_field', 'tcb_roster_admin_prepare_field' );
 	}
 
 	/**
@@ -74,7 +77,7 @@ class Tcb_Roster_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcp-roster-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -97,7 +100,7 @@ class Tcb_Roster_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tcp-roster-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tcb-roster-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
 

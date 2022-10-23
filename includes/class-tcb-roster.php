@@ -168,6 +168,8 @@ class Tcb_Roster {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		//$this->loader->add_filter( 'acf/settings/show_admin', $plugin_public, 'acf_admin_show' );
 	}
 
 	/**
