@@ -10,7 +10,7 @@ function tcb_roster_public_user_info($attributes) {
 		$user = wp_get_current_user();
 	}
 
-	$return = '<h2>'. $user->get( 'user_nicename' ) . '</h2>';
+	$return = '<h2>'. $user->get( 'display_name' ) . '</h2>';
 
 	// Rank
 	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ranks/';
@@ -42,6 +42,10 @@ function tcb_roster_public_user_info($attributes) {
 
 	// Roles
 	$return .= '<br>Administrative roles: WIP';
+	$all_roles = $user->roles; 
+	print_r ( $all_roles );
+
+	// Logs 
 
 	return $return;
 }
