@@ -57,12 +57,21 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-info.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-training.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-ribbons.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-training.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-ribbons.php';
+		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-source.php';
+		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-output.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-acf-admin-show.php';
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
 		add_shortcode('tcb_roster_public_user_training', 'tcb_roster_public_user_training');
 		add_shortcode('tcb_roster_public_user_ribbons', 'tcb_roster_public_user_ribbons');
+		add_shortcode('tcb_roster_public_edit_training', 'tcb_roster_public_edit_training');
+		add_shortcode('tcb_roster_public_edit_ribbons', 'tcb_roster_public_edit_ribbons');
+
+		//add_filter('acfe/form/load/user_id/form=user-training-editor', 'tcb_roster_public_training_editor_user_source', 10, 3);	
+		//add_filter('acfe/form/output/user/form=user-training-editor', 'tcb_roster_public_training_editor_user_output', 10, 6);	
 	}
 
 	/**
