@@ -59,6 +59,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-ribbons.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-training.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-ribbons.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-service-record.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-source.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-output.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-acf-admin-show.php';
@@ -69,6 +70,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_user_ribbons', 'tcb_roster_public_user_ribbons');
 		add_shortcode('tcb_roster_public_edit_training', 'tcb_roster_public_edit_training');
 		add_shortcode('tcb_roster_public_edit_ribbons', 'tcb_roster_public_edit_ribbons');
+		add_shortcode('tcb_roster_public_edit_service_record', 'tcb_roster_public_edit_service_record');
 
 		//add_filter('acfe/form/load/user_id/form=user-training-editor', 'tcb_roster_public_training_editor_user_source', 10, 3);	
 		//add_filter('acfe/form/output/user/form=user-training-editor', 'tcb_roster_public_training_editor_user_output', 10, 6);	
