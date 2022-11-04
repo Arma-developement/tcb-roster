@@ -2,16 +2,22 @@
 
 function tcb_roster_public_user_training($attributes) {
 
-	$user_id = $_GET['id'];
+	$userId = $_GET['id'];	
 
-	if ($user_id != "") {
-		$user = get_user_by( 'id', $user_id );
+	if ($userId != "") {
+		$user = get_user_by( 'id', $userId );
 	} else {
 		$user = wp_get_current_user();
+		$userId = $user->ID;
 	}
 
+	$displayName = $user->get( 'display_name' );
+	$userProfile = 'user_' . $userId;
+	$postIdField = 'post_id'; 
+	$postId = get_field( $postIdField, $userProfile );
+
 	$return = '';
-	$listOfCourses = get_field( 'courses_completed', 'user_' . $user->ID );
+	$listOfCourses = get_field( 'courses_completed', $postId );
 
 	if ( !$listOfCourses )
 		return $return;
@@ -20,10 +26,10 @@ function tcb_roster_public_user_training($attributes) {
 		$return .= '<br>' . $course['label'];
 	}
 
-	if (! in_array( 'training_admin', wp_get_current_user()->roles))
+	if ((! in_array( 'training_admin', wp_get_current_user()->roles)) && (! in_array( 'administrator', wp_get_current_user()->roles)))
 		return $return;
 	
-	$return .= '<br><a href="//localhost/wordpress/edit-training-record/?id=' . $user->ID . '">Edit</a></br>';	
+	$return .= '<br><a href="//localhost/wordpress/edit-training-record/?id=' . $userId . '">Edit</a></br>';	
 
 	return $return;
 }

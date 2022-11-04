@@ -1,10 +1,6 @@
 <?php
 
 function tcb_roster_public_edit_service_record($attributes) {
-
-	// if (! is_admin())
-	// 	return;
-
 	// echo "tcb_roster_public_edit_service_record<br>";
 	
 	$userId = $_GET['id'];
@@ -17,6 +13,12 @@ function tcb_roster_public_edit_service_record($attributes) {
 	$userProfile = 'user_' . $userId;
 	$postIdField = 'post_id'; 
     $postId = get_field( $postIdField, $userProfile );
+
+	// Security check
+	if (! current_user_can( 'edit_post', $postId ))
+		return;
+
+	echo "<h2>" . $displayName . "</h2>";
 
 	// echo "userID = " . $userId . "<br>";
 	// echo "postID = " . $postId . "<br>";
@@ -34,38 +36,22 @@ function tcb_roster_public_edit_service_record($attributes) {
 		);
 		
 		if (!get_page_by_path( $page_slug, OBJECT, 'service-record')) { // Check If Page Not Exits
-
 			$postId = wp_insert_post($new_page);
 			update_field( $postIdField, $postId, $userProfile); 
 			update_field( $userIdField, $userId, $postId); 
-
-			// echo "postID = " . $postId . "<br>";
-			// $postId = get_field( $postIdField, $userProfile );
-			// echo "postID = " . $postId . "<br>";		
 		}
 	}
 
-//		'field_groups' => array( 'key' => 'group_6356980addb3c' ),
-
-	echo "postID = " . $postId . "<br>";
+	// echo "postID = " . $postId . "<br>";
 
 	$myoptions = array( 
 		'post_id' => $postId,
-		'field_groups' => array( 'key' => 'group_6356984d2ce21' ),
-		'submit_value' => 'Update ' . $displayName . "'s Training Record",
+		'field_groups' => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
+		'submit_value' => 'Update ' . $displayName . "'s Service Record",
 		'updated_message' => false
 	);
 
 	acf_form( $myoptions );	
 
-	$myoptions = array( 
-		'post_id' => $postId,
-		'field_groups' => array( 'key' => 'group_6356980addb3c' ),
-		'submit_value' => 'Update ' . $displayName . "'s Commendations",
-		'updated_message' => false
-	);
-
-	acf_form( $myoptions );	
-
-	return '';
+	return;
 }

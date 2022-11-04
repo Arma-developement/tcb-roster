@@ -2,22 +2,26 @@
 
 function tcb_roster_public_user_info($attributes) {
 
-	$user_id = $_GET['id'];
+	$userId = $_GET['id'];
 
-	if ($user_id != "") {
-		$user = get_user_by( 'id', $user_id );
+	if ($userId != "") {
+		$user = get_user_by( 'id', $userId );
 	} else {
 		$user = wp_get_current_user();
+		$userId = $user->ID;
 	}
-	
-	$_SESSION['foreign_user_id'] = $user->ID;
 
-	$return = '<h2>'. $user->get( 'display_name' ) . '</h2>';
+	$displayName = $user->get( 'display_name' );
+	$userProfile = 'user_' . $userId;
+	$postIdField = 'post_id'; 
+	$postId = get_field( $postIdField, $userProfile );
+
+	$return = '<h2>'. $displayName . '</h2>';
 
 	// Rank
 	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ranks/';
 
-	$rank = get_field( 'rank', 'user_' . $user->ID );
+	$rank = get_field( 'rank', $postId );
 	if ( !$rank )
 		return $return;	
 
@@ -25,10 +29,10 @@ function tcb_roster_public_user_info($attributes) {
 	$return .= '<br>Rank: ' . $rank['label'];
 	
 	// Location
-	$return .= '<br>Location: ' . get_field( 'user-location', 'user_' . $user->ID );
+	$return .= '<br>Location: ' . get_field( 'user-location', $userProfile );
 
 	// Dates
-	$dateStr = get_field( 'passing_out_date', 'user_' . $user->ID );
+	$dateStr = get_field( 'passing_out_date', $postId );
 	$date = DateTime::createFromFormat('d/m/Y', $dateStr);
 	if ($date) {
 		$now = new DateTime('now');
@@ -38,12 +42,12 @@ function tcb_roster_public_user_info($attributes) {
 	}
 
 	// LOA
-	if (get_field( 'loa', 'user_' . $user->ID ) == 1) {
+	if (get_field( 'loa', $postId ) == 1) {
 		$return .= '<br>Approved LOA';
 	}
 
 	// Reserve
-	if (get_field( 'reserve', 'user_' . $user->ID ) == 1) {
+	if (get_field( 'reserve', $postId ) == 1) {
 		$return .= '<br>Reserve Status';
 	}
 
