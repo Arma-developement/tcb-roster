@@ -30,7 +30,7 @@ function tcb_roster_public_edit_training($attributes) {
 	$myoptions = array( 
 		'post_id' => $postId,
 		'field_groups' => array( 'group_6356984d2ce21' ),
-		'return' => add_query_arg( 'id', $user->ID, '//localhost/wordpress/user-info' ),
+		'return' => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
 		'submit_value' => 'Update ' . $displayName . "'s Training Record",
 		'updated_message' => false
 	 );

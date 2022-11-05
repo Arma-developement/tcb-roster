@@ -19,7 +19,7 @@ function tcb_roster_public_user_info($attributes) {
 	$return = '<h2>'. $displayName . '</h2>';
 
 	// Rank
-	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ranks/';
+	$path = plugins_url() . '/tcb-roster/images/ranks/';
 
 	$rank = get_field( 'rank', $postId );
 	if ( !$rank )

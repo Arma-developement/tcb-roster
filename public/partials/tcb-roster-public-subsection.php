@@ -25,9 +25,9 @@ function tcb_roster_public_subsection($attributes) {
 				$displayName = $user->get( 'display_name' );
 
 				if ((get_field( 'loa', $post ) == 1) && ($meta_key != 'Res')) {
-					$return .= '<li><a href="//localhost/wordpress/user-info/?id=' . $userId . '">' . $displayName . '</a> (LOA)</li>';
+					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a> (LOA)</li>';
 				} else {
-					$return .= '<li><a href="//localhost/wordpress/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
 				}
 			}
 			$return .= '</ul>';
@@ -63,7 +63,7 @@ function tcb_roster_public_subsection($attributes) {
 				$user = get_user_by( 'id', $userId );
 				$displayName = $user->get( 'display_name' );
 
-				$return .= '<li><a href="//localhost/wordpress/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+				$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
 			}
 			$return .= '</ul>';
 		}

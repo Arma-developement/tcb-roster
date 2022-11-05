@@ -30,7 +30,6 @@ function tcb_roster_public_user_training($attributes) {
 	if ((! in_array( 'training_admin', wp_get_current_user()->roles)) && (! in_array( 'administrator', wp_get_current_user()->roles)))
 		return $return;
 	
-	//$return .= '<br><a href="//localhost/wordpress/edit-training-record/?id=' . $userId . '">Edit</a></br>';	
-	$return .= '<br><a href="//localhost/wordpress/edit-training-record/?id=' . $userId . '" class="button button-secondary">Edit Training Record</a><br>';
+	$return .= '<br><a href="'. home_url() .'/edit-training-record/?id=' . $userId . '" class="button button-secondary">Edit Training Record</a><br>';
 	return $return;
 }
