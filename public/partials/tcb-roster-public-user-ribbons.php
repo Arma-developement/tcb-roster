@@ -54,10 +54,5 @@ function tcb_roster_public_user_ribbons($attributes) {
 	// 	$return .= '<br>' . $ribbon['label'];
 	// }
 
-	if ((! in_array( 'commendation_admin', wp_get_current_user()->roles)) && (! in_array( 'administrator', wp_get_current_user()->roles)))
-		return $return;
-	
-	$return .= '<br><a href="'. home_url() .'/edit-ribbons/?id=' . $userId . '" class="button button-secondary">Edit Commendations</a><br>';
-
 	return $return;
 }

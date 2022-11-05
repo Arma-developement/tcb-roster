@@ -57,6 +57,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-info.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-training.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-ribbons.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-edit-options.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-training.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-ribbons.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-service-record.php';
@@ -70,6 +71,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
 		add_shortcode('tcb_roster_public_user_training', 'tcb_roster_public_user_training');
 		add_shortcode('tcb_roster_public_user_ribbons', 'tcb_roster_public_user_ribbons');
+		add_shortcode('tcb_roster_public_user_edit_options', 'tcb_roster_public_user_edit_options');
 		add_shortcode('tcb_roster_public_edit_training', 'tcb_roster_public_edit_training');
 		add_shortcode('tcb_roster_public_edit_ribbons', 'tcb_roster_public_edit_ribbons');
 		add_shortcode('tcb_roster_public_edit_service_record', 'tcb_roster_public_edit_service_record');
