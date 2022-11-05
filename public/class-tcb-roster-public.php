@@ -79,7 +79,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_commendations', 'tcb_roster_public_commendations');
 
 		//add_filter('acfe/form/load/user_id/form=user-training-editor', 'tcb_roster_public_training_editor_user_source', 10, 3);	
-		//add_filter('acfe/form/output/user/form=user-training-editor', 'tcb_roster_public_training_editor_user_output', 10, 6);	
+		//add_filter('acfe/form/output/user/form=user-training-editor', 'tcb_roster_public_training_editor_user_output', 10, 6);
 	}
 
 	/**

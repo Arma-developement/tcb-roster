@@ -38,13 +38,24 @@ function tcb_roster_public_user_info($attributes) {
 	}
 
 	// Dates
-	$dateStr = get_field( 'passing_out_date', $postId );
-	$date = DateTime::createFromFormat('d/m/Y', $dateStr);
-	if ($date) {
-		$now = new DateTime('now');
-		$interval = $date->diff($now);
-		$return .= '<li>Passing out: ' . date_format($date, 'd-m-Y') . '</li>';
-		$return .= '<li>Length of service: ' . $interval->format('%y year(s), %m month(s), %d day(s)') . '</li>';
+	if ( $rank['value'] == 'Rct' ) {
+		$dateStr = get_field( 'attestation_date', $postId );
+		$date = DateTime::createFromFormat('d/m/Y', $dateStr);
+		if ($date) {
+			$now = new DateTime('now');
+			$interval = $date->diff($now);
+			$return .= '<li>Attestation: ' . date_format($date, 'd-m-Y') . '</li>';
+			$return .= '<li>Length of recruit period: ' . $interval->format('%y year(s), %m month(s), %d day(s)') . '</li>';
+		}
+	} else {
+		$dateStr = get_field( 'passing_out_date', $postId );
+		$date = DateTime::createFromFormat('d/m/Y', $dateStr);
+		if ($date) {
+			$now = new DateTime('now');
+			$interval = $date->diff($now);
+			$return .= '<li>Passing out: ' . date_format($date, 'd-m-Y') . '</li>';
+			$return .= '<li>Length of service: ' . $interval->format('%y year(s), %m month(s), %d day(s)') . '</li>';
+		}
 	}
 
 	// LOA
