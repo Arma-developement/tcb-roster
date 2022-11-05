@@ -2,7 +2,7 @@
 
 function tcb_roster_public_user_ribbons($attributes) {
 
-	$userId = $_GET['id'];	
+	$userId = $_GET['id'];
 
 	if ($userId != "") {
 		$user = get_user_by( 'id', $userId );
@@ -17,14 +17,39 @@ function tcb_roster_public_user_ribbons($attributes) {
 	$postId = get_field( $postIdField, $userProfile );
 
 	$return = '';
-	$listOfRibbons = get_field( 'ribbons', $postId );
+
+	$width = 350 / 2;
+	$height = 94 / 2;
+
+	$listOfRibbons = get_field( 'service_awards', $postId );
 	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ribbons/';
 
-	if ( !$listOfRibbons )
-		return $return;
+	if ( $listOfRibbons ) {
+		foreach ( $listOfRibbons as $ribbon ) {
+			$return .= '<img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+		}
+	}
 
-	foreach ( $listOfRibbons as $ribbon ) {
-		$return .= '<br><img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '">';
+	$listOfRibbons = get_field( 'operational_awards', $postId );
+	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ribbons/';
+
+	$return .= '<br>';
+
+	if ( $listOfRibbons ) {
+		foreach ( $listOfRibbons as $ribbon ) {
+			$return .= '<img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+		}
+	}
+	
+	$listOfRibbons = get_field( 'community_awards', $postId );
+	$path = '/wordpress/wp-content/plugins/tcb-roster/images/ribbons/';
+
+	$return .= '<br>';
+
+	if ( $listOfRibbons ) {
+		foreach ( $listOfRibbons as $ribbon ) {
+			$return .= '<img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+		}
 	}
 
 	// foreach ( $listOfRibbons as $ribbon ) {
@@ -34,7 +59,8 @@ function tcb_roster_public_user_ribbons($attributes) {
 	if ((! in_array( 'commendation_admin', wp_get_current_user()->roles)) && (! in_array( 'administrator', wp_get_current_user()->roles)))
 		return $return;
 	
-	$return .= '<br><a href="//localhost/wordpress/edit-ribbons/?id=' . $userId . '">Edit</a></br>';		
+	//$return .= '<br><a href="//localhost/wordpress/edit-ribbons/?id=' . $userId . '">Edit</a></br>';
+	$return .= '<br><a href="//localhost/wordpress/edit-ribbons/?id=' . $userId . '" class="button button-secondary">Edit Commendations</a><br>';
 
 	return $return;
 }

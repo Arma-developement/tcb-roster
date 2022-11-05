@@ -52,11 +52,9 @@ class Tcb_Roster_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-display.php';
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-prepare-field.php';
+		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-display.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-edit-user-profile.php';
 
-		//add_filter( 'acf/prepare_field', 'tcb_roster_admin_prepare_field' );
 		add_action( 'edit_user_profile', 'tcb_roster_admin_edit_user_profile' );
 	}
 

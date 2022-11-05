@@ -37,5 +37,9 @@ function tcb_roster_public_edit_training($attributes) {
 	
 	acf_form( $myoptions );	
 
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info( 'Edited ' . $displayName . "'s Training Record");
+	}
+
 	return;
 }

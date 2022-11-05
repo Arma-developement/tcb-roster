@@ -35,7 +35,11 @@ function tcb_roster_public_edit_ribbons($attributes) {
 		'updated_message' => false
 	 );
 	
-	acf_form( $myoptions );	
+	acf_form( $myoptions );
+
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info( 'Edited ' . $displayName . "'s Commendations");
+	}
 
 	return;
 }

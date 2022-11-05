@@ -1,7 +1,7 @@
 <?php
 
 function tcb_roster_public_edit_service_record($attributes) {
-	// echo "tcb_roster_public_edit_service_record<br>";
+	//echo "tcb_roster_public_edit_service_record<br>";
 	
 	$userId = $_GET['id'];
 	if ($userId == "")
@@ -15,7 +15,7 @@ function tcb_roster_public_edit_service_record($attributes) {
     $postId = get_field( $postIdField, $userProfile );
 
 	// Security check
-	if (! current_user_can( 'edit_post', $postId ))
+	if (($postId != "") && (!current_user_can( 'edit_post', $postId )))
 		return;
 
 	echo "<h2>" . $displayName . "</h2>";
@@ -51,7 +51,11 @@ function tcb_roster_public_edit_service_record($attributes) {
 		'updated_message' => false
 	);
 
-	acf_form( $myoptions );	
+	acf_form( $myoptions );
+
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info( 'Edited ' . $displayName . "'s Service Record");
+	}
 
 	return;
 }

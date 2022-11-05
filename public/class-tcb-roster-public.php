@@ -52,7 +52,7 @@ class Tcb_Roster_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 	
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-display.php';
+		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-display.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-info.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-user-training.php';

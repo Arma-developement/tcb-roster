@@ -23,13 +23,19 @@ function tcb_roster_public_user_info($attributes) {
 
 	$rank = get_field( 'rank', $postId );
 	if ( !$rank )
-		return $return;	
+		return $return;
 
-	$return .= '<br><img src="' . $path . $rank['value'] . '.gif", title="' . $rank['label'] . '">';	
-	$return .= '<br>Rank: ' . $rank['label'];
+	$width = 144;
+	$height = 240;
+	$return .= '<img src="' . $path . $rank['value'] . '.gif", title="' . $rank['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+	$return .= '<ul>';	
+	$return .= '<li>Rank: ' . $rank['label'] . '</li>';
 	
 	// Location
-	$return .= '<br>Location: ' . get_field( 'user-location', $userProfile );
+	$location = get_field( 'user-location', $userProfile );
+	if ($location) {
+		$return .= '<li>Location: ' . get_field( 'user-location', $userProfile ) . '</li>';
+	}
 
 	// Dates
 	$dateStr = get_field( 'passing_out_date', $postId );
@@ -37,26 +43,27 @@ function tcb_roster_public_user_info($attributes) {
 	if ($date) {
 		$now = new DateTime('now');
 		$interval = $date->diff($now);
-		$return .= '<br>Passing out: ' . date_format($date, 'd-m-Y');
-		$return .= '<br>Length of service: ' . $interval->format('%y year(s), %m month(s), %d day(s)');
+		$return .= '<li>Passing out: ' . date_format($date, 'd-m-Y') . '</li>';
+		$return .= '<li>Length of service: ' . $interval->format('%y year(s), %m month(s), %d day(s)') . '</li>';
 	}
 
 	// LOA
-	if (get_field( 'loa', $postId ) == 1) {
-		$return .= '<br>Approved LOA';
+	if ((get_field( 'loa', $postId ) == 1) && ($rank['value'] != "Res")) {
+		$return .= '<li>Approved LOA' . '</li>';
 	}
 
-	// Reserve
-	if (get_field( 'reserve', $postId ) == 1) {
-		$return .= '<br>Reserve Status';
+	$return .= '</ul>';
+
+	// Duties
+	$listOfDuties = get_field( 'duties', $postId );
+
+	if ( $listOfDuties ) {
+		$return .= '<h3>Administrative duties</h3><ul>';
+		foreach ( $listOfDuties as $duty ) {
+			$return .= '<li>' . $duty['label'] . '</li>';
+		}
+		$return .= '</ul>';
 	}
-
-	// Roles
-	$return .= '<br>Administrative roles: WIP';
-	// $all_roles = $user->roles; 
-	// print_r ( $all_roles );
-
-	// Logs 
 
 	return $return;
 }
