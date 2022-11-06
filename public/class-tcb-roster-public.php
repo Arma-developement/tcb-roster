@@ -63,6 +63,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-service-record.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-commendations.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-application-form-email-args.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-source.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-training-editor-user-output.php';
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-acf-admin-show.php';
@@ -80,6 +81,7 @@ class Tcb_Roster_Public {
 
 		//add_filter('acfe/form/load/user_id/form=user-training-editor', 'tcb_roster_public_training_editor_user_source', 10, 3);	
 		//add_filter('acfe/form/output/user/form=user-training-editor', 'tcb_roster_public_training_editor_user_output', 10, 6);
+		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 	}
 
 	/**
