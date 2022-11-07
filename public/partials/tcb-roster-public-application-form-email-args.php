@@ -14,6 +14,8 @@ function tcb_roster_public_application_form_email_args($args, $form, $action){
 		$args['to'] = implode (", ", $emails );
 	}
 
+	tcb_roster_admin_post_to_discord ('Recruit Bot', 'recruitment-managers', '@here' . $args['subject'] );
+
 	// Find and replace the tag with a link to the application
 	// $contents = explode ('XXXXX', $args['content'] );
 	// if (count($contents) == 3) {

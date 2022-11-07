@@ -54,6 +54,7 @@ class Tcb_Roster_Admin {
 
 		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-display.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-edit-user-profile.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
 
 		add_action( 'edit_user_profile', 'tcb_roster_admin_edit_user_profile' );
 	}
