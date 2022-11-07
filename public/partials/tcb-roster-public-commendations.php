@@ -6,7 +6,7 @@ function tcb_roster_public_commendations ($attributes) {
 		'numberposts'	=> -1,
 		'post_type'		=> 'service-record'
 	);
-	$return = '';
+	$return = '<p><a href="'. home_url() .'/knowledge-base/commendations/">Description of Commendations</a></p><br>';
 
 	$path = plugins_url() . '/tcb-roster/images/ribbons/';
 	$width = 350 / 2;

@@ -16,6 +16,8 @@ function tcb_roster_public_user_info($attributes) {
 	$postIdField = 'post_id'; 
 	$postId = get_field( $postIdField, $userProfile );
 
+	$isAdmin = in_array( 'administrator', wp_get_current_user()->roles);
+
 	$return = '<h2>'. $displayName . '</h2>';
 
 	// Rank
@@ -34,7 +36,13 @@ function tcb_roster_public_user_info($attributes) {
 	// Location
 	$location = get_field( 'user-location', $userProfile );
 	if ($location) {
-		$return .= '<li>Location: ' . get_field( 'user-location', $userProfile ) . '</li>';
+		$return .= '<li>Location: ' . $location . '</li>';
+	}
+
+	// Steam ID
+	$steamID = get_field( 'steam_id', $postId );
+	if ($isAdmin && $steamID) {
+		$return .= '<li>Steam ID: ' . $steamID . '</li>';
 	}
 
 	// Dates

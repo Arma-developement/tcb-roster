@@ -14,5 +14,11 @@ function tcb_roster_public_application_form_email_args($args, $form, $action){
 		$args['to'] = implode (", ", $emails );
 	}
 
+	// Find and replace the tag with a link to the application
+	// $contents = explode ('XXXXX', $args['content'] );
+	// if (count($contents) == 3) {
+	// 	$args['content'] = $contents[0] . '<a href="'. home_url() .'/application/' . $contents[1] . '">Authorize application</a>' . $contents[2];
+	// }
+
 	return $args;
 }
