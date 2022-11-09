@@ -45,6 +45,12 @@ function tcb_roster_public_user_info($attributes) {
 		$return .= '<li>Steam ID: ' . $steamID . '</li>';
 	}
 
+	// Discord ID
+	$discordID = get_field( 'discord_id', $postId );
+	if ($isAdmin && $discordID) {
+		$return .= '<li>Discord ID: ' . $discordID . '</li>';
+	}
+
 	// Dates
 	if ( $rank['value'] == 'Rct' ) {
 		$dateStr = get_field( 'attestation_date', $postId );
