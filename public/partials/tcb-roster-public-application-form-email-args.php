@@ -2,17 +2,31 @@
 
 function tcb_roster_public_application_form_email_args($args, $form, $action){
 
-	$queryArgs = array(
-		'role'    => 'recruit_admin'
+	$query = array(
+		'numberposts'	=> -1,
+		'post_type'		=> 'service-record',
+		'meta_query' => array(
+			array(
+				'key' =>  'duties',
+				'value'  => 'rm',
+				'compare' =>  'LIKE'
+			)
+		)
 	);
-	$listOfUsers = get_users( $queryArgs );
 
-	if ($listOfUsers) {
-		foreach ($listOfUsers as $user) {
+	$listOfPosts = get_posts( $query );
+	if ($listOfPosts) {
+		foreach ( $listOfPosts as $post ) {
+			setup_postdata( $post );
+
+			$userId = get_field( 'user_id', $post );
+			$user = get_user_by( 'id', $userId );
 			$emails[] = $user->user_email;
 		}
 		$args['to'] = implode (", ", $emails );
 	}
+
+	wp_reset_postdata();
 
 	tcb_roster_admin_post_to_discord ('Recruit Bot', 'recruitment-managers', '@here' . $args['subject'] );
 
