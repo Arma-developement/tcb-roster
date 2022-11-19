@@ -71,6 +71,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-list.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-view.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-attendance-roster.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -87,13 +88,11 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_interview_list', 'tcb_roster_public_interview_list');
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
 
-		// add_action( 'tribe-events-before-html', function( $file, $name, $template ) {
-  		// 	echo 'Hello World';
-		// }, 10, 3 );
-
-		//add_action( 'tribe_events_single_event_before_the_content', function() { echo 'Hello World'; } );
 		//add_action( 'tribe_events_single_event_before_the_content', 'attendanceRoster' );
-		add_action( 'tribe_events_single_event_before_the_content', 'tcb_roster_public_attendance_roster' );
+		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
+
+		//add_action( 'tribe_events_single_event_after_the_meta', 'slotTool' );
+		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );		
 
 		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);

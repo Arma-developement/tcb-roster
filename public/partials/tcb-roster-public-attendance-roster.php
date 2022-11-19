@@ -31,7 +31,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	//print_r ($registeredUsers);
 		
 	echo '<div id="attendanceRoster">';
-	echo '<h2>Attendance - work in progress</h2>';
+	echo '<h2>Attendance</h2>';
 	echo '<div class="wrap">';
 	echo '<hr>';
 
