@@ -71,6 +71,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-list.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-view.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-attendance-roster.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-attendance-roster-update.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
@@ -92,7 +93,10 @@ class Tcb_Roster_Public {
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
 
 		//add_action( 'tribe_events_single_event_after_the_meta', 'slotTool' );
-		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );		
+		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
+
+		add_action( 'wp_ajax_nopriv_tcb_roster_public_attendance_roster_update', 'tcb_roster_public_attendance_roster_update' );
+		add_action( 'wp_ajax_tcb_roster_public_attendance_roster_update','tcb_roster_public_attendance_roster_update' );
 
 		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);
@@ -141,11 +145,13 @@ class Tcb_Roster_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_register_script('tcb_roster_public_rsvp_register', plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public-rsvp-register.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script('tcb_roster_public_rsvp_register', 'localize',
+			array (
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'ajax_nounce' => wp_create_nonce( 'attendance_roster_update_nounce' )
+			)
+		);
+		wp_enqueue_script('tcb_roster_public_rsvp_register');
 	}
-
-	// public function acf_admin_show() {
-	// 	return current_user_can('manage_options');
-	// }
 }
