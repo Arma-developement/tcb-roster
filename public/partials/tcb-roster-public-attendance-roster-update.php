@@ -9,9 +9,8 @@ function tcb_roster_public_attendance_roster_update() {
 
 		// Security check
 		$nounce = $_POST['nounce'];
-		if ( !wp_verify_nonce( $nounce, "attendance_roster_update_nounce")) {
+		if ( !wp_verify_nonce( $nounce, "attendance_roster_update_nounce"))
 			return wp_send_json_error('Nounce failed');
-		}
 
 		$registeredUsers = [];
 		$fields = get_field('rsvp', $post_id);
@@ -26,6 +25,23 @@ function tcb_roster_public_attendance_roster_update() {
 		// New user, add to the appropriate list
 		if (!in_array($user_id, $registeredUsers)) {
 			add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
+
+			// Check if user has previously registered
+			$previousUsers = [];
+			$fields = get_field('time_stamp', $post_id);
+			if ($fields) {
+				foreach ($fields as $field) {
+					$previousUsers[] = $field['user'];
+				}
+			}
+
+			// If a new user, then register the time
+			if (!in_array($user_id, $previousUsers)) {
+				$date = getdate();
+				add_row('time_stamp', array( 'user' => $user_id, 'time' => $date ), $post_id);
+				return wp_send_json_success('New user added, with timestamp');
+			}
+
 			return wp_send_json_success('New user added');
 		}
 

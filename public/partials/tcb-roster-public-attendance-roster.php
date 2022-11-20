@@ -17,8 +17,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 	if(! have_rows('rsvp') )
 		return;		
 
-	// $fields = get_field('rsvp');
-	// print_r ($fields);
+	// print_r ( get_field('rsvp') );
+	print_r ( get_field('time_stamp') );
 		
 	echo '<div id="attendanceRoster">';
 	echo '<h2>Attendance</h2>';
