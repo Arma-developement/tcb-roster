@@ -23,16 +23,16 @@ function tcb_roster_public_slotting_tool($attributes) {
 	echo '<p>Button to left of slot name appears when logged in.<br>Avatar appears when member is slotted</p>';
 
 	// Loop through slot rows
-	$i = 0;
 	while( have_rows('slots') ) : the_row();
+		$i = get_row_index();
 
 		// Continue to next slot if unit is empty
 		if (! have_rows ('unit') )
 			continue;
 		
 		// Loop through unit rows
-		$j = 0;
 		while( have_rows('unit') ) : the_row();
+			$j = get_row_index();
 
 			echo '<div class="unit">';
 			echo '<h3>' . the_sub_field('name') . '</h3>';
@@ -42,8 +42,8 @@ function tcb_roster_public_slotting_tool($attributes) {
 				continue;
 
 			// Loop through rows.
-			$k = 0;
 			while( have_rows('slot') ) : the_row(); 	
+				$k = get_row_index();
 
 				// Get profile pic for slotted member 
 				$profilePic = '';
@@ -65,12 +65,9 @@ function tcb_roster_public_slotting_tool($attributes) {
 
 				echo '<strong>' . the_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . the_sub_field('slot_member') . '</span><br>';
 				echo '</div>';	
-				$k++;
 			endwhile;
 			echo '</div><br>'; 
-			$j++;
 		endwhile;
-		$i++;
 	endwhile;
 	echo '</div>';
 

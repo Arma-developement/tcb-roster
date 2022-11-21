@@ -39,8 +39,9 @@ function tcb_roster_public_slotting_tool_update() {
 	
 		// Retrieve the user at the specific location
 		$fields = get_field('slots', $post_id);
-		$slotIndexArray = array('slots',$i+1,'unit',$j+1,'slot',$k+1,'slot_member');
-		$oldSlottedMemberName = $fields[$i]['unit'][$j]['slot'][$k]['slot_member'];
+		$slotIndexArray = array('slots',$i,'unit',$j,'slot',$k,'slot_member');
+		// 1 subtracted to compensate for ACF rows starting at 1, whilst arrays start at 0
+		$oldSlottedMemberName = $fields[$i-1]['unit'][$j-1]['slot'][$k-1]['slot_member'];
 		$oldUser = get_user_by('login', $oldSlottedMemberName);
 		$oldUser_id = $oldUser->ID;
 
@@ -54,12 +55,12 @@ function tcb_roster_public_slotting_tool_update() {
 			}
 			else {
 				// Do nothing, slot already taken
-				return wp_send_json_success('Slot already taken by ' . $oldSlottedMemberName);
+				return wp_send_json_error('Slot already taken by ' . $oldSlottedMemberName);
 			}
 		} else {
 			if ($alreadySlotted) {
 				// Do nothing, already slotted
-				return wp_send_json_success('Existing user ' . $slottedMemberName);
+				return wp_send_json_error('Existing user ' . $slottedMemberName);
 			}
 			else {
 				// Add user
