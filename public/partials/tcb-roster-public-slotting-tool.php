@@ -73,4 +73,18 @@ function tcb_roster_public_slotting_tool($attributes) {
 		$i++;
 	endwhile;
 	echo '</div>';
+
+	echo '<pre>';
+	$slots = get_field('slots', $post_id);
+	print_r ($slots);
+	echo '</pre>';
+	
+	echo '<pre>';
+	$fields = get_field('slots', $post_id);
+	$i = 0; $j = 1; $k = 1;
+	$slotIndexArray = array('slots',$i+1,'unit',$j+1,'slot',$k+1,'slot_member');
+	//update_sub_field ($slotIndexArray, 'admin2');
+	print_r ($fields[$i]['unit'][$j]['slot'][$k]);
+
+	echo '</pre>';
 }
