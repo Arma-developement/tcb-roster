@@ -58,6 +58,7 @@
 
 					// Reload the attendance roster part of the page with AJAX
 					//jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster>*');
+					jQuery('#slotTool').load(document.URL +  ' #slotTool>*');
 
 					// Update avatar on page
 					//jQuery("#"+formID).find("input.slotIcon").css("background-image", "url(" + profilePic + ")");
