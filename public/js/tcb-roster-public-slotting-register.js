@@ -3,7 +3,7 @@
 
 	$(document).ready(function() {
 
-		jQuery(".slotForm").submit(function(event) {
+		jQuery(document).on("submit", '.slotForm', function(event) { 
 			event.preventDefault();
 
 			var userID = +jQuery(this).find(".userID").val();
@@ -21,8 +21,8 @@
 			jQuery.ajax({
 				type: 'post',
 				dataType: 'json',
-				url: localize.ajax_url,
-				data: {action: 'tcb_roster_public_slotting_tool_update', postId: postID, userId: userID, slot: slot, nounce: localize.ajax_nounce},
+				url: slotting_localize.ajax_url,
+				data: {action: 'tcb_roster_public_slotting_tool_update', postId: postID, userId: userID, slot: slot, nounce: slotting_localize.ajax_nounce},
 				success: function(response) {
 					console.log(response);
 

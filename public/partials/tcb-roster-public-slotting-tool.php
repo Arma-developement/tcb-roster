@@ -18,7 +18,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 	if(! have_rows('slots') )
 		return;
 
-	echo '<div id="slotTool">';
+	echo '<div id="slotTool" >';
 	echo '<h2>Priority placements</h2>';
 	echo '<p>Button to left of slot name appears when logged in.<br>Avatar appears when member is slotted</p>';
 
@@ -34,8 +34,8 @@ function tcb_roster_public_slotting_tool($attributes) {
 		while( have_rows('unit') ) : the_row();
 			$j = get_row_index();
 
-			echo '<div class="unit">';
-			echo '<h3>' . the_sub_field('name') . '</h3>';
+			echo '<div class="unit" >';
+			echo '<h3>' . get_sub_field('name') . '</h3>';
 
 			// Continue to next unit if slot is empty
 			if ( !have_rows('slot') )
@@ -56,32 +56,38 @@ function tcb_roster_public_slotting_tool($attributes) {
 				}
 
 				echo '<div class="slotToolSlot" id="slotToolSlot-' . $j . '-' . $k . '">';
-				echo '<form class="slotForm" action="" >';
+				echo '<form class="slotForm">';
 				echo '<input type="hidden" name="post-id" class="postID" value="' . $post_id . '">';
 				echo '<input type="hidden" name="user-id" class="userID" value="' . $currentUserID . '">';
 				echo '<input type="hidden" name="slot" class="slot" value="' . $i . ',' . $j . ',' . $k . '">';
-				echo '<input class="slotIcon ' . ($isDisabled ? 'disabled' : '') . 
-					'" type="submit" style="background-image:url(' . ($profilePic ? $profilePic : '') . ')"></form>';
+				echo '<input class="slotIcon ' . ($isDisabled ? 'disabled"' : '"') . 'type="submit"';
+				echo ' style="background-image:url(' . ($profilePic ? $profilePic : '') . ')"';
+				echo '>';
+				echo '</form>';
 
-				echo '<strong>' . the_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . the_sub_field('slot_member') . '</span><br>';
+				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . get_sub_field('slot_member') . '</span><br>';
 				echo '</div>';	
 			endwhile;
-			echo '</div><br>'; 
+			echo '</div>'; 
 		endwhile;
 	endwhile;
 	echo '</div>';
-
-	echo '<pre>';
-	$slots = get_field('slots', $post_id);
-	print_r ($slots);
-	echo '</pre>';
 	
-	echo '<pre>';
-	$fields = get_field('slots', $post_id);
-	$i = 0; $j = 1; $k = 1;
-	$slotIndexArray = array('slots',$i+1,'unit',$j+1,'slot',$k+1,'slot_member');
-	//update_sub_field ($slotIndexArray, 'admin2');
-	print_r ($fields[$i]['unit'][$j]['slot'][$k]);
+	$roles = $currentUser->roles;
+	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
+		echo '<br><a href="'. home_url() .'/mission-admin/?id=' . $post_id . '" class="button button-secondary">Mission Admin</a><br>';
+	}
 
-	echo '</pre>';
+	// echo '<pre>';
+	// $slots = get_field('slots', $post_id);
+	// print_r ($slots);
+	// echo '</pre>';
+	
+	// echo '<pre>';
+	// $fields = get_field('slots', $post_id);
+	// $i = 0; $j = 1; $k = 1;
+	// $slotIndexArray = array('slots',$i+1,'unit',$j+1,'slot',$k+1,'slot_member');
+	// //update_sub_field ($slotIndexArray, 'admin2');
+	// print_r ($fields[$i]['unit'][$j]['slot'][$k]);
+	// echo '</pre>';
 }

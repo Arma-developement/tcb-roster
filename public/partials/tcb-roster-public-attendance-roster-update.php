@@ -46,27 +46,26 @@ function tcb_roster_public_attendance_roster_update() {
 		}
 
 		// Find and remove user
-		$rowIndex = 0;
 		$deleteOnly = false;
 		while( have_rows('rsvp', $post_id) ) : the_row();
-			$users = get_sub_field('user');	
+			$i = get_row_index();
+			$users = get_sub_field('user');
 			if ($users) {
 				// Check if user in list
 				if (in_array($user_id, $users)) {
 
 					// Check if already registered in this list
-					if ($selection == $rowIndex)
+					if ($selection == $i)
 						$deleteOnly = true;
 
 					// Remove the user
 					$update_users = array_filter($users, static function ($element) {
 						return $element == $user_id;
 					});
-					update_sub_field(array('rsvp', $rowIndex, 'user'), $update_users, $post_id);
+					update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
 					break;
 				}
 			}
-			$rowIndex++;
 		endwhile;
 
 		if (!$deleteOnly) {

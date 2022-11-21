@@ -74,6 +74,8 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-attendance-roster-update.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool-update.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-send-password.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -89,6 +91,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_application_view', 'tcb_roster_public_application_view');
 		add_shortcode('tcb_roster_public_interview_list', 'tcb_roster_public_interview_list');
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
+		add_shortcode('tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin');
 
 		//add_action( 'tribe_events_single_event_before_the_content', 'attendanceRoster' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
@@ -148,7 +151,7 @@ class Tcb_Roster_Public {
 		 */
 
 		wp_register_script('tcb_roster_public_rsvp_register', plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public-rsvp-register.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script('tcb_roster_public_rsvp_register', 'localize',
+		wp_localize_script('tcb_roster_public_rsvp_register', 'rsvp_localize',
 			array (
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'ajax_nounce' => wp_create_nonce( 'attendance_roster_update_nounce' )
@@ -157,7 +160,7 @@ class Tcb_Roster_Public {
 		wp_enqueue_script('tcb_roster_public_rsvp_register');
 
 		wp_register_script('tcb_roster_public_slotting_register', plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public-slotting-register.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script('tcb_roster_public_slotting_register', 'localize',
+		wp_localize_script('tcb_roster_public_slotting_register', 'slotting_localize',
 			array (
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'ajax_nounce' => wp_create_nonce( 'attendance_slotting_update_nounce' )

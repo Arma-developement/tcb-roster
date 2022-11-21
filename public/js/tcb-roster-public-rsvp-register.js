@@ -18,8 +18,8 @@
 			jQuery.ajax({
 				type: 'post',
 				dataType: 'json',
-				url: localize.ajax_url,
-				data: {action: 'tcb_roster_public_attendance_roster_update', postId: rsvpPostID, userId: rsvpUserID, selection: rsvpSelection, nounce: localize.ajax_nounce},
+				url: rsvp_localize.ajax_url,
+				data: {action: 'tcb_roster_public_attendance_roster_update', postId: rsvpPostID, userId: rsvpUserID, selection: rsvpSelection, nounce: rsvp_localize.ajax_nounce},
 				success: function(response) {
 					console.log(response);
 
