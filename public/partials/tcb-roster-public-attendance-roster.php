@@ -18,7 +18,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 		return;		
 
 	// print_r ( get_field('rsvp') );
-	print_r ( get_field('time_stamp') );
+	// print_r ( get_field('time_stamp') );
 		
 	echo '<div id="attendanceRoster">';
 	echo '<h2>Attendance</h2>';
@@ -43,7 +43,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 			echo '<ul>';
 			foreach( $users as $user ) {
 				$avatar = get_avatar_url($user);
-				//$avatar = false;
+				$avatar = false;
 				if ($avatar)
 					echo '<li><img src="<' . $avatar . '" alt="author-avatar">' . get_userdata($user)->user_login . '</li>';
 				else

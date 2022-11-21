@@ -13,7 +13,6 @@
 			// console.log('rsvpUserID: '+rsvpUserID);
 			// console.log('rsvpPostID: '+rsvpPostID);
 			// console.log('rsvpSelection: '+rsvpSelection);
-			// console.log('rsvpNounce: '+rsvpNounce);
 		
 			// Send data back to PHP function that updates ACF database	
 			jQuery.ajax({
