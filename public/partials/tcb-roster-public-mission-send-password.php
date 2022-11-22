@@ -12,7 +12,7 @@ function tcb_roster_public_mission_send_password($postId, $password, $delay) {
 		return false;
 	}
 		
-	function send_email($listOfUserIDs) {
+	function send_email($listOfUserIDs, $password) {
 		$msg = '\nThe password for today's 3CB Operation is: ' . $password . '\n';
 		foreach ($listOfUserIDs as $userId) {
 			$user = get_user_by('id', $userId);
@@ -45,9 +45,7 @@ function tcb_roster_public_mission_send_password($postId, $password, $delay) {
 		}
 	endwhile;
 	
-	return;
-		
-	send_email($earlyEmail);
+	send_email($earlyEmail, $password);
 	sleep ($delay);
-	send_email($lateEmail);
+	send_email($lateEmail, $password);
 }
