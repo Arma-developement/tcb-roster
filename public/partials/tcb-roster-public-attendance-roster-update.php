@@ -2,6 +2,28 @@
 
 function tcb_roster_public_attendance_roster_update() {
 
+	function remove_from_slotting($post_id, $user) {
+		while( have_rows('slots', $post_id) ) : the_row();
+			$i = get_row_index();
+			if (!have_rows ('unit', $post_id) )
+				continue;
+			while( have_rows('unit', $post_id) ) : the_row();
+				$j = get_row_index();
+				if ( !have_rows('slot', $post_id) )
+					continue;
+				while( have_rows('slot', $post_id) ) : the_row();
+					$k = get_row_index();
+					if (get_sub_field('slot_member') == $user) {
+						$slotIndexArray = array('slots',$i,'unit',$j,'slot',$k,'slot_member');
+						update_sub_field ($slotIndexArray, '', $post_id);
+						return true;
+					}
+				endwhile;
+			endwhile;
+		endwhile;
+		return false;
+	}
+
 	function do_work() {
 		$post_id = $_POST['postId'];
 		$user_id = $_POST['userId'];
@@ -46,6 +68,7 @@ function tcb_roster_public_attendance_roster_update() {
 		}
 
 		// Find and remove user
+		$i = 0;
 		$deleteOnly = false;
 		while( have_rows('rsvp', $post_id) ) : the_row();
 			$i = get_row_index();
@@ -70,6 +93,13 @@ function tcb_roster_public_attendance_roster_update() {
 
 		if (!$deleteOnly) {
 			add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
+		}
+
+		// Remove from slotting 
+		if ($i == 1) {
+			$user = get_user_by('id', $user_id);
+			$slottedMemberName = $user->user_login;
+			remove_from_slotting($post_id, $slottedMemberName);
 		}
 
 		return wp_send_json_success('Existing user updated');

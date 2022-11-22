@@ -14,7 +14,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 	if (!$post_id)
 		return;
 
-	// Early out if no entrys in slots field
+	// Early out if no entries in slots field
 	if(! have_rows('slots') )
 		return;
 
@@ -57,8 +57,8 @@ function tcb_roster_public_slotting_tool($attributes) {
 
 				echo '<div class="slotToolSlot" id="slotToolSlot-' . $j . '-' . $k . '">';
 				echo '<form class="slotForm">';
-				echo '<input type="hidden" name="post-id" class="postID" value="' . $post_id . '">';
-				echo '<input type="hidden" name="user-id" class="userID" value="' . $currentUserID . '">';
+				echo '<input type="hidden" name="postId" class="postID" value="' . $post_id . '">';
+				echo '<input type="hidden" name="userId" class="userID" value="' . $currentUserID . '">';
 				echo '<input type="hidden" name="slot" class="slot" value="' . $i . ',' . $j . ',' . $k . '">';
 				echo '<input class="slotIcon ' . ($isDisabled ? 'disabled"' : '"') . 'type="submit"';
 				echo ' style="background-image:url(' . ($profilePic ? $profilePic : '') . ')"';
@@ -77,17 +77,4 @@ function tcb_roster_public_slotting_tool($attributes) {
 	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
 		echo '<br><a href="'. home_url() .'/mission-admin/?id=' . $post_id . '" class="button button-secondary">Mission Admin</a><br>';
 	}
-
-	// echo '<pre>';
-	// $slots = get_field('slots', $post_id);
-	// print_r ($slots);
-	// echo '</pre>';
-	
-	// echo '<pre>';
-	// $fields = get_field('slots', $post_id);
-	// $i = 0; $j = 1; $k = 1;
-	// $slotIndexArray = array('slots',$i+1,'unit',$j+1,'slot',$k+1,'slot_member');
-	// //update_sub_field ($slotIndexArray, 'admin2');
-	// print_r ($fields[$i]['unit'][$j]['slot'][$k]);
-	// echo '</pre>';
 }

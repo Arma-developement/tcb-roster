@@ -27,7 +27,7 @@
 					console.log(response);
 
 					// Reload the attendance roster part of the page with AJAX
-					//jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster>*');
+					jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster');
 					jQuery(component).load(document.URL +  ' ' + component);
 				},
 				error: function(response) {

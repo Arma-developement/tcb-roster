@@ -23,7 +23,6 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<div id="attendanceRoster">';
 	echo '<h2>Attendance</h2>';
 	echo '<div class="wrap">';
-	echo '<hr>';
 
 	while( have_rows('rsvp') ) : the_row();
 		$i = get_row_index();
@@ -53,8 +52,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 		}
 		
 		echo '<form class="rsvpFormUnregister" id="rsvpFormUnregister-' . $i . '">';
-		echo '<input type="hidden" name="post-id" class="rsvpPostID" value="' . $post_id . '">';
-		echo '<input type="hidden" name="user-id" class="rsvpUserID" value="' . $the_current_user_id . '">';
+		echo '<input type="hidden" name="postId" class="rsvpPostID" value="' . $post_id . '">';
+		echo '<input type="hidden" name="userId" class="rsvpUserID" value="' . $the_current_user_id . '">';
 		echo '<input type="hidden" name="selection" class="rsvpSelection" value="' . $i . '">';
 
 		if ($alreadyRegistered)

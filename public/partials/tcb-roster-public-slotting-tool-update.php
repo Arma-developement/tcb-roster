@@ -18,6 +18,63 @@ function tcb_roster_public_slotting_tool_update() {
 		return false;
 	}
 
+	function addToRSVP($post_id, $user_id, $selection) {
+		$registeredUsers = [];
+		$fields = get_field('rsvp', $post_id);
+		if (!$fields)
+			return;
+
+		foreach ($fields as $field) {
+			if ($field['user'])
+				$registeredUsers = array_merge($registeredUsers, $field['user']);
+		}
+
+		// New user, add to the appropriate list
+		if (!in_array($user_id, $registeredUsers)) {
+			add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
+
+			// Check if user has previously registered
+			$previousUsers = [];
+			$fields = get_field('time_stamp', $post_id);
+			if ($fields) {
+				foreach ($fields as $field) {
+					$previousUsers[] = $field['user'];
+				}
+			}
+
+			// If a new user, then register the time
+			if (!in_array($user_id, $previousUsers)) {
+				$date = getdate();
+				add_row('time_stamp', array( 'user' => $user_id, 'time' => $date ), $post_id);
+			}
+			return;
+		}
+
+		// Find and remove user
+		$deleteOnly = false;
+		while( have_rows('rsvp', $post_id) ) : the_row();
+			$i = get_row_index();
+			$users = get_sub_field('user');
+			if ($users) {
+				// Check if user in list
+				if (in_array($user_id, $users)) {
+
+					// Check if already registered in this list
+					if ($selection == $i)
+						return;
+
+					// Remove the user
+					$update_users = array_filter($users, static function ($element) {
+						return $element == $user_id;
+					});
+					update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
+					break;
+				}
+			}
+		endwhile;
+		add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
+	}
+
 	function do_work() {
 		$post_id = $_POST['postId'];
 		$user_id = $_POST['userId'];
@@ -64,8 +121,11 @@ function tcb_roster_public_slotting_tool_update() {
 			}
 			else {
 				// Add user
-				if (update_sub_field ($slotIndexArray, $slottedMemberName, $post_id ))
+				if (update_sub_field ($slotIndexArray, $slottedMemberName, $post_id )) {
+					// Add to the rvsp as attending
+					addToRSVP ($post_id, $user_id, 1);
 					return wp_send_json_success('Added user ' . $slottedMemberName . ', ' . $i. ', ' . $j. ', ' . $k);
+				}
 				else
 					return wp_send_json_error('Added user ' . $slottedMemberName . ', ' . $i. ', ' . $j. ', ' . $k);
 			}
