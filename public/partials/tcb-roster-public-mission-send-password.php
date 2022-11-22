@@ -6,14 +6,14 @@ function tcb_roster_public_mission_send_password($postId, $password, $delay) {
 		$fields = get_field('time_stamp', $post_id);
 		if (!$fields)
 			return false;
-		foreach ($fields as $field) {
+		foreach ($fields as $field)
 			if ($userId == $field['user'])
 				return $field['time'] < $thresholdTime;
 		return false;
 	}
 		
 	function send_email($listOfUserIDs, $password) {
-		$msg = '\nThe password for today's 3CB Operation is: ' . $password . '\n';
+		$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
 		foreach ($listOfUserIDs as $userId) {
 			$user = get_user_by('id', $userId);
 			$email = $user->user_email;
