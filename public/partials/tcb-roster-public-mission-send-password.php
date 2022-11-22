@@ -12,6 +12,15 @@ function tcb_roster_public_mission_send_password($postId, $password, $delay) {
 		return false;
 	}
 		
+	function send_email($listOfUserIDs) {
+		$msg = '\nThe password for today's 3CB Operation is: ' . $password . '\n';
+		foreach ($listOfUserIDs as $userId) {
+			$user = get_user_by('id', $userId);
+			$email = $user->user_email;
+			mail($user->user_email, "3CB Operation password", $msg);
+		}
+	}
+		
 	// Set the threshold 24 hours previous
 	$dateTime = new DateTimeImmutable(); 
 	$dateTime = $dateTime->sub(new DateInterval('P1D'));
@@ -35,8 +44,10 @@ function tcb_roster_public_mission_send_password($postId, $password, $delay) {
 				$lateEmail[] = $userId;
 		}
 	endwhile;
+	
+	return;
 		
-	// send early email
-	// Wait
-	// Send late email
+	send_email($earlyEmail);
+	sleep ($delay);
+	send_email($lateEmail);
 }
