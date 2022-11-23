@@ -65,7 +65,8 @@ function tcb_roster_public_slotting_tool($attributes) {
 				echo '>';
 				echo '</form>';
 
-				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . get_sub_field('slot_member') . '</span><br>';
+				//echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . get_sub_field('slot_member') . '</span><br>';
+				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $slottedMemberName . '</a></span><br>';
 				echo '</div>';	
 			endwhile;
 			echo '</div>'; 
@@ -75,6 +76,6 @@ function tcb_roster_public_slotting_tool($attributes) {
 	
 	$roles = $currentUser->roles;
 	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
-		echo '<br><a href="'. home_url() .'/mission-admin/?id=' . $post_id . '" class="button button-secondary">Mission Admin</a><br>';
+		echo '<br><a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin</a><br>';
 	}
 }

@@ -14,8 +14,8 @@ function add_hide_in_menu_editor_field() {
      <?php
  }
  
- function save_hide_in_menu_selector($post_id){ 
-    update_post_meta( $post_id, 'hide_in_menu_selector', $_POST['hide_in_menu_selector']==="1");
+ function save_hide_in_menu_selector($post_id) { 
+//    update_post_meta( $post_id, 'hide_in_menu_selector', $_POST['hide_in_menu_selector']==="1");
  }
 
 function filter_draft_pages_from_menu ($items, $args) {

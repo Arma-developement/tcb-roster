@@ -41,12 +41,16 @@ function tcb_roster_public_attendance_roster($attributes) {
 			// Display list
 			echo '<ul>';
 			foreach( $users as $user ) {
+				$userName = get_userdata($user)->user_login;
+				$userId = get_userdata($user)->ID;
 				$avatar = get_avatar_url($user);
 				$avatar = false;
 				if ($avatar)
-					echo '<li><img src="<' . $avatar . '" alt="author-avatar">' . get_userdata($user)->user_login . '</li>';
+					//echo '<li><img src="<' . $avatar . '" alt="author-avatar">' . get_userdata($user)->user_login . '</li>';
+					echo '<li><img src="<' . $avatar . '" alt="author-avatar"><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userName . '</a></li>';
 				else
-					echo '<li>' . get_userdata($user)->user_login . '</li>';
+					//echo '<li>' . get_userdata($user)->user_login . '</li>';
+					echo '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userName . '</a></li>';
 			}
 			echo '</ul>';
 		}

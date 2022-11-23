@@ -106,6 +106,20 @@ class Tcb_Roster_Public {
 		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=interview_form_email', 'tcb_roster_public_interview_form_email_args', 10, 3);
+
+		// add_filter('acf/pre_save_post', function($post_id) {
+		// 	// Early out to filter non 'tribe_event' posts
+		// 	if ( get_post_type($post_id) != 'tribe_events' )
+		// 		return $post_id;
+		// 	error_log( print_r("posttype: " . $posttype, TRUE ));
+		// 	return $post_id;
+		// }, 10, 3);
+
+
+		add_action('acfe/form/validation/post/action=tcb_roster_mission_admin_password_hook', 'my_form_validation', 10, 3);
+		function my_form_validation($form, $post_id, $action){
+			error_log( print_r("post_id: " . $post_id, TRUE ));
+		}
 	}
 
 	/**

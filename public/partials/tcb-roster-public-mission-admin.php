@@ -11,8 +11,12 @@ function tcb_roster_public_mission_admin() {
 	if ($postId == "")
 		return;
 
+	$return = '';
+	
+
 	$myoptions = array( 
 		'post_id' => $postId,
+		//'form_attributes' => array( 'class' => 'discord_send' ),
 		'field_groups' => array( 'group_637bd56b40d34' ),
 		'fields' => array('announcement'),
 		//'return' => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
@@ -25,6 +29,7 @@ function tcb_roster_public_mission_admin() {
 	
 	$myoptions = array( 
 		'post_id' => $postId,
+		//'form_attributes' => array( 'class' => 'password_send' ),
 		'field_groups' => array( 'group_637bd56b40d34' ),
 		'fields' => array('password'),
 		//'return' => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),

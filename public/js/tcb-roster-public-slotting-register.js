@@ -9,13 +9,10 @@
 			var userID = +jQuery(this).find(".userID").val();
 			var postID = +jQuery(this).find(".postID").val();
 			var slot = jQuery(this).find(".slot").val();
-			var slotArray = slot.split (",");
-			var component = '#slotToolSlot-' + (+slotArray[1]) + "-" + (+slotArray[2]);
 
 			// console.log('userID: ' + userID);
 			// console.log('postID: ' + postID);
 			// console.log('slot: ' + slot);
-			// console.log( component );
 
 			// Send data back to PHP function that updates ACF database	
 			jQuery.ajax({
@@ -28,7 +25,7 @@
 
 					// Reload the attendance roster part of the page with AJAX
 					jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster');
-					jQuery(component).load(document.URL +  ' ' + component);
+					jQuery('#slotTool').load(document.URL +  ' #slotTool');
 				},
 				error: function(response) {
 					console.log(response);
