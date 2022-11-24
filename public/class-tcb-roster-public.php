@@ -75,7 +75,8 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool-update.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin.php'; 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-send-password.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -93,13 +94,9 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
 		add_shortcode('tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin');
 
-		//add_action( 'tribe_events_single_event_before_the_content', 'attendanceRoster' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
-
-		//add_action( 'tribe_events_single_event_after_the_meta', 'slotTool' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
 
-		//add_action( 'wp_ajax_nopriv_tcb_roster_public_attendance_roster_update', 'tcb_roster_public_attendance_roster_update' );
 		add_action( 'wp_ajax_tcb_roster_public_attendance_roster_update','tcb_roster_public_attendance_roster_update' );
 		add_action( 'wp_ajax_tcb_roster_public_slotting_tool_update','tcb_roster_public_slotting_tool_update' );
 
@@ -107,19 +104,8 @@ class Tcb_Roster_Public {
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=interview_form_email', 'tcb_roster_public_interview_form_email_args', 10, 3);
 
-		// add_filter('acf/pre_save_post', function($post_id) {
-		// 	// Early out to filter non 'tribe_event' posts
-		// 	if ( get_post_type($post_id) != 'tribe_events' )
-		// 		return $post_id;
-		// 	error_log( print_r("posttype: " . $posttype, TRUE ));
-		// 	return $post_id;
-		// }, 10, 3);
-
-
-		add_action('acfe/form/validation/post/action=tcb_roster_mission_admin_password_hook', 'my_form_validation', 10, 3);
-		function my_form_validation($form, $post_id, $action){
-			error_log( print_r("post_id: " . $post_id, TRUE ));
-		}
+		add_action('acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5);
+		add_action('acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5);
 	}
 
 	/**

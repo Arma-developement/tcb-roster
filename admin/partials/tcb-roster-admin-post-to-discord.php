@@ -6,6 +6,9 @@ function tcb_roster_admin_post_to_discord ( $sender, $channel, $message ) {
         case 'recruitment-managers':
             $webhook = 'https://discord.com/api/webhooks/1039164797125668894/cfPBzoEb5PGzCUv66rK9gaMDUVWHNL_B--nOeB00VkeeCi6DFVuewMTNOCEvObOwst4t';
             break;
+        case 'announcements':
+            $webhook = 'https://discord.com/api/webhooks/1039164797125668894/cfPBzoEb5PGzCUv66rK9gaMDUVWHNL_B--nOeB00VkeeCi6DFVuewMTNOCEvObOwst4t';
+            break;    
         default:
             return false;
     }

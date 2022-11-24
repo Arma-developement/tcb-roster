@@ -12,31 +12,20 @@ function tcb_roster_public_mission_admin() {
 		return;
 
 	$return = '';
-	
 
-	$myoptions = array( 
-		'post_id' => $postId,
-		//'form_attributes' => array( 'class' => 'discord_send' ),
-		'field_groups' => array( 'group_637bd56b40d34' ),
-		'fields' => array('announcement'),
-		//'return' => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
-		'submit_value' => 'Send announcement to Discord',
-		'updated_message' => 'Announcement sent'
+	acfe_form ( 
+		array (
+			'name' => 'send-announcement',
+			'post_id' => $postId
+		)
 	);
-	acf_form( $myoptions );
 
-
-	
-	$myoptions = array( 
-		'post_id' => $postId,
-		//'form_attributes' => array( 'class' => 'password_send' ),
-		'field_groups' => array( 'group_637bd56b40d34' ),
-		'fields' => array('password'),
-		//'return' => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
-		'submit_value' => 'Send Password',
-		'updated_message' => 'Password sent'
+	acfe_form ( 
+		array (
+			'name' => 'send-password',
+			'post_id' => $postId
+		)
 	);
-	acf_form( $myoptions );
 
 
 	// if ( function_exists( 'SimpleLogger' ) ) {

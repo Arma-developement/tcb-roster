@@ -47,6 +47,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 
 				// Get profile pic for slotted member 
 				$profilePic = '';
+				$user_id = 1;
 				$slottedMemberName = get_sub_field('slot_member');
 				$isDisabled = ($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin);				
 				$user = get_user_by('login', $slottedMemberName);
@@ -76,6 +77,6 @@ function tcb_roster_public_slotting_tool($attributes) {
 	
 	$roles = $currentUser->roles;
 	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
-		echo '<br><a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin</a><br>';
+		echo '<br><a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin Panel</a><br>';
 	}
 }
