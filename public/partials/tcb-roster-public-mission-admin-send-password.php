@@ -13,11 +13,12 @@ function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $
 	}
 		
 	function send_email($listOfUserIDs, $password) {
+		
 		$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
 		foreach ($listOfUserIDs as $userId) {
 			$user = get_user_by('id', $userId);
 			$email = $user->user_email;
-			mail($user->user_email, "3CB Operation password", $msg);
+			wp_mail($user->user_email, "3CB Operation password", $msg);
 		}
 	}
 		

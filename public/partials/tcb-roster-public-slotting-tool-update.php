@@ -43,7 +43,7 @@ function tcb_roster_public_slotting_tool_update() {
 		// 1 subtracted to compensate for ACF rows starting at 1, whilst arrays start at 0
 		$oldSlottedMemberName = $fields[$i-1]['unit'][$j-1]['slot'][$k-1]['slot_member'];
 		$oldUser = get_user_by('login', $oldSlottedMemberName);
-		$oldUser_id = $oldUser->ID;
+		$oldUser_id = $oldUser ? $oldUser->ID : 1;
 
 		if ($oldUser) {
 			if ($oldUser_id == $user_id) {
