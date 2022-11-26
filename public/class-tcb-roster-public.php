@@ -77,6 +77,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../action-scheduler/action-scheduler.php';
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -99,6 +100,8 @@ class Tcb_Roster_Public {
 
 		add_action( 'wp_ajax_tcb_roster_public_attendance_roster_update','tcb_roster_public_attendance_roster_update' );
 		add_action( 'wp_ajax_tcb_roster_public_slotting_tool_update','tcb_roster_public_slotting_tool_update' );
+
+		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );
 
 		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);

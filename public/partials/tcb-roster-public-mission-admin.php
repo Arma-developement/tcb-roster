@@ -11,8 +11,6 @@ function tcb_roster_public_mission_admin() {
 	if ($postId == "")
 		return;
 
-	$return = '';
-
 	acfe_form ( 
 		array (
 			'name' => 'send-announcement',
@@ -27,10 +25,9 @@ function tcb_roster_public_mission_admin() {
 		)
 	);
 
-
-	// if ( function_exists( 'SimpleLogger' ) ) {
-	// 	SimpleLogger()->info( 'Edited ' . $displayName . "'s Commendations");
-	// }
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info( 'Edited ' . get_the_title($postId) . ' via the Mission Admin Panel');
+	}
 
 	return;
 }

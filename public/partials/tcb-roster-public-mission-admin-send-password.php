@@ -1,5 +1,22 @@
 <?php
 
+function tcb_roster_public_mission_send_password_email($args) {
+	$listOfUserIDs = $args[0];
+	$password = $args[1];
+
+	// error_log( print_r("send email", TRUE));
+	// error_log( print_r("args: " . json_encode($args), TRUE ));
+	// error_log( print_r("listOfUserIDs: " . json_encode($listOfUserIDs), TRUE ));
+	// error_log( print_r("password: " . $password, TRUE ));
+
+	$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
+	foreach ($listOfUserIDs as $userId) {
+		$user = get_user_by('id', $userId);
+		$email = $user->user_email;
+		wp_mail($user->user_email, "3CB Operation password", $msg);
+	}
+}
+
 function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $action) {
 	
 	function signup_early($postId, $userId, $thresholdTime) {
@@ -10,16 +27,6 @@ function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $
 			if ($userId == $field['user'])
 				return $field['time'] < $thresholdTime;
 		return false;
-	}
-		
-	function send_email($listOfUserIDs, $password) {
-		
-		$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
-		foreach ($listOfUserIDs as $userId) {
-			$user = get_user_by('id', $userId);
-			$email = $user->user_email;
-			wp_mail($user->user_email, "3CB Operation password", $msg);
-		}
 	}
 		
 	// Retrieve data
@@ -49,8 +56,18 @@ function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $
 				$lateEmail[] = $userId;
 		}
 	endwhile;
-	
-	send_email($earlyEmail, $password);
-	sleep ($delay);
-	send_email($lateEmail, $password);
+
+	$now = new DateTimeImmutable ();
+	$later = $now->add( new DateInterval('PT' . $delay . 'S') );
+
+	// error_log( print_r("button press", TRUE ));
+	// error_log( print_r("earlyEmail: " . json_encode($earlyEmail), TRUE ));
+	// error_log( print_r("lateEmail: " . json_encode($lateEmail), TRUE ));
+	// error_log( print_r("delay: " . $delay, TRUE ));
+	// error_log( print_r("password: " . $password, TRUE ));
+	// error_log( print_r("timeStamp: " . $now->format('H:i:s'), TRUE ));
+	// error_log( print_r("timeStamp: " . $later->format('H:i:s'), TRUE ));
+
+	as_enqueue_async_action('tcb_roster_public_mission_send_password_email_action', array(array($earlyEmail, $password)));
+	as_schedule_single_action( DateTime::createFromImmutable($later), 'tcb_roster_public_mission_send_password_email_action', array(array($lateEmail, $password)));
 }
