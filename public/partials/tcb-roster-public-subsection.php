@@ -2,16 +2,16 @@
 
 function tcb_roster_public_subsection($attributes) {
 	$return = '';
-
-	$meta_key = $attributes['rank'];
-
-	if ($meta_key != "") {
 	
+	if (array_key_exists('rank', $attributes)) {
+	
+		$rank = $attributes['rank'];
+
 		$args = array(
 			'numberposts'	=> -1,
 			'post_type'		=> 'service-record',
 			'meta_key'		=> 'rank',
-			'meta_value'	=> $meta_key
+			'meta_value'	=> $rank
 		);
 
 		$listOfPosts = get_posts( $args );
@@ -24,7 +24,7 @@ function tcb_roster_public_subsection($attributes) {
 				$user = get_user_by( 'id', $userId );
 				$displayName = $user->get( 'display_name' );
 
-				if ((get_field( 'loa', $post ) == 1) && ($meta_key != 'Res')) {
+				if ((get_field( 'loa', $post ) == 1) && ($rank != 'Res')) {
 					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a> (LOA)</li>';
 				} else {
 					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
@@ -37,9 +37,7 @@ function tcb_roster_public_subsection($attributes) {
 		return $return;
 	}
 
-	$meta_key = $attributes['duty'];
-
-	if ($meta_key != "") {
+	if (array_key_exists('duty', $attributes)) {
 
 		$args = array(
 			'numberposts'	=> -1,
@@ -47,7 +45,7 @@ function tcb_roster_public_subsection($attributes) {
 			'meta_query' => array(
 				array(
 					'key' =>  'duties',
-					'value'  => $meta_key,
+					'value'  => $attributes['duty'],
 					'compare' =>  'LIKE'
 				)
 			)

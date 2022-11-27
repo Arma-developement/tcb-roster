@@ -1,7 +1,6 @@
 <?php
 
 function tcb_roster_public_edit_service_record($attributes) {
-	//echo "tcb_roster_public_edit_service_record<br>";
 	
 	$userId = $_GET['id'];
 	if ($userId == "")
@@ -44,14 +43,12 @@ function tcb_roster_public_edit_service_record($attributes) {
 
 	// echo "postID = " . $postId . "<br>";
 
-	$myoptions = array( 
+	acf_form( array( 
 		'post_id' => $postId,
 		'field_groups' => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
 		'submit_value' => 'Update ' . $displayName . "'s Service Record",
 		'updated_message' => false
-	);
-
-	acf_form( $myoptions );
+	) );
 
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited ' . $displayName . "'s Service Record");

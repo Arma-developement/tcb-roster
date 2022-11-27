@@ -17,7 +17,9 @@ function tcb_roster_public_application_view($attributes){
 	$fields = get_field_objects($post);
 
 	if ($fields) {
-		$return .= '<h4>' . get_field( 'app_steam_name', $post ) . '</h4><ol>';
+		$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post ) );
+		$steam_name = get_field( 'app_steam_name', $post );
+		$return .= '<h4>' . $author_name . ' (' . $steam_name . ')</h4><ol>';
 		foreach( $fields as $field ) {
 			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li>';
 		}
