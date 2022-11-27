@@ -6,7 +6,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	$currentUser = wp_get_current_user();
 	if (!$currentUser)
 		return;
-	$the_current_user_id = $currentUser->ID;
+	$currentUserID = $currentUser->ID;
 
 	// Early out if no post
 	$post_id = get_queried_object_id();
@@ -31,33 +31,30 @@ function tcb_roster_public_attendance_roster($attributes) {
 		echo '<h4>'. get_sub_field( 'label' ) . '</h4>';
 
 		$alreadyRegistered = false;
-		$users = get_sub_field('user');	
+		$userIds = get_sub_field('user');	
 	
-		if ($users) {
+		if ($userIds) {
 			// Check if user in list
-			if (in_array($the_current_user_id, $users))
+			if (in_array($currentUserID, $userIds))
 				$alreadyRegistered = true;
 
 			// Display list
 			echo '<ul>';
-			foreach( $users as $user ) {
-				$userName = get_userdata($user)->user_login;
-				$userId = get_userdata($user)->ID;
-				$avatar = get_avatar_url($user);
+			foreach( $userIds as $userId ) {
+				$userData = get_userdata($userId);
+				$avatar = get_avatar_url($userId);
 				$avatar = false;
 				if ($avatar)
-					//echo '<li><img src="<' . $avatar . '" alt="author-avatar">' . get_userdata($user)->user_login . '</li>';
-					echo '<li><img src="<' . $avatar . '" alt="author-avatar"><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userName . '</a></li>';
+					echo '<li><img src="<' . $avatar . '" alt="author-avatar"><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userData->display_name . '</a></li>';
 				else
-					//echo '<li>' . get_userdata($user)->user_login . '</li>';
-					echo '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userName . '</a></li>';
+					echo '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $userData->display_name . '</a></li>';
 			}
 			echo '</ul>';
 		}
 		
 		echo '<form class="rsvpFormUnregister" id="rsvpFormUnregister-' . $i . '">';
 		echo '<input type="hidden" name="postId" class="rsvpPostID" value="' . $post_id . '">';
-		echo '<input type="hidden" name="userId" class="rsvpUserID" value="' . $the_current_user_id . '">';
+		echo '<input type="hidden" name="userId" class="rsvpUserID" value="' . $currentUserID . '">';
 		echo '<input type="hidden" name="selection" class="rsvpSelection" value="' . $i . '">';
 
 		if ($alreadyRegistered)

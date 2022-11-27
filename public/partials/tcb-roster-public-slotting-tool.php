@@ -49,11 +49,14 @@ function tcb_roster_public_slotting_tool($attributes) {
 				$profilePic = '';
 				$user_id = 1;
 				$slottedMemberName = get_sub_field('slot_member');
-				$isDisabled = ($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin);				
+				$isDisabled = ($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin);
 				$user = get_user_by('login', $slottedMemberName);
 				if ($user) {
 					$user_id = $user->ID;
 					$profilePic = get_avatar_url($user_id);
+					$displayName = $user->display_name;
+				} else {
+					$displayName = '';
 				}
 
 				echo '<div class="slotToolSlot" id="slotToolSlot-' . $j . '-' . $k . '">';
@@ -66,8 +69,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 				echo '>';
 				echo '</form>';
 
-				//echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember">' . get_sub_field('slot_member') . '</span><br>';
-				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $slottedMemberName . '</a></span><br>';
+				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $displayName . '</a></span><br>';
 				echo '</div>';	
 			endwhile;
 			echo '</div>'; 
