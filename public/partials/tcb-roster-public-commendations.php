@@ -6,6 +6,8 @@ function tcb_roster_public_commendations ($attributes) {
 		'numberposts'	=> -1,
 		'post_type'		=> 'service-record'
 	);
+
+	$return .= '<div class="tcb_commendations">';
 	$return = '<p><a href="'. home_url() .'/information-centre/commendations/">Description of Commendations</a></p><br>';
 
 	$path = plugins_url() . '/tcb-roster/images/ribbons/';
@@ -78,6 +80,6 @@ function tcb_roster_public_commendations ($attributes) {
 		}		
 	}
 	wp_reset_postdata();
-
+	$return .= '</div>';
 	return $return;
 }

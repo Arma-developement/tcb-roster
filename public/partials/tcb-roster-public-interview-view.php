@@ -7,11 +7,15 @@ function tcb_roster_public_interview_view($attributes){
 		(! in_array( 'administrator', wp_get_current_user()->roles)))
 		return;
 
+	if (!array_key_exists('post', $_GET))
+		return; 
+		
 	$post_id = $_GET['post'];
 	if ($post_id == "") 
 		return;
 
 	$return = '';
+	$return .= '<div class="tcb_interview_view">';
 
 	setup_postdata( $post_id );
 	$fields = get_field_objects($post_id);
@@ -54,6 +58,7 @@ function tcb_roster_public_interview_view($attributes){
 		$return .= '</ol>';
 		wp_reset_postdata();		
 	}
+	$return .= '</div>';
 
 	return $return;
 }

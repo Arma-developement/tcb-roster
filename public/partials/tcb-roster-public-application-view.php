@@ -7,6 +7,9 @@ function tcb_roster_public_application_view($attributes){
 		(! in_array( 'administrator', wp_get_current_user()->roles)))
 		return;
 
+	if (!array_key_exists('post', $_GET))
+		return; 
+
 	$post = $_GET['post'];
 	if ($post == "") 
 		return;
@@ -19,11 +22,13 @@ function tcb_roster_public_application_view($attributes){
 	if ($fields) {
 		$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post ) );
 		$steam_name = get_field( 'app_steam_name', $post );
+		$return .= '<div class="tcb_application_view">';
 		$return .= '<h4>' . $author_name . ' (' . $steam_name . ')</h4><ol>';
 		foreach( $fields as $field ) {
 			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li>';
 		}
 		$return .= '</ol>';
+		$return .= '</div>';
 		wp_reset_postdata();		
 	}
 

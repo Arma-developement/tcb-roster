@@ -3,6 +3,7 @@
 function tcb_roster_public_interview_list($attributes){
 	
 	$return = '';
+	$return .= '<div class="tcb_interview_list">';
 
 	$posts = get_posts(array(
 		'numberposts' => -1,
@@ -40,6 +41,7 @@ function tcb_roster_public_interview_list($attributes){
 		$return .= '</ul>';
 		wp_reset_postdata();
 	}
+	$return .= '</div>';
 
 	return $return;
 }

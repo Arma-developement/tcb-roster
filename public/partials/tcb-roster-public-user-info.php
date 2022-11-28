@@ -2,6 +2,9 @@
 
 function tcb_roster_public_user_info($attributes) {
 
+	if (!array_key_exists('id', $_GET))
+		return; 
+
 	$userId = $_GET['id'];
 
 	if ($userId != "") {
@@ -18,6 +21,7 @@ function tcb_roster_public_user_info($attributes) {
 
 	$isAdmin = in_array( 'administrator', wp_get_current_user()->roles);
 
+	$return .= '<div class="tcb_user_info">';
 	$return = '<h2>'. $displayName . '</h2>';
 
 	// Rank
@@ -89,6 +93,7 @@ function tcb_roster_public_user_info($attributes) {
 		}
 		$return .= '</ul>';
 	}
-
+	$return .= '</div>';
+	
 	return $return;
 }

@@ -17,6 +17,7 @@ function tcb_roster_public_user_ribbons($attributes) {
 	$postId = get_field( $postIdField, $userProfile );
 
 	$return = '';
+	$return .= '<div class="tcb_user_ribbons">';
 
 	$width = 350 / 2;
 	$height = 94 / 2;
@@ -53,6 +54,7 @@ function tcb_roster_public_user_ribbons($attributes) {
 	// foreach ( $listOfRibbons as $ribbon ) {
 	// 	$return .= '<br>' . $ribbon['label'];
 	// }
-
+	$return .= '</div>';
+	
 	return $return;
 }

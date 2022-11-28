@@ -17,6 +17,7 @@ function tcb_roster_public_user_training($attributes) {
 	$postId = get_field( $postIdField, $userProfile );
 
 	$return = '';
+	$return .= '<div class="tcb_user_training">';	
 	$listOfCourses = get_field( 'courses_completed', $postId );
 
 	if ( $listOfCourses ) {
@@ -26,6 +27,7 @@ function tcb_roster_public_user_training($attributes) {
 		}
 		$return .= '</ul>';		
 	}
-
+	$return .= '</div>';
+	
 	return $return;
 }

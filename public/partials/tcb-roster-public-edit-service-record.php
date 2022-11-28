@@ -42,6 +42,7 @@ function tcb_roster_public_edit_service_record($attributes) {
 	}
 
 	// echo "postID = " . $postId . "<br>";
+	echo '<div class="tcb_edit_service_record">';
 
 	acf_form( array( 
 		'post_id' => $postId,
@@ -49,6 +50,8 @@ function tcb_roster_public_edit_service_record($attributes) {
 		'submit_value' => 'Update ' . $displayName . "'s Service Record",
 		'updated_message' => false
 	) );
+	
+	echo '</div>';
 
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited ' . $displayName . "'s Service Record");

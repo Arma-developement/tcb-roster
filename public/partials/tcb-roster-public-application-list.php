@@ -10,6 +10,8 @@ function tcb_roster_public_application_list($attributes){
 		'post_status' => 'pending'
 	));
 
+	$return .= '<div class="tcb_application_list">';
+
 	if ( $posts ) {
 		$return .= '<h4>Pending</h4><ul>';
 		foreach( $posts as $post ) {
@@ -40,6 +42,8 @@ function tcb_roster_public_application_list($attributes){
 		$return .= '</ul>';
 		wp_reset_postdata();
 	}
+
+	$return .= '</div>';
 
 	return $return;
 }

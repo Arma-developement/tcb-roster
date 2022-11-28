@@ -25,6 +25,7 @@ function tcb_roster_public_edit_training($attributes) {
 	if ( $postId == "" )
 		return;
 
+	echo '<div class="tcb_edit_training">';
 	echo "<h2>" . $displayName . "</h2>";
 	
 	acf_form( array( 
@@ -34,6 +35,8 @@ function tcb_roster_public_edit_training($attributes) {
 		'submit_value' => 'Update ' . $displayName . "'s Training Record",
 		'updated_message' => false
 	 ) );	
+
+	echo '</div>';
 
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited ' . $displayName . "'s Training Record");

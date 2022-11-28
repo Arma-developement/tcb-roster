@@ -9,6 +9,8 @@ function tcb_roster_public_user_edit_options($attributes) {
 	}
 
 	$return = '';
+	$return .= '<div class="tcb_user_edit_options">';
+
 	$roles = wp_get_current_user()->roles;
 
 	if (in_array( 'training_admin', $roles)) {
@@ -23,5 +25,6 @@ function tcb_roster_public_user_edit_options($attributes) {
 		$return .= '<br><a href="'. home_url() .'/edit-service-record/?id=' . $userId . '" class="button button-secondary">Edit Service Record</a><br>';
 	}
 
+	$return .= '</div>';
 	return $return;
 }

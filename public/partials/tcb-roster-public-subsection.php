@@ -13,6 +13,8 @@ function tcb_roster_public_subsection($attributes) {
 			'meta_key'		=> 'rank',
 			'meta_value'	=> $rank
 		);
+		
+		$return .= '<div class="tcb_subsection">';
 
 		$listOfPosts = get_posts( $args );
 		if ($listOfPosts) {
@@ -34,6 +36,8 @@ function tcb_roster_public_subsection($attributes) {
 		}
 		wp_reset_postdata();
 
+		$return .= '</div>';		
+
 		return $return;
 	}
 
@@ -51,6 +55,8 @@ function tcb_roster_public_subsection($attributes) {
 			)
 		);
 
+		$return .= '<div class="tcb_subsection">';
+
 		$listOfPosts = get_posts( $args );
 		if ($listOfPosts) {
 			$return .= '<ul>';
@@ -66,6 +72,8 @@ function tcb_roster_public_subsection($attributes) {
 			$return .= '</ul>';
 		}
 		wp_reset_postdata();
+
+		$return .= '</div>';
 
 		return $return;		
 	}

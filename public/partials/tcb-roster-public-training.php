@@ -7,6 +7,7 @@ function tcb_roster_public_training($attributes) {
 		'post_type'		=> 'service-record'
 	);
 	$return = '';
+	$return .= '<div class="tcb_training">';
 
 	// Build a list of course titles and course attendance, dynamically from the service records
 	$listOfPosts = get_posts( $args );
@@ -36,6 +37,7 @@ function tcb_roster_public_training($attributes) {
 		}
 	}
 	wp_reset_postdata();
-
+	$return .= '</div>';
+	
 	return $return;
 }
