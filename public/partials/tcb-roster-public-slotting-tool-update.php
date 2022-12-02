@@ -2,22 +2,6 @@
 
 function tcb_roster_public_slotting_tool_update() {
 	
-	function find_user($user, $post_id) {
-		while( have_rows('slots', $post_id) ) : the_row();
-			if (!have_rows ('unit', $post_id) )
-				continue;
-			while( have_rows('unit', $post_id) ) : the_row();
-				if ( !have_rows('slot', $post_id) )
-					continue;
-				while( have_rows('slot', $post_id) ) : the_row(); 	
-					if (get_sub_field('slot_member') == $user)
-						return true;					
-				endwhile;
-			endwhile;
-		endwhile;
-		return false;
-	}
-
 	function do_work() {
 		$post_id = $_POST['postId'];
 		$user_id = $_POST['userId'];
@@ -35,7 +19,7 @@ function tcb_roster_public_slotting_tool_update() {
 		// Check if the user is already slotted
 		$user = get_user_by('id', $user_id);
 		$slottedMemberName = $user->user_login;
-		$alreadySlotted = find_user($slottedMemberName, $post_id);
+		$alreadySlotted = tcb_roster_public_find_user_in_slotting($post_id, $slottedMemberName);
 	
 		// Retrieve the user at the specific location
 		$fields = get_field('slots', $post_id);
@@ -77,6 +61,23 @@ function tcb_roster_public_slotting_tool_update() {
 
 	do_work();
 	wp_die();
+}
+
+// Called from slotting tool
+function tcb_roster_public_find_user_in_slotting($post_id, $user) {
+	while( have_rows('slots', $post_id) ) : the_row();
+		if (!have_rows ('unit', $post_id) )
+			continue;
+		while( have_rows('unit', $post_id) ) : the_row();
+			if ( !have_rows('slot', $post_id) )
+				continue;
+			while( have_rows('slot', $post_id) ) : the_row(); 	
+				if (get_sub_field('slot_member') == $user)
+					return true;					
+			endwhile;
+		endwhile;
+	endwhile;
+	return false;
 }
 
 // Called from RSVP tool

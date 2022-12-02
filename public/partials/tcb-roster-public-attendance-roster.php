@@ -16,6 +16,9 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// Output the briefing
 	echo '<div class="tcb_briefing" >';
 
+	echo '<h3>Modset</h3>';
+	echo get_field('modset');
+
 	echo '<h3>Situation</h3>';
 	echo get_field('situation');
 
@@ -28,22 +31,21 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<h3>Intel</h3>';
 	echo get_field('intel');
 	
-	echo '<h3>Environment</h3>';
 	while( have_rows('environment') ): the_row();
-		echo '<h4>Map</h4>';
+		echo '<h3>Map</h3>';
 		echo get_sub_field('map');
 		
-		echo '<h4>Terrain</h4>';
-		echo get_sub_field('terrain');
+		// echo '<h4>Terrain</h4>';
+		// echo get_sub_field('terrain');
 		
-		echo '<h4>Time</h4>';
+		echo '<h3>Time</h3>';
 		echo get_sub_field('time');
 		
-		echo '<h4>Weather</h4>';
-		echo get_sub_field('weather');
+		// echo '<h4>Weather</h4>';
+		// echo get_sub_field('weather');
 		
-		echo '<h4>IED/Mine Threat</h4>';
-		echo get_sub_field('iedmine_threat');
+		// echo '<h4>IED/Mine Threat</h4>';
+		// echo get_sub_field('iedmine_threat');
 	endwhile;
 
 	echo '<h3>Enemy Forces</h3>';
@@ -52,32 +54,29 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<h3>Friendly Forces</h3>';
 	echo get_field('friendly_forces');
 
-	echo '<h3>Civilians</h3>';
-	echo get_field('civilians');
+	// echo '<h3>Civilians</h3>';
+	// echo get_field('civilians');
 
-	echo '<h3>Service Support</h3>';
-	while( have_rows('service-support') ): the_row();
-		echo '<h4>Vehicles</h4>';
-		echo get_sub_field('vehicles');
+	// echo '<h3>Service Support</h3>';
+	// while( have_rows('service-support') ): the_row();
+	// 	echo '<h4>Vehicles</h4>';
+	// 	echo get_sub_field('vehicles');
 
-		echo '<h4>Supplies</h4>';
-		echo get_sub_field('supplies');
+	// 	echo '<h4>Supplies</h4>';
+	// 	echo get_sub_field('supplies');
 
-		echo '<h4>Support</h4>';
-		echo get_sub_field('support');
+	// 	echo '<h4>Support</h4>';
+	// 	echo get_sub_field('support');
 
-		echo '<h4>Reinforcements</h4>';
-		echo get_sub_field('reinforcements');
-	endwhile;
+	// 	echo '<h4>Reinforcements</h4>';
+	// 	echo get_sub_field('reinforcements');
+	// endwhile;
 
-	echo '<h3>Rules of Engagement</h3>';
-	echo get_field('rules_of_engagement');
+	// echo '<h3>Rules of Engagement</h3>';
+	// echo get_field('rules_of_engagement');
 	
-	echo '<h3>Command and Signals</h3>';
-	echo get_field('command_and_signals');
-
-	echo '<h3>Modset</h3>';
-	echo get_field('modset');
+	// echo '<h3>Command and Signals</h3>';
+	// echo get_field('command_and_signals');
 
 	echo '</div>';		
 

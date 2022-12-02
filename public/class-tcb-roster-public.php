@@ -78,6 +78,8 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../action-scheduler/action-scheduler.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-edit.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -94,6 +96,8 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_interview_list', 'tcb_roster_public_interview_list');
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
 		add_shortcode('tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin');
+		add_shortcode('tcb_roster_public_mission_briefing', 'tcb_roster_public_mission_briefing');
+		add_shortcode('tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit');
 
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
