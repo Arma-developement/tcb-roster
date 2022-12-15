@@ -76,13 +76,15 @@ function tcb_roster_public_slotting_tool($attributes) {
 		endwhile;
 	endwhile;
 	echo '</div>';
-	
+
+	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 	$roles = $currentUser->roles;
 	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
 		echo '<br><a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin Panel</a><br>';
 	}
-
+	
 	if (tcb_roster_public_find_user_in_slotting ( $post_id, $currentUser->user_login )) {
 		echo '<br><a href="'. home_url() .'/mission-briefing/?id=' . $post_id . '" class="button button-secondary">Mission Briefing</a><br>';
 	}
+	echo '</div>';
 }

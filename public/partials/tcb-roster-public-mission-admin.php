@@ -7,6 +7,10 @@ function tcb_roster_public_mission_admin() {
 		return;
 
 	// Early out for no post
+	if (!array_key_exists('id', $_GET))
+		return; 
+
+	// Early out for no post
 	$postId = $_GET['id'];
 	if ($postId == "")
 		return;

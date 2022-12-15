@@ -17,60 +17,55 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<div class="tcb_briefing" >';
 
 	echo '<h3>Modset</h3>';
-	echo get_field('modset');
+	echo get_field('brief_modset');
 
 	echo '<h3>Situation</h3>';
-	echo get_field('situation');
+	echo get_field('brief_situation');
 
 	echo '<h3>Mission</h3>';
-	echo get_field('mission');
+	echo get_field('brief_mission');
 	
 	echo '<h3>Execution</h3>';
-	echo get_field('execution');
+	echo get_field('brief_execution');
 	
 	echo '<h3>Intel</h3>';
-	echo get_field('intel');
+	echo get_field('brief_intel');
 	
-	while( have_rows('environment') ): the_row();
-		echo '<h3>Map</h3>';
-		echo get_sub_field('map');
-		
-		// echo '<h4>Terrain</h4>';
-		// echo get_sub_field('terrain');
-		
-		echo '<h3>Time</h3>';
-		echo get_sub_field('time');
-		
-		// echo '<h4>Weather</h4>';
-		// echo get_sub_field('weather');
-		
-		// echo '<h4>IED/Mine Threat</h4>';
-		// echo get_sub_field('iedmine_threat');
-	endwhile;
+	echo '<h3>Map</h3>';
+	echo get_field('brief_map');
+	
+	// echo '<h3>Terrain</h3>';
+	// echo get_field('terrain');
+	
+	echo '<h3>Time</h3>';
+	echo get_field('brief_start_time');
+	
+	// echo '<h3>Weather</h3>';
+	// echo get_field('weather');
+	
+	// echo '<h3>IED/Mine Threat</h3>';
+	// echo get_field('iedmine_threat');
 
 	echo '<h3>Enemy Forces</h3>';
-	echo get_field('enemy_forces');
+	echo get_field('brief_enemy_forces');
 
 	echo '<h3>Friendly Forces</h3>';
-	echo get_field('friendly_forces');
+	echo get_field('brief_friendly_forces');
 
 	// echo '<h3>Civilians</h3>';
 	// echo get_field('civilians');
 
-	// echo '<h3>Service Support</h3>';
-	// while( have_rows('service-support') ): the_row();
-	// 	echo '<h4>Vehicles</h4>';
-	// 	echo get_sub_field('vehicles');
+	// 	echo '<h3>Vehicles</h3>';
+	// 	echo get_field('vehicles');
 
-	// 	echo '<h4>Supplies</h4>';
-	// 	echo get_sub_field('supplies');
+	// 	echo '<h3>Supplies</h3>';
+	// 	echo get_field('supplies');
 
-	// 	echo '<h4>Support</h4>';
-	// 	echo get_sub_field('support');
+	// 	echo '<h3>Support</h3>';
+	// 	echo get_field('support');
 
-	// 	echo '<h4>Reinforcements</h4>';
-	// 	echo get_sub_field('reinforcements');
-	// endwhile;
+	// 	echo '<h3>Reinforcements</h3>';
+	// 	echo get_field('reinforcements');
 
 	// echo '<h3>Rules of Engagement</h3>';
 	// echo get_field('rules_of_engagement');

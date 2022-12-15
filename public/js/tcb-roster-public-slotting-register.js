@@ -26,6 +26,7 @@
 					// Reload the attendance roster part of the page with AJAX
 					jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster');
 					jQuery('#slotTool').load(document.URL +  ' #slotTool');
+					jQuery('#slotToolButtons').load(document.URL +  ' #slotToolButtons');
 				},
 				error: function(response) {
 					console.log(response);
