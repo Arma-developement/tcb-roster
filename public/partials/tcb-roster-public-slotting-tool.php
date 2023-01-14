@@ -84,7 +84,11 @@ function tcb_roster_public_slotting_tool($attributes) {
 				echo '</form>';
 
 				if ($isLocked) {
-					echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  locked (attendance below ' . $attendanceThreshold . ')<br>';
+					if ($attendanceThreshold < 999) {
+						echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  locked (requires ' . $attendanceThreshold . ' attendees)<br>';
+					} else {
+						echo '<strong>' . get_sub_field('slot_name') . "</strong>  -  locked (command's decision)<br>";
+					}
 				} else {
 					echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $displayName . '</a></span><br>';
 				}
