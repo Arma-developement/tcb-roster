@@ -21,8 +21,8 @@ function tcb_roster_public_user_info($attributes) {
 
 	$isAdmin = in_array( 'administrator', wp_get_current_user()->roles);
 
-	$return .= '<div class="tcb_user_info">';
-	$return = '<h2>'. $displayName . '</h2>';
+	$return = '<div class="tcb_user_info">';
+	$return .= '<h2>'. $displayName . '</h2>';
 
 	// Rank
 	$path = plugins_url() . '/tcb-roster/images/ranks/';

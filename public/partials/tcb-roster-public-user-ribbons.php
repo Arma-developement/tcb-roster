@@ -22,14 +22,25 @@ function tcb_roster_public_user_ribbons($attributes) {
 	$width = 350 / 2;
 	$height = 94 / 2;
 
-	$listOfRibbons = get_field( 'service_awards', $postId );
 	$path = plugins_url() . '/tcb-roster/images/ribbons/';
 
-	if ( $listOfRibbons ) {
-		foreach ( $listOfRibbons as $ribbon ) {
-			$return .= '<img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+	$dateStr = get_field( 'passing_out_date', $postId );
+	$date = DateTime::createFromFormat('d/m/Y', $dateStr);
+	if ($date) {
+		$now = new DateTime('now');
+		$interval = $date->diff($now);
+		$year = $interval->y;
+		if ($year > 0) {
+			$return .= '<img src="' . $path . 'service-' . $year . '.png", title="Service award, year ' . $year . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
 		}
 	}
+
+	//$listOfRibbons = get_field( 'service_awards', $postId );
+	// if ( $listOfRibbons ) {
+	// 	foreach ( $listOfRibbons as $ribbon ) {
+	// 		$return .= '<img src="' . $path . $ribbon['value'] . '.png", title="' . $ribbon['label'] . '" style="width:'. $width . 'px;height:'. $height . 'px;">';
+	// 	}
+	// }
 
 	$listOfRibbons = get_field( 'operational_awards', $postId );
 
