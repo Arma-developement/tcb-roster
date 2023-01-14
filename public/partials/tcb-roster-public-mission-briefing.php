@@ -13,6 +13,8 @@ function tcb_roster_public_mission_briefing() {
 	if ($postId == "")
 		return;
 
+	//error_log( print_r("meta data: " . json_encode( get_post_meta( $postId ) ), TRUE ));
+
 	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>Mission</h3>';
@@ -66,12 +68,15 @@ function tcb_roster_public_mission_briefing() {
 
 	echo '<h3>Actions On</h3>';
 	echo get_field('brief_actions_on', $postId);
+	echo '<br><a href="' . home_url() .'/information-centre/generic-actions-on/">SOP: Actions On<br></a>';
 
 	echo '<h3>Rules of Engagement</h3>';
 	echo get_field('brief_rules_of_engagement', $postId);
+	echo '<br><a href="' . home_url() .'/information-centre/rules-of-engagement/">SOP: ROE<br></a>';
 	
 	echo '<h3>Command and Signals</h3>';
 	echo get_field('brief_command_and_signals', $postId);
+	echo '<br><a href="' . home_url() .'/information-centre/command-and-signals-tfar/">SOP: C&S<br></a>';
 
 	if (tcb_roster_public_find_user_in_slotting ( $postId, $user->user_login )) {
 		echo '<br><br><a href="'. home_url() .'/mission-briefing-edit/?id=' . $postId . '" class="button button-secondary">Edit Mission Briefing</a><br>';

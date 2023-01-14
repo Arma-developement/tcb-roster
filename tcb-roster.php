@@ -4,7 +4,7 @@ Plugin Name: 3CB Roster
 Plugin URI: https://www.3commandobrigade.com/
 Description: Plugin to add site users to an Arma roster
 Version: 1.0
-Author: Lifetap
+Author: Lifetap / Badger
 Author URI:
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

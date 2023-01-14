@@ -60,7 +60,8 @@ function tcb_roster_public_attendance_roster_update() {
 						$deleteOnly = true;
 
 					// Remove the user
-					$update_users = array_filter($users, static function ($element) {
+					$update_users = array_filter($users, function ($element) {
+						global $user_id;
 						return $element == $user_id;
 					});
 					update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
@@ -134,7 +135,8 @@ function  tcb_roster_public_addToRSVP($post_id, $user_id, $selection) {
 					return;
 
 				// Remove the user
-				$update_users = array_filter($users, static function ($element) {
+				$update_users = array_filter($users, function ($element) {
+					global $user_id;
 					return $element == $user_id;
 				});
 				update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);

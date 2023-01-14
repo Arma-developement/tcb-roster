@@ -1,8 +1,12 @@
 <?php
 
-function tcb_roster_public_mission_briefing_submit ($postId, $type, $args, $form, $action) {
+function tcb_roster_public_mission_briefing_submission_callback ($postId, $type, $args, $form, $action) {
 
-	// Retrieve roster type
+	// Set default perms
+	add_post_meta( $postId, '_members_access_role', 'limited_member' );
+	add_post_meta( $postId, '_members_access_role', 'member' );
+
+	// Set roster type
 	$rosterType = get_field('brief_roster_type', $postId);
 
 	add_row('rsvp', array( 'label' => 'Attending' ), $postId);

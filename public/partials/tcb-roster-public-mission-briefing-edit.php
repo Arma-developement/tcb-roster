@@ -19,7 +19,8 @@ function tcb_roster_public_mission_briefing_edit() {
 		array (
 			'name' => 'submit-plan',
 			'post_id' => $postId,
-			'fields' => array ('brief_mission', 'brief_execution', 'brief_plan', 'brief_actions_on', 'brief_rules_of_engagement', 'brief_command_and_signals')
+			'fields' => array ('brief_mission', 'brief_execution', 'brief_plan', 'brief_actions_on', 'brief_rules_of_engagement', 'brief_command_and_signals'),
+			'return' => home_url() .'/mission-briefing/?id=' . $postId
 		)
 	);
 

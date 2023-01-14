@@ -18,6 +18,18 @@ function tcb_roster_public_slotting_tool($attributes) {
 	if(! have_rows('slots') )
 		return;
 
+	// Calculate number of users registered as attending
+	$attendance = 0;
+	if ( have_rows('rsvp') ) {
+		while( have_rows('rsvp') ) : the_row();
+			$userIds = get_sub_field('user');
+			if ($userIds) {
+				$attendance = count ($userIds);
+			}
+			break;
+		endwhile; 
+	}
+
 	echo '<div id="slotTool" >';
 	echo '<h2>Priority placements</h2>';
 	echo '<p>Button to left of slot name appears when logged in.<br>Avatar appears when member is slotted</p>';
@@ -49,7 +61,9 @@ function tcb_roster_public_slotting_tool($attributes) {
 				$profilePic = '';
 				$user_id = 1;
 				$slottedMemberName = get_sub_field('slot_member');
-				$isDisabled = ($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin);
+				$attendanceThreshold = get_sub_field('attendance_threshold');
+				$isLocked = $attendance < $attendanceThreshold;
+				$isDisabled = (($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin)) || $isLocked;
 				$user = get_user_by('login', $slottedMemberName);
 				if ($user) {
 					$user_id = $user->ID;
@@ -69,7 +83,11 @@ function tcb_roster_public_slotting_tool($attributes) {
 				echo '>';
 				echo '</form>';
 
-				echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $displayName . '</a></span><br>';
+				if ($isLocked) {
+					echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  locked (attendance below ' . $attendanceThreshold . ')<br>';
+				} else {
+					echo '<strong>' . get_sub_field('slot_name') . '</strong>  -  <span class="slotMember"><a href="'. home_url() .'/user-info/?id=' . $user_id . '">' . $displayName . '</a></span><br>';
+				}
 				echo '</div>';	
 			endwhile;
 			echo '</div>'; 

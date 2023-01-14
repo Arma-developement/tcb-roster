@@ -81,7 +81,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-edit.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-submission.php'; 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-submit.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-submission-callback.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -117,7 +117,7 @@ class Tcb_Roster_Public {
 
 		add_action('acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5);
 		add_action('acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5);
-		add_action('acfe/form/submit/post/form=submit-briefing', 'tcb_roster_public_mission_briefing_submit', 10, 5);
+		add_action('acfe/form/submit/post/form=submit-briefing', 'tcb_roster_public_mission_briefing_submission_callback', 10, 5);
 	}
 
 	/**
