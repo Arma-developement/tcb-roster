@@ -50,9 +50,15 @@ function tcb_roster_public_user_info($attributes) {
 	}
 
 	// Discord ID
-	$discordID = get_field( 'discord_id', $postId );
+	$discordID = get_field( 'discord_id', $userProfile );
 	if ($isAdmin && $discordID) {
 		$return .= '<li>Discord ID: ' . $discordID . '</li>';
+	}
+
+	// Email
+	$email = $user->user_email;
+	if ($isAdmin && $email) {
+		$return .= '<li>Email: ' . $email . '</li>';
 	}
 
 	// Dates

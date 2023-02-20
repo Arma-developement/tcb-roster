@@ -6,14 +6,31 @@ function tcb_roster_public_mission_send_password_email($args) {
 
 	// error_log( print_r("send email", TRUE));
 	// error_log( print_r("args: " . json_encode($args), TRUE ));
-	// error_log( print_r("listOfUserIDs: " . json_encode($listOfUserIDs), TRUE ));
+	//error_log( print_r("listOfUserIDs: " . json_encode($listOfUserIDs), TRUE ));
 	// error_log( print_r("password: " . $password, TRUE ));
 
 	$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
 	foreach ($listOfUserIDs as $userId) {
 		$user = get_user_by('id', $userId);
-		$email = $user->user_email;
-		wp_mail($user->user_email, "3CB Operation password", $msg);
+		$userProfile = 'user_' . $userId;
+
+		$preference = get_field( 'communication_preference', $userProfile );
+		if (!$preference)
+			continue;
+
+		error_log( print_r("preference: " . json_encode($preference), TRUE ));
+
+		if (in_array ("discord", $preference)) {
+			$discordID = get_field( 'discord_id', $userProfile );
+			if ($discordID) {
+				tcb_roster_admin_post_to_discordDM ("3CB-Bot", $discordID, $msg);
+			}
+		}
+
+		if (in_array ("email", $preference)) {
+			$email = $user->user_email;
+			wp_mail($user->user_email, "3CB Operation password", $msg);
+		}
 	}
 }
 
@@ -46,9 +63,9 @@ function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $
 		if (!$users)
 			continue;
 		
-		foreach ($users as $memberName) {
-			$user = get_user_by('login', $memberName);
-			$userId = $user ? $user->ID : 1;
+		foreach ($users as $userId) {
+			//$userId = get_user_by('login', $memberName);
+
 			// Add to early list if signed up as attending and early
 			if (($i == 1) && signup_early($postId, $userId, $thresholdTime)) 
 				$earlyEmail[] = $userId;
@@ -61,8 +78,8 @@ function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $
 	$later = $now->add( new DateInterval('PT' . $delay . 'S') );
 
 	// error_log( print_r("button press", TRUE ));
-	// error_log( print_r("earlyEmail: " . json_encode($earlyEmail), TRUE ));
-	// error_log( print_r("lateEmail: " . json_encode($lateEmail), TRUE ));
+	error_log( print_r("earlyEmail: " . json_encode($earlyEmail), TRUE ));
+	error_log( print_r("lateEmail: " . json_encode($lateEmail), TRUE ));
 	// error_log( print_r("delay: " . $delay, TRUE ));
 	// error_log( print_r("password: " . $password, TRUE ));
 	// error_log( print_r("timeStamp: " . $now->format('H:i:s'), TRUE ));
