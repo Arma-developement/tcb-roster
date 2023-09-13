@@ -10,6 +10,7 @@ function tcb_roster_public_mission_send_password_email($args) {
 	// error_log( print_r("password: " . $password, TRUE ));
 
 	$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
+	$discordIDList = [];
 	foreach ($listOfUserIDs as $userId) {
 		$user = get_user_by('id', $userId);
 		$userProfile = 'user_' . $userId;
@@ -18,12 +19,12 @@ function tcb_roster_public_mission_send_password_email($args) {
 		if (!$preference)
 			continue;
 
-		error_log( print_r("preference: " . json_encode($preference), TRUE ));
+		//error_log( print_r("preference: " . json_encode($preference), TRUE ));
 
 		if (in_array ("discord", $preference)) {
 			$discordID = get_field( 'discord_id', $userProfile );
 			if ($discordID) {
-				tcb_roster_admin_post_to_discordDM ("3CB-Bot", $discordID, $msg);
+				$discordIDList[] = $discordID;
 			}
 		}
 
@@ -32,6 +33,9 @@ function tcb_roster_public_mission_send_password_email($args) {
 			wp_mail($user->user_email, "3CB Operation password", $msg);
 		}
 	}
+
+	if ($discordIDList)
+		tcb_roster_admin_post_to_discordDM ("3CB-Bot", $discordList, $msg);
 }
 
 function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $action) {
