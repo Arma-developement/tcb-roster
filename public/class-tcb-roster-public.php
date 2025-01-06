@@ -139,7 +139,8 @@ class Tcb_Roster_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-public.css', array(), $this->version, 'all' );
+		// Nick - comment out css
+		//	wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-public.css', array(), $this->version, 'all' );
 
 	}
 

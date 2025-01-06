@@ -30,7 +30,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 		endwhile; 
 	}
 
-	echo '<div id="slotTool" >';
+	echo '<div id="slotTool"><div class="inner">';
 	echo '<h2>Priority placements</h2>';
 	echo '<p>Button to left of slot name appears when logged in.<br>Avatar appears when member is slotted</p>';
 
@@ -97,16 +97,16 @@ function tcb_roster_public_slotting_tool($attributes) {
 			echo '</div>'; 
 		endwhile;
 	endwhile;
-	echo '</div>';
+	echo '</div></div>';
 
 	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 	$roles = $currentUser->roles;
 	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
-		echo '<br><a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin Panel</a><br>';
+		echo '<a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin Panel</a>';
 	}
 	
 	if (tcb_roster_public_find_user_in_slotting ( $post_id, $currentUser->user_login )) {
-		echo '<br><a href="'. home_url() .'/mission-briefing/?id=' . $post_id . '" class="button button-secondary">Mission Briefing</a><br>';
+		echo '<a href="'. home_url() .'/mission-briefing/?id=' . $post_id . '" class="button button-secondary">Mission Briefing</a>';
 	}
 	echo '</div>';
 }
