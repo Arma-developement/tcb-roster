@@ -1,0 +1,11 @@
+{
+  "index.ignored_file_patterns" : [
+    ".nova",
+    ".DS_Store",
+    "config.codekit3",
+    ".github\/",
+    ".gitignore"
+  ],
+  "workspace.color" : 7,
+  "workspace.name" : "3CB Roster"
+}
