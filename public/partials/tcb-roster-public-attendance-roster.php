@@ -82,7 +82,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// print_r ( get_field('rsvp') );
 	// print_r ( get_field('time_stamp') );
 		
-	echo '<div id="attendanceRoster">';
+	echo '<div id="attendanceRoster"><div class="inner">';
 	echo '<h2>Attendance</h2>';
 	echo '<div class="wrap">';
 
@@ -126,5 +126,5 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 		echo '</div>';
 	endwhile;
-	echo '</div></div>';
+	echo '</div></div></div>';
 }

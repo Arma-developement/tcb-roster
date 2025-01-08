@@ -83,8 +83,9 @@ class Tcb_Roster_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-admin.css', array(), $this->version, 'all' );
+		
+		// Nick - comment out css
+		// 	wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-admin.css', array(), $this->version, 'all' );
 
 	}
 
