@@ -13,9 +13,11 @@ function tcb_roster_public_mission_briefing_edit() {
 	if ($postId == "")
 		return;
 
-	$return = '<div class="tcb_mission_briefing_edit">';
+	ob_start();
 
-	$return .= acf_form ( 
+	echo '<div class="tcb_mission_briefing_edit">';
+
+	acf_form ( 
 		array (
 			'name' => 'submit-plan',
 			'post_id' => $postId,
@@ -28,7 +30,7 @@ function tcb_roster_public_mission_briefing_edit() {
 	// 	SimpleLogger()->info( 'Edited ' . get_the_title($postId) . ' via the Mission Admin Panel');
 	// }
 
-	$return .= '</div>';
+	echo '</div>';
 
-	return $return;
+	return ob_get_clean();
 }
