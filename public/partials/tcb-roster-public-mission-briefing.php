@@ -68,15 +68,15 @@ function tcb_roster_public_mission_briefing() {
 
 	$return .=  '<h3>Actions On</h3>';
 	$return .=  get_field('brief_actions_on', $postId);
-	$return .=  '<br><a href="' . home_url() .'/information-centre/generic-actions-on/">SOP: Actions On<br></a>';
+	$return .=  '<p><a href="' . home_url() .'/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
 
 	$return .=  '<h3>Rules of Engagement</h3>';
 	$return .=  get_field('brief_rules_of_engagement', $postId);
-	$return .=  '<br><a href="' . home_url() .'/information-centre/rules-of-engagement/">SOP: ROE<br></a>';
+	$return .=  '<p><a href="' . home_url() .'/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
 	
 	$return .=  '<h3>Command and Signals</h3>';
 	$return .=  get_field('brief_command_and_signals', $postId);
-	$return .=  '<br><a href="' . home_url() .'/information-centre/command-and-signals-tfar/">SOP: C&S<br></a>';
+	$return .=  '<p><a href="' . home_url() .'/information-centre/command-and-signals-tfar/">SOP: C&S<br></a></p>';
 
 	if (tcb_roster_public_find_user_in_slotting ( $postId, $user->user_login )) {
 		$return .=  '<br><br><a href="'. home_url() .'/mission-briefing-edit/?id=' . $postId . '" class="button button-secondary">Edit Mission Briefing</a><br>';
