@@ -1,15 +1,18 @@
 <?php
 /*
 Plugin Name: 3CB Roster
-Plugin URI: https://www.3commandobrigade.com/
-Description: Plugin to add site users to an Arma roster
-Version: 1.0
+Plugin URI: https://github.com/Arma-developement/tcb-roster
+Description: Design by Nick at Intention and Lifetap
+Version: 1.01
 Author: Lifetap / Badger
-Author URI:
+Author URI: https://github.com/Arma-developement/tcb-roster
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: roster
 Domain Path: arma
+
+GitHub Plugin URI: https://github.com/Arma-developement/tcb-roster
+Primary Branch: main
 */
 
 /**
