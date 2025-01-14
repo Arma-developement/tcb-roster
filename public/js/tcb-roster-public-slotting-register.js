@@ -10,9 +10,9 @@
 			var postID = +jQuery(this).find(".postID").val();
 			var slot = jQuery(this).find(".slot").val();
 
-			// console.log('userID: ' + userID);
-			// console.log('postID: ' + postID);
-			// console.log('slot: ' + slot);
+			console.log('userID: ' + userID);
+			console.log('postID: ' + postID);
+			console.log('slot: ' + slot);
 
 			// Send data back to PHP function that updates ACF database	
 			jQuery.ajax({

@@ -10,9 +10,9 @@
 			var rsvpPostID = +jQuery(this).find(".rsvpPostID").val();
 			var rsvpSelection = +jQuery(this).find(".rsvpSelection").val();
 
-			// console.log('rsvpUserID: '+rsvpUserID);
-			// console.log('rsvpPostID: '+rsvpPostID);
-			// console.log('rsvpSelection: '+rsvpSelection);
+			console.log('rsvpUserID: '+rsvpUserID);
+			console.log('rsvpPostID: '+rsvpPostID);
+			console.log('rsvpSelection: '+rsvpSelection);
 		
 			// Send data back to PHP function that updates ACF database	
 			jQuery.ajax({
