@@ -22,7 +22,7 @@ function tcb_roster_public_interview_view($attributes){
 
 	if ($fields) {
 		$userData = get_field( 'applicant', $post_id );
-		$return .= '<h4>' . $userData['display_name'] . '</h4><ol>';
+		$return .= '<h2>' . $userData['display_name'] . '</h2><ol>';
 
 		// Rename the interview post to something more meaningful
 		$post = get_post($post_id);

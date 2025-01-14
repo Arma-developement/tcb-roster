@@ -16,6 +16,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// Output the briefing
 	echo '<div class="tcb_briefing" >';
 
+	echo '<h2>Mission Details</h2>';
+
 	echo '<h3>Modset</h3>';
 	echo get_field('brief_modset');
 
@@ -90,7 +92,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 		$i = get_row_index();
 
 		echo '<div class="attendanceCol" id="rsvpRow-' . $i . '">';
-		echo '<h4>'. get_sub_field( 'label' ) . '</h4>';
+		echo '<h3>'. get_sub_field( 'label' ) . '</h3>';
 
 		$alreadyRegistered = false;
 		$userIds = get_sub_field('user');	

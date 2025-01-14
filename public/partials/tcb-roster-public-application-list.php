@@ -13,7 +13,7 @@ function tcb_roster_public_application_list($attributes){
 	$return .= '<div class="tcb_application_list">';
 
 	if ( $posts ) {
-		$return .= '<h4>Pending</h4><ul>';
+		$return .= '<h2>Pending</h2><ul>';
 		foreach( $posts as $post ) {
 			setup_postdata( $post );
 			$post_id = $post->ID;
@@ -31,7 +31,7 @@ function tcb_roster_public_application_list($attributes){
 	));
 
 	if ( $posts ) {
-		$return .= '<h4>Completed</h4><ul>';
+		$return .= '<h2>Completed</h2><ul>';
 		foreach( $posts as $post ) {
 			setup_postdata( $post );
 			$post_id = $post->ID;
