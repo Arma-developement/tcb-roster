@@ -17,6 +17,8 @@ function tcb_roster_public_mission_briefing() {
 
 	$return = '<div class="tcb_mission_briefing">';
 
+	$return .= '<h2>Mission Details</h2>';
+
 	$return .= '<h3>Mission</h3>';
 	$return .=  get_field('brief_mission', $postId);
 	

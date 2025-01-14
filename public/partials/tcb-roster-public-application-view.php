@@ -23,7 +23,7 @@ function tcb_roster_public_application_view($attributes){
 		$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post ) );
 		$steam_name = get_field( 'app_steam_name', $post );
 		$return .= '<div class="tcb_application_view">';
-		$return .= '<h4>' . $author_name . ' (' . $steam_name . ')</h4><ol>';
+		$return .= '<h2>' . $author_name . ' (' . $steam_name . ')</h2><ol>';
 		foreach( $fields as $field ) {
 			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li>';
 		}
