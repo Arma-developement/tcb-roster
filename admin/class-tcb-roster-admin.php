@@ -57,11 +57,14 @@ class Tcb_Roster_Admin {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-post-to-discordDM.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-hide-create-post.php';
+
 
 		add_action( 'edit_user_profile', 'tcb_roster_admin_edit_user_profile' );
-	
 		add_action( 'add_meta_boxes', 'add_hide_in_menu_editor_field' );
 		add_action( 'save_post', 'save_hide_in_menu_selector' );
+		add_action( 'init', 'tcb_roster_admin_hide_create_post' );
+
 		add_filter ( 'wp_nav_menu_objects', 'filter_draft_pages_from_menu', 10, 2 );
 	}
 
