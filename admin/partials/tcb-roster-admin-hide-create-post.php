@@ -7,12 +7,12 @@ function tcb_roster_admin_hide_create_post() {
      */
 
     $labels = [
-        "name" => esc_html__( "Applications", "twentytwenty" ),
-        "singular_name" => esc_html__( "Application", "twentytwenty" ),
+        "name" => esc_html__( "Applications", "tcb24" ),
+        "singular_name" => esc_html__( "Application", "tcb24" ),
     ];
 
     $args = [
-        "label" => esc_html__( "Applications", "twentytwenty" ),
+        "label" => esc_html__( "Applications", "tcb24" ),
         "labels" => $labels,
         "description" => "Application form for joining 3CB",
         "public" => false,
@@ -22,7 +22,7 @@ function tcb_roster_admin_hide_create_post() {
         "rest_base" => "",
         "rest_controller_class" => "WP_REST_Posts_Controller",
         "rest_namespace" => "wp/v2",
-        "has_archive" => "application-archive",
+        "has_archive" => false,
         "show_in_menu" => true,
         "show_in_nav_menus" => true,
         "delete_with_user" => false,
@@ -34,7 +34,6 @@ function tcb_roster_admin_hide_create_post() {
         "rewrite" => [ "slug" => "application", "with_front" => true ],
         "query_var" => true,
         "supports" => [ "title", "author" ],
-        "taxonomies" => [ "applications" ],
         "show_in_graphql" => false,
         'capabilities' => array(
             'create_posts' => false, 

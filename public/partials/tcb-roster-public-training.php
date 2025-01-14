@@ -27,7 +27,7 @@ function tcb_roster_public_training($attributes) {
 		ksort($listOfTitles);
 
 		foreach ($listOfTitles as $key => $title) {
-			$return .= '<h4>' . $title . '</h4><ul>';
+			$return .= '<h3>' . $title . '</h3><ul>';
 			foreach ($listOfAttendance[$key] as $userId) {
 				$user = get_user_by( 'id', $userId );
 				$displayName = $user->get( 'display_name' );
