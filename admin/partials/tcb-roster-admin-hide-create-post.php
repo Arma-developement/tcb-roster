@@ -1,11 +1,45 @@
 <?php
 
 function tcb_roster_admin_hide_create_post() {
-    register_post_type( 'Applications', array(
-        'capability_type' => 'post',
+
+    /**
+     * Post Type: Applications.
+     */
+
+    $labels = [
+        "name" => esc_html__( "Applications", "twentytwenty" ),
+        "singular_name" => esc_html__( "Application", "twentytwenty" ),
+    ];
+
+    $args = [
+        "label" => esc_html__( "Applications", "twentytwenty" ),
+        "labels" => $labels,
+        "description" => "Application form for joining 3CB",
+        "public" => false,
+        "publicly_queryable" => false,
+        "show_ui" => true,
+        "show_in_rest" => true,
+        "rest_base" => "",
+        "rest_controller_class" => "WP_REST_Posts_Controller",
+        "rest_namespace" => "wp/v2",
+        "has_archive" => "application-archive",
+        "show_in_menu" => true,
+        "show_in_nav_menus" => true,
+        "delete_with_user" => false,
+        "exclude_from_search" => true,
+        "capability_type" => "post",
+        "map_meta_cap" => true,
+        "hierarchical" => false,
+        "can_export" => false,
+        "rewrite" => [ "slug" => "application", "with_front" => true ],
+        "query_var" => true,
+        "supports" => [ "title", "author" ],
+        "taxonomies" => [ "applications" ],
+        "show_in_graphql" => false,
         'capabilities' => array(
-            'create_posts' => false, // Removes support for the "Add New" function ( use 'do_not_allow' instead of false for multisite set ups )
+            'create_posts' => false, 
         ),
-        'map_meta_cap' => true, // Set to `false`, if users are not allowed to edit/delete existing posts
-    );
-} 
+    ];
+
+    register_post_type( "application", $args );
+}
