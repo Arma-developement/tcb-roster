@@ -59,16 +59,31 @@ function tcb_roster_public_attendance_roster_update() {
 					if ($selection == $i)
 						$deleteOnly = true;
 
+					error_log( print_r("Remove user: " . $i . " = " . implode(',', $users), TRUE ));
+
 					// Remove the user
-					$update_users = array_filter($users, function ($element) {
-						global $user_id;
-						return $element == $user_id;
+					$update_users = array_filter($users, function ($element) use ($user_id) {
+						return $element != $user_id;
 					});
-					update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
+					$rc = update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
+					if (!$rc)
+						return wp_send_json_error('Failed to update user');
+
 					break;
 				}
 			}
 		endwhile;
+
+		//Debug
+		// while( have_rows('rsvp', $post_id) ) : the_row();
+		// 	$j = get_row_index();
+		// 	$users = get_sub_field('user');
+		// 	if ($users) {
+		// 		error_log( print_r("Remove user (final): " . $j . " = " . implode(',', $users), TRUE ));
+		// 	} else {
+		// 		error_log( print_r("Remove user (final): " . $j . " = []", TRUE ));
+		// 	}
+		// endwhile;
 
 		if (!$deleteOnly) {
 			add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
@@ -135,14 +150,17 @@ function  tcb_roster_public_addToRSVP($post_id, $user_id, $selection) {
 					return;
 
 				// Remove the user
-				$update_users = array_filter($users, function ($element) {
-					global $user_id;
-					return $element == $user_id;
+				$update_users = array_filter($users, function ($element) use ($user_id) {
+					return $element != $user_id;
 				});
-				update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
+				$rc = update_sub_field(array('rsvp', $i, 'user'), $update_users, $post_id);
+				if (!$rc)
+					return wp_send_json_error('Failed to update user');
+
 				break;
 			}
 		}
 	endwhile;
+
 	add_sub_row(array('rsvp', $selection, 'user'), $user_id, $post_id);
 }
