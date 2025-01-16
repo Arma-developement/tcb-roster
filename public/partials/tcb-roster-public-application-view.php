@@ -25,7 +25,7 @@ function tcb_roster_public_application_view($attributes){
 		$return .= '<div class="tcb_application_view">';
 		$return .= '<h2>' . $author_name . ' (' . $steam_name . ')</h2><ol>';
 		foreach( $fields as $field ) {
-			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li>';
+			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li><br>';
 		}
 		$return .= '</ol>';
 		$return .= '</div>';
