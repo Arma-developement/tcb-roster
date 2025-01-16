@@ -7,7 +7,13 @@ function tcb_roster_public_loa_list($attributes){
 	$posts = get_posts(array(
 		'numberposts' => -1,
 		'post_type' => 'loa',
-		'taxonomy' => 'Pending'
+		'tax_query' => array(
+			array(
+				'taxonomy'  => 'tcb_status',
+				'field'     => 'slug',
+				'terms'     => 'Pending'
+			)
+		)
 	));
 
 	$return .= '<h2>Pending</h2><ul>';
@@ -28,7 +34,13 @@ function tcb_roster_public_loa_list($attributes){
 	$posts = get_posts(array(
 		'numberposts' => -1,
 		'post_type' => 'loa',
-		'taxonomy' => 'Approved'
+		'tax_query' => array(
+			array(
+				'taxonomy'  => 'tcb_status',
+				'field'     => 'slug',
+				'terms'     => 'Approved'
+			)
+		)
 	));
 
 	$return .= '<h2>Approved</h2><ul>';
@@ -48,7 +60,13 @@ function tcb_roster_public_loa_list($attributes){
 	$posts = get_posts(array(
 		'numberposts' => -1,
 		'post_type' => 'loa',
-		'taxonomy' => 'Denied'
+		'tax_query' => array(
+			array(
+				'taxonomy'  => 'tcb_status',
+				'field'     => 'slug',
+				'terms'     => 'Denied'
+			)
+		)
 	));
 
 	$return .= '<h2>Denied</h2><ul>';
@@ -68,7 +86,13 @@ function tcb_roster_public_loa_list($attributes){
 	$posts = get_posts(array(
 		'numberposts' => -1,
 		'post_type' => 'loa',
-		'taxonomy' => 'Archived'
+		'tax_query' => array(
+			array(
+				'taxonomy'  => 'tcb_status',
+				'field'     => 'slug',
+				'terms'     => 'Archived'
+			)
+		)
 	));
 
 	$return .= '<h2>Archived</h2><ul>';
