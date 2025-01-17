@@ -23,7 +23,7 @@ function tcb_roster_public_loa_view($attributes){
 		$return .= '<div class="tcb_loa_view">';
 		$return .= '<h2>' . $author_name . '</h2><ol>';
 		foreach( $fields as $field ) {
-			$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li><br>';
+			$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
 		}
 		$return .= '</ol>';
 		$return .= '</div>';

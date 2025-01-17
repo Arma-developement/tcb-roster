@@ -39,20 +39,20 @@ function tcb_roster_public_interview_view($attributes){
 		foreach( $fields as $field ) {
 			switch ($field['name']) {
 				case 'applicant':
-					$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value']['display_name'] . '</li><br>';
+					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value']['display_name'] . '</li><br>';
 					break;
 				case 'interviewers':
-					$return .= '<li><b>' . $field['label'] . ' </b><br>';
+					$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
 					$nameList = [];
 					foreach( $field['value'] as $interviewer )
 						$nameList[] = '<a href="' . add_query_arg( 'id', $interviewer['ID'], home_url() . '/user-info' ) . '">' . $interviewer['display_name'] . '</a>';
 					$return .= implode(', ', $nameList) . '</li><br>';
 					break;
 				case 'Interview_evaluation':
-					$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value']['label'] . '</li><br>';
+					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value']['label'] . '</li><br>';
 					break;
 				default:
-					$return .= '<li><b>' . $field['label'] . ' </b><br>' . $field['value'] . '</li><br>';
+					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
 			}
 		}
 		$return .= '</ol>';
