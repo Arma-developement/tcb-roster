@@ -15,6 +15,8 @@ function tcb_roster_public_mission_admin() {
 	if ($postId == "")
 		return;
 
+	ob_start();
+
 	echo '<div class="tcb_mission_admin">';
 
 	acfe_form ( 
@@ -37,5 +39,5 @@ function tcb_roster_public_mission_admin() {
 
 	echo '</div>';
 
-	return;
+	return ob_get_clean();
 }
