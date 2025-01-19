@@ -14,7 +14,7 @@ function tcb_roster_public_edit_status($attributes) {
 
 	acf_form( array( 
 		'post_id' => $postId,
-		'field_groups' => array( 'group_678bfce2c642a' ),
+		'field_groups' => array( 'group_678bea513af25' ),
 		'submit_value' => 'Update Status',
 		'return' => wp_get_referer(),
 		'updated_message' => false
