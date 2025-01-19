@@ -76,6 +76,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-attendance-roster-update.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool-update.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-status.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
@@ -91,6 +92,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_user_ribbons', 'tcb_roster_public_user_ribbons');
 		add_shortcode('tcb_roster_public_user_edit_options', 'tcb_roster_public_user_edit_options');
 		add_shortcode('tcb_roster_public_edit_training', 'tcb_roster_public_edit_training');
+		add_shortcode('tcb_roster_public_edit_status', 'tcb_roster_public_edit_status');
 		add_shortcode('tcb_roster_public_edit_ribbons', 'tcb_roster_public_edit_ribbons');
 		add_shortcode('tcb_roster_public_edit_service_record', 'tcb_roster_public_edit_service_record');
 		add_shortcode('tcb_roster_public_training', 'tcb_roster_public_training');
@@ -184,6 +186,5 @@ class Tcb_Roster_Public {
 			)
 		);
 		wp_enqueue_script('tcb_roster_public_slotting_register');
-
 	}
 }

@@ -13,22 +13,35 @@ function tcb_roster_public_loa_view($attributes){
 	if ($post == "") 
 		return;
 
-	$return = '';
+	$return = '<div class="tcb_loa_view">';
 
 	setup_postdata( $post );
 	$fields = get_field_objects($post);
 
 	if ($fields) {
 		$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post ) );
-		$return .= '<div class="tcb_loa_view">';
 		$return .= '<h2>' . $author_name . '</h2><ol>';
 		foreach( $fields as $field ) {
-			$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
+			if ($field['label'] == 'Status') {
+				$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
+				$terms = get_the_terms( $postID, 'tcb-status' );
+				if ($terms) {
+					foreach($terms as $term) {
+						$return .= $term->name;
+					} 
+				}
+				$return .= '</li><br>';
+			} else
+				$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
 		}
 		$return .= '</ol>';
-		$return .= '</div>';
+
 		wp_reset_postdata();		
 	}
+
+	$return .= '<a href="'. home_url() .'/edit-status/?id=' . $postID . '" class="button button-secondary">Edit Status</a><br>';
+	
+	$return .= '</div>';
 
 	return $return;
 }

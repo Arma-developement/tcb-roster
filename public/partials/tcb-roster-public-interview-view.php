@@ -14,8 +14,7 @@ function tcb_roster_public_interview_view($attributes){
 	if ($post_id == "") 
 		return;
 
-	$return = '';
-	$return .= '<div class="tcb_interview_view">';
+	$return = '<div class="tcb_interview_view">';
 
 	setup_postdata( $post_id );
 	$fields = get_field_objects($post_id);
@@ -51,6 +50,16 @@ function tcb_roster_public_interview_view($attributes){
 				case 'Interview_evaluation':
 					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value']['label'] . '</li><br>';
 					break;
+				case 'Status':
+					$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
+					$terms = get_the_terms( $postID, 'tcb-status' );
+					if ($terms) {
+						foreach($terms as $term) {
+							$return .= $term->name;
+						} 
+					}
+					$return .= '</li><br>';
+					break;	
 				default:
 					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
 			}
@@ -58,6 +67,9 @@ function tcb_roster_public_interview_view($attributes){
 		$return .= '</ol>';
 		wp_reset_postdata();		
 	}
+
+	$return .= '<a href="'. home_url() .'/edit-status/?id=' . $postID . '" class="button button-secondary">Edit Status</a><br>';
+
 	$return .= '</div>';
 
 	return $return;
