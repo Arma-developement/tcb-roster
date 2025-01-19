@@ -10,7 +10,7 @@ function tcb_roster_public_edit_status($attributes) {
 	if (($postId != "") && (!current_user_can( 'edit_post', $postId )))
 		return;
 
-	ob_start();+
+	ob_start();
 
 	echo '<div class="tcb_edit_status">';
 

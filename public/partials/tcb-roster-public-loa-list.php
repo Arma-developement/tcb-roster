@@ -11,7 +11,7 @@ function tcb_roster_public_loa_list($attributes){
 			array(
 				'taxonomy'  => 'tcb-status',
 				'field'     => 'slug',
-				'terms'     => 'Pending'
+				'terms'     => 'pending',
 			)
 		)
 	));

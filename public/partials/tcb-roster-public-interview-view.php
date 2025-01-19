@@ -10,25 +10,25 @@ function tcb_roster_public_interview_view($attributes){
 	if (!array_key_exists('post', $_GET))
 		return; 
 		
-	$post_id = $_GET['post'];
-	if ($post_id == "") 
+	$postID = $_GET['post'];
+	if ($postID == "") 
 		return;
 
 	$return = '<div class="tcb_interview_view">';
 
-	setup_postdata( $post_id );
-	$fields = get_field_objects($post_id);
+	setup_postdata( $postID );
+	$fields = get_field_objects($postID);
 
 	if ($fields) {
-		$userData = get_field( 'applicant', $post_id );
+		$userData = get_field( 'applicant', $postID );
 		$return .= '<h2>' . $userData['display_name'] . '</h2><ol>';
 
 		// Rename the interview post to something more meaningful
-		$post = get_post($post_id);
+		$post = get_post($postID);
 		if ($post->post_title !== $userData['display_name']) {
 			wp_update_post(
 				array (
-					'ID'         => $post_id,
+					'ID'         => $postID,
 					'post_title' => $userData['display_name']
 				)
 			);
