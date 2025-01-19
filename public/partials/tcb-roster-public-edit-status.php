@@ -10,6 +10,8 @@ function tcb_roster_public_edit_status($attributes) {
 	if (($postId != "") && (!current_user_can( 'edit_post', $postId )))
 		return;
 
+	ob_start();+
+
 	echo '<div class="tcb_edit_status">';
 
 	acf_form( array( 
@@ -25,4 +27,6 @@ function tcb_roster_public_edit_status($attributes) {
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited the status of postID=' . $postId );
 	}
+
+	return ob_get_clean();
 }
