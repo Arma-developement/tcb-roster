@@ -25,7 +25,7 @@ function tcb_roster_public_application_view($attributes){
 
 		$return .= '<h2>' . $author_name . ' (' . $steam_name . ')</h2><ol>';
 		foreach( $fields as $field ) {
-			if ($field['name'] == 'tcb-status') {
+			if ($field['label'] == 'Status') {
 				$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
 				$terms = get_the_terms( $postID, 'tcb-status' );
 				if ($terms) {

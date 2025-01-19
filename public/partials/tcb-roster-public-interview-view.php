@@ -50,18 +50,18 @@ function tcb_roster_public_interview_view($attributes){
 				case 'Interview_evaluation':
 					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value']['label'] . '</li><br>';
 					break;
-				case 'tcb-status':
-					$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
-					$terms = get_the_terms( $postID, 'tcb-status' );
-					if ($terms) {
-						foreach($terms as $term) {
-							$return .= $term->name;
-						} 
-					}
-					$return .= '</li><br>';
-					break;	
 				default:
-					$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
+					if ($field['label'] == 'Status') {
+						$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
+						$terms = get_the_terms( $postID, 'tcb-status' );
+						if ($terms) {
+							foreach($terms as $term) {
+								$return .= $term->name;
+							} 
+						}
+						$return .= '</li><br>';
+					} else
+						$return .= '<li><strong>' . $field['label'] . ' </strong><br>' . $field['value'] . '</li><br>';
 			}
 		}
 		$return .= '</ol>';

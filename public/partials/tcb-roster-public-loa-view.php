@@ -22,7 +22,7 @@ function tcb_roster_public_loa_view($attributes){
 		$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $postID ) );
 		$return .= '<h2>' . $author_name . '</h2><ol>';
 		foreach( $fields as $field ) {
-			if ($field['name'] == 'tcb-status') {
+			if ($field['label'] == 'Status') {
 				$return .= '<li><strong>' . $field['label'] . ' </strong><br>';
 				$terms = get_the_terms( $postID, 'tcb-status' );
 				if ($terms) {
