@@ -23,7 +23,7 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_time('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -51,7 +51,7 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_time('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -78,7 +78,7 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_time('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -105,7 +105,7 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_time('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();

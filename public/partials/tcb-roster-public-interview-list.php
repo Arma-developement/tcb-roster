@@ -24,7 +24,7 @@ function tcb_roster_public_interview_list($attributes){
 			$post_id = $post->ID;
 			$userData = get_field( 'applicant', $post_id );
 			$displayName = $userData['display_name'];
-			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -52,7 +52,7 @@ function tcb_roster_public_interview_list($attributes){
 			$post_id = $post->ID;
 			$userData = get_field( 'applicant', $post_id );
 			$displayName = $userData['display_name'];
-			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -80,7 +80,7 @@ function tcb_roster_public_interview_list($attributes){
 			$post_id = $post->ID;
 			$userData = get_field( 'applicant', $post_id );
 			$displayName = $userData['display_name'];
-			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
@@ -108,7 +108,7 @@ function tcb_roster_public_interview_list($attributes){
 			$post_id = $post->ID;
 			$userData = get_field( 'applicant', $post_id );
 			$displayName = $userData['display_name'];
-			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y') . '</li>';
+			$return .= '<li><a href="'. home_url() .'/interview_view/?post=' . $post_id . '">' . $displayName . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
