@@ -68,12 +68,12 @@ function tcb_roster_public_application_list($attributes){
 			array(
 				'taxonomy'  => 'tcb-status',
 				'field'     => 'slug',
-				'terms'     => 'denied'
+				'terms'     => 'rejected'
 			)
 		)
 	));
 
-	$return .= '<h2>Denied</h2>';
+	$return .= '<h2>Rejected</h2>';
 	if ( $posts ) {
 		$return .= '<ul>';
 		foreach( $posts as $post ) {
@@ -86,7 +86,7 @@ function tcb_roster_public_application_list($attributes){
 		$return .= '</ul>';
 		wp_reset_postdata();
 	} else {
-		$return .= '<p>No denied Applications</p>';
+		$return .= '<p>No rejected Applications</p>';
 	}
 
 	$posts = get_posts(array(

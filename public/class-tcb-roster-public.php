@@ -68,6 +68,8 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-form-email-args.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-loa-list.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-loa-view.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-report-list.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-report-view.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-application-list.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-application-view.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-interview-list.php';
@@ -101,6 +103,8 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_application_view', 'tcb_roster_public_application_view');
 		add_shortcode('tcb_roster_public_loa_list', 'tcb_roster_public_loa_list');
 		add_shortcode('tcb_roster_public_loa_view', 'tcb_roster_public_loa_view');
+		add_shortcode('tcb_roster_public_report_list', 'tcb_roster_public_report_list');
+		add_shortcode('tcb_roster_public_report_view', 'tcb_roster_public_report_view');
 		add_shortcode('tcb_roster_public_interview_list', 'tcb_roster_public_interview_list');
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
 		add_shortcode('tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin');

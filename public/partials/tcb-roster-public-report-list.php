@@ -1,12 +1,12 @@
 <?php
 
-function tcb_roster_public_loa_list($attributes){
+function tcb_roster_public_report_list($attributes){
 	
-	$return = '<div class="tcb_loa_list">';
+	$return = '<div class="tcb_report_list">';
 
 	$posts = get_posts(array(
 		'numberposts' => -1,
-		'post_type' => 'loa',
+		'post_type' => 'report',
 		'tax_query' => array(
 			array(
 				'taxonomy'  => 'tcb-status',
@@ -23,18 +23,18 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/report-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
 	}
 	else {
-		$return .= '<p>No pending LOAs</p>';
+		$return .= '<p>No pending Reports</p>';
 	}
 
 	$posts = get_posts(array(
 		'numberposts' => -1,
-		'post_type' => 'loa',
+		'post_type' => 'report',
 		'tax_query' => array(
 			array(
 				'taxonomy'  => 'tcb-status',
@@ -51,17 +51,17 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/report-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
 	} else {
-		$return .= '<p>No approved LOAs</p>';
+		$return .= '<p>No approved Reports</p>';
 	}
 	
 	$posts = get_posts(array(
 		'numberposts' => -1,
-		'post_type' => 'loa',
+		'post_type' => 'report',
 		'tax_query' => array(
 			array(
 				'taxonomy'  => 'tcb-status',
@@ -78,17 +78,17 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/report-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
 	} else {
-		$return .= '<p>No rejected LOAs</p>';
+		$return .= '<p>No rejected Reports</p>';
 	}
 
 	$posts = get_posts(array(
 		'numberposts' => -1,
-		'post_type' => 'loa',
+		'post_type' => 'report',
 		'tax_query' => array(
 			array(
 				'taxonomy'  => 'tcb-status',
@@ -105,12 +105,12 @@ function tcb_roster_public_loa_list($attributes){
 			setup_postdata( $post );
 			$post_id = $post->ID;
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
-			$return .= '<li><a href="'. home_url() .'/hidden/loa-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
+			$return .= '<li><a href="'. home_url() .'/hidden/report-view/?post=' . $post_id . '">' . $author_name . '</a>   ' . get_the_date('d-m-Y', $post_id) . '</li>';
 		}		
 		$return .= '</ul>';
 		wp_reset_postdata();
 	} else {
-		$return .= '<p>No archived LOAs</p>';
+		$return .= '<p>No archived Reports</p>';
 	}
 
 	$return .= '</div>';
