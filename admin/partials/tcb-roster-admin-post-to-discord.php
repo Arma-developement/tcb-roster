@@ -4,14 +4,16 @@ function tcb_roster_admin_post_to_discord ( $sender, $channel, $message ) {
 
     switch ($channel) {
         case 'recruitment-managers':
-            $webhook = 'https://discord.com/api/webhooks/1039164797125668894/cfPBzoEb5PGzCUv66rK9gaMDUVWHNL_B--nOeB00VkeeCi6DFVuewMTNOCEvObOwst4t';
+            $webhook = getenv ('DISCORD_WEBHOOK_RECRUITMENT_MANAGERS', true);
             break;
         case 'announcements':
-            $webhook = 'https://discord.com/api/webhooks/1039164797125668894/cfPBzoEb5PGzCUv66rK9gaMDUVWHNL_B--nOeB00VkeeCi6DFVuewMTNOCEvObOwst4t';
+            $webhook = getenv ('DISCORD_WEBHOOK_ANNOUNCEMENTS', true);
             break;    
         default:
             return false;
     }
+
+    //var_dump($webhook);
 
     $data = array( 'content' => $message, 'username' => $sender );
     $curl = curl_init( $webhook );

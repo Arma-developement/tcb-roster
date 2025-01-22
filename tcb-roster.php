@@ -3,7 +3,7 @@
 Plugin Name: 3CB Roster
 Plugin URI: https://github.com/Arma-developement/tcb-roster
 Description: Design by Nick at Intention and Lifetap
-Version: 1.3.23
+Version: 1.3.24
 Author: Lifetap / Badger
 Author URI: https://github.com/Arma-developement/tcb-roster
 License: GPL2
@@ -62,6 +62,18 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-tcb-roster.php';
  * @since    1.0.0
  */
 function run_tcb_roster() {
+    $root = $_SERVER['DOCUMENT_ROOT'];
+    $envFilepath = "$root/tcb.env";
+    
+    if (is_file($envFilepath)) {
+        $file = new \SplFileObject($envFilepath);
+
+        // Loop until we reach the end of the file.
+        while (!$file->eof()) {
+            // Get the current line value, trim it and save by putenv.
+            putenv(trim($file->fgets()));
+        }
+    }
 
 	$plugin = new Tcb_Roster();
 	$plugin->run();

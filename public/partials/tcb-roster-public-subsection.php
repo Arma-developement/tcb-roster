@@ -24,6 +24,12 @@ function tcb_roster_public_subsection($attributes) {
 
 				$userId = get_field( 'user_id', $post );
 				$user = get_user_by( 'id', $userId );
+
+				// Check for old service records, with no user
+				if (!$user) {
+					continue;
+				}
+
 				$displayName = $user->get( 'display_name' );
 
 				if ((get_field( 'loa', $post ) == 1) && ($rank != 'Res')) {
@@ -65,6 +71,12 @@ function tcb_roster_public_subsection($attributes) {
 
 				$userId = get_field( 'user_id', $post );
 				$user = get_user_by( 'id', $userId );
+
+				// Check for old service records, with no user
+				if (!$user) {
+					continue;
+				}
+
 				$displayName = $user->get( 'display_name' );
 
 				$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
