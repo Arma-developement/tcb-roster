@@ -13,9 +13,6 @@ function tcb_roster_admin_post_to_discord ( $sender, $channel, $message ) {
             return false;
     }
 
-    var_dump($webhook);
-    var_dump( $_SERVER['DOCUMENT_ROOT'] );
-
     $data = array( 'content' => $message, 'username' => $sender );
     $curl = curl_init( $webhook );
     curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
