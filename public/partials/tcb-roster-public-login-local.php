@@ -2,6 +2,10 @@
 
 function tcb_roster_public_login_local(){
 
+	ob_start();
+
+	echo '<div class="tcb_login_local">';
+
 	$args = array(
 		'echo'                => true,
 		'redirect'            => get_permalink( get_the_ID() ),
@@ -12,5 +16,9 @@ function tcb_roster_public_login_local(){
 		'value_remember'      => true,
 	);
 	
-	return wp_login_form( $args );
+	wp_login_form( $args );
+
+	echo '</div>';
+
+	return ob_get_clean();
 }
