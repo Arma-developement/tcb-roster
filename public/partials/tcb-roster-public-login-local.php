@@ -8,7 +8,7 @@ function tcb_roster_public_login_local(){
 
 	$args = array(
 		'echo'                => true,
-		'redirect'            => get_permalink( get_the_ID() ),
+		'redirect'            => admin_url(),
 		'remember'            => true,
 		'value_remember'      => true,
 		'required_username'   => true,
