@@ -2,6 +2,8 @@
 
 function tcb_roster_public_subsection($attributes) {
 	$return = '';
+
+	$isNonMember = in_array( 'subscriber', wp_get_current_user()->roles);
 	
 	if (array_key_exists('rank', $attributes)) {
 	
@@ -32,10 +34,14 @@ function tcb_roster_public_subsection($attributes) {
 
 				$displayName = $user->get( 'display_name' );
 
-				if ((get_field( 'loa', $post ) == 1) && ($rank != 'Res')) {
-					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a> (LOA)</li>';
+				if ($isNonMember) {
+					$return .= '<li>' . $displayName . '</li>';
 				} else {
-					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+					if ((get_field( 'loa', $post ) == 1) && ($rank != 'Res')) {
+						$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a> (LOA)</li>';
+					} else {
+						$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+					}
 				}
 			}
 			$return .= '</ul>';
@@ -79,7 +85,11 @@ function tcb_roster_public_subsection($attributes) {
 
 				$displayName = $user->get( 'display_name' );
 
-				$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+				if ($isNonMember) {
+					$return .= '<li>' . $displayName . '</li>';
+				} else {
+					$return .= '<li><a href="'. home_url() .'/user-info/?id=' . $userId . '">' . $displayName . '</a></li>';
+				}
 			}
 			$return .= '</ul>';
 		}
