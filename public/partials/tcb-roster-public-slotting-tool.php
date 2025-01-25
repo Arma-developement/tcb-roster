@@ -14,6 +14,10 @@ function tcb_roster_public_slotting_tool($attributes) {
 	if (!$post_id)
 		return;
 
+	// Early out for subscribers on private missions
+	if ((in_array( 'subscriber', $currentUser->roles)) && (get_field('brief_mission_type', $post_id) == 'private'))
+		return;
+
 	// Early out if no entries in slots field
 	if(! have_rows('slots') )
 		return;
