@@ -18,9 +18,6 @@ function tcb_roster_public_attendance_roster($attributes) {
 
 	echo '<h2>Mission Details</h2>';
 
-	echo '<h3>Modset</h3>';
-	echo get_field('brief_modset');
-
 	echo '<h3>Situation</h3>';
 	echo get_field('brief_situation');
 
@@ -30,7 +27,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// Early out for subscribers on private missions
 	if ((in_array( 'subscriber', $currentUser->roles)) && (get_field('brief_mission_type') == 'private')) {
 		echo '<br><br><p>This is a 3CB members only mission</p>';
-		echo '<p>For information about joining 3CB, click <a href="'. home_url() .'/information-centre/the-recruitment-process">here</a></p>';
+		echo '<p>For information about 3CB, click <a href="'. home_url() .'/information-centre/about-3cb">here</a></p>';
+		echo '<p>Interested in joining 3CB, click <a href="'. home_url() .'/information-centre/the-recruitment-process">here</a></p>';
 		echo '</div>';
 		return;
 	}
@@ -82,6 +80,9 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 	// echo '<h3>Command and Signals</h3>';
 	// echo get_field('command_and_signals');
+
+	echo '<h3>Modset</h3>';
+	echo get_field('brief_modset');
 
 	echo '</div>';		
 
