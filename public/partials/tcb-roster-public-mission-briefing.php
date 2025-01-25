@@ -19,8 +19,17 @@ function tcb_roster_public_mission_briefing() {
 
 	$return .= '<h2>Mission Details</h2>';
 
+	$return .= '<h3>Situation</h3>';
+	$return .=  get_field('brief_situation', $postId);
+
 	$return .= '<h3>Mission</h3>';
 	$return .=  get_field('brief_mission', $postId);
+
+	// Early out for subscribers on private missions
+	if (in_array( 'subscriber', $user->roles) && (get_field('brief_mission_type', $postId) == 'private')) {
+		$return .=  '</div>';
+		return $return;
+	}
 	
 	$return .=  '<h3>Execution</h3>';
 	$return .=  get_field('brief_execution', $postId);
