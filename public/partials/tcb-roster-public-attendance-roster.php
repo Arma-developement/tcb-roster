@@ -29,6 +29,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 	// Early out for subscribers on private missions
 	if ((in_array( 'subscriber', $currentUser->roles)) && (get_field('brief_mission_type') == 'private')) {
+		echo '<br><br><p>This is a 3CB members only mission</p>';
+		echo '<p>For information about joining 3CB, click <a href="'. home_url() .'/information-centre/the-recruitment-process">here</a></p>';
 		echo '</div>';
 		return;
 	}
