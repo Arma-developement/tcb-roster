@@ -29,8 +29,8 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 	// Early out for subscribers on private missions
 	if (in_array( 'subscriber', $user->roles) && (get_field('brief_mission_type', $postId) == 'private')) {
-		$return .=  '</div>';
-		return $return;
+		echo '</div>';
+		return;
 	}
 
 	echo '<h3>Execution</h3>';
