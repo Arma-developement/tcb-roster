@@ -67,7 +67,8 @@ function tcb_roster_public_slotting_tool($attributes) {
 				$slottedMemberName = get_sub_field('slot_member');
 				$attendanceThreshold = get_sub_field('attendance_threshold');
 				$isLocked = $attendance < $attendanceThreshold;
-				$isDisabled = (($slottedMemberName !== '') && ($slottedMemberName !== $currentLogin)) || $isLocked;
+				$isOwner = $slottedMemberName === $currentLogin;
+				$isDisabled = (($slottedMemberName !== '') && !$isOwner) || $isLocked;
 				$user = get_user_by('login', $slottedMemberName);
 				if ($user) {
 					$user_id = $user->ID;
@@ -77,7 +78,7 @@ function tcb_roster_public_slotting_tool($attributes) {
 					$displayName = '';
 				}
 
-				echo '<div class="slotToolSlot" id="slotToolSlot-' . $j . '-' . $k . '">';
+				echo '<div class=' . ($isOwner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"') . ' id="slotToolSlot-' . $j . '-' . $k . '">';
 				echo '<form class="slotForm">';
 				echo '<input type="hidden" name="postId" class="postID" value="' . $post_id . '">';
 				echo '<input type="hidden" name="userId" class="userID" value="' . $currentUserID . '">';
