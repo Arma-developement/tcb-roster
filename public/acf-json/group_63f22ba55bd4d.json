@@ -1,0 +1,80 @@
+{
+    "key": "group_63f22ba55bd4d",
+    "title": "Contact Info (Discord)",
+    "fields": [
+        {
+            "key": "field_63f22ba22da2c",
+            "label": "Discord ID",
+            "name": "discord_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Enter your Discord ID (e.g. Name#1234)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_63f22bcb2da2d",
+            "label": "Communication Preference",
+            "name": "communication_preference",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "Choose how you would like to be notified of event details, etc.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "email": "Email",
+                "discord": "Discord"
+            },
+            "default_value": [
+                "email"
+            ],
+            "return_format": "value",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "user_role",
+                "operator": "==",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183438
+}

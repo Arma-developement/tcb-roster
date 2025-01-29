@@ -1,0 +1,121 @@
+{
+    "key": "group_6356980addb3c",
+    "title": "Service Record Commendations",
+    "fields": [
+        {
+            "key": "field_636556be03b0d",
+            "label": "Operational Awards",
+            "name": "operational_awards",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "leadership-1": "Leadership [Section]",
+                "leadership-2": "Leadership [Troop]",
+                "leadership-3": "Leadership [Company]",
+                "operation-1": "Operation Medal x13",
+                "operation-2": "Operation Medal x26",
+                "operation-3": "Operation Medal x52",
+                "operation-4": "Operation Medal x104",
+                "operation-5": "Operation Medal x208",
+                "operation-6": "Operation Medal x416",
+                "operation-7": "Operation Medal x832",
+                "combatmedic": "Combat Medic",
+                "weaponsoperator": "Weapons Operator",
+                "asset-armour": "Asset Medal [Armour]",
+                "asset-air": "Asset Medal [Air]",
+                "manofthematch": "Man of the match",
+                "fragofthematch": "Frag of the match",
+                "tvt": "TvT",
+                "publicregular": "Public Regular"
+            },
+            "default_value": [],
+            "return_format": "array",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        },
+        {
+            "key": "field_6365571b5e87f",
+            "label": "Community Awards",
+            "name": "community_awards",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "missiondesigner-1": "Mission Designer x2",
+                "missiondesigner-2": "Mission Designer x6",
+                "missiondesigner-3": "Mission Designer x12",
+                "missiondesigner-4": "Mission Designer x24",
+                "missiondesigner-5": "Mission Designer x48",
+                "missiondesigner-6": "Mission Designer x96",
+                "zeus-1": "Zeus Operations x2",
+                "zeus-2": "Zeus Operations x6",
+                "zeus-3": "Zeus Operations x12",
+                "media-1": "Media Man 1",
+                "media-2": "Media Man 2",
+                "media-3": "Media Man 3",
+                "techie": "Helpful Techie",
+                "recruiter": "Recruiter",
+                "donator": "Donator",
+                "kodak": "Kodak Commander",
+                "team-media": "Media Team",
+                "team-modding": "Modding Team",
+                "team-operations": "Operations Team",
+                "team-public": "Public Team",
+                "team-recruitment": "Recruitment Team",
+                "team-ribbon": "Ribbon Team",
+                "team-training": "Training Team"
+            },
+            "default_value": [],
+            "return_format": "array",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "service-record"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183717
+}

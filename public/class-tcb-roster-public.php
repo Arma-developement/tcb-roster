@@ -88,6 +88,8 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-submission.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-submission-callback.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-login-local.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-profile.php'; 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-json-sync-location.php'; 
 
 		add_shortcode('tcb_roster_public_subsection', 'tcb_roster_public_subsection');
 		add_shortcode('tcb_roster_public_user_info', 'tcb_roster_public_user_info');
@@ -113,6 +115,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit');
 		add_shortcode('tcb_roster_public_mission_briefing_submission', 'tcb_roster_public_mission_briefing_submission');
 		add_shortcode('tcb_roster_public_login_local', 'tcb_roster_public_login_local');
+		add_shortcode('tcb_roster_public_edit_profile', 'tcb_roster_public_edit_profile');
 
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
@@ -123,6 +126,8 @@ class Tcb_Roster_Public {
 		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );
 		add_action( 'tcb_roster_public_mission_send_announcement_discord_action', 'tcb_roster_public_mission_send_announcement_discord' );
 
+		add_action('acfe/form/submit_form/form=edit-user-profile', 'tcb_roster_public_edit_profile_submit');
+
 		add_filter('acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3);
 		add_filter('acfe/form/submit/email_args/action=interview_form_email', 'tcb_roster_public_interview_form_email_args', 10, 3);
@@ -130,6 +135,12 @@ class Tcb_Roster_Public {
 		add_action('acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5);
 		add_action('acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5);
 		add_action('acfe/form/submit/post/form=submit-briefing', 'tcb_roster_public_mission_briefing_submission_callback', 10, 5);
+
+		add_filter('acfe/settings/json_save/forms/all', 'tcb_roster_public_json_save_point_ext', 10, 2);
+		add_filter('acfe/settings/json_load/forms', 'tcb_roster_public_json_load_point');
+
+		add_filter('acf/settings/save_json', 'tcb_roster_public_json_save_point', 10, 2);
+		add_filter('acf/settings/load_json', 'tcb_roster_public_json_load_point');		
 	}
 
 	/**

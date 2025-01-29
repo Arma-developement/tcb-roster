@@ -1,0 +1,174 @@
+{
+    "key": "group_635697195a971",
+    "title": "Service Record Status",
+    "fields": [
+        {
+            "key": "field_6356971929928",
+            "label": "Rank",
+            "name": "rank",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "App": "Applicant",
+                "Rct": "Recruit",
+                "Mne": "Marine",
+                "LCpl": "Lance Corporal",
+                "Cpl": "Corporal",
+                "Sgt": "Sergeant",
+                "CSgt": "Colour Sergeant",
+                "Lt": "Lieutenant",
+                "Res": "Reserve"
+            },
+            "default_value": "Rct",
+            "return_format": "array",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "vertical",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_63669b6d0aeca",
+            "label": "Attestation date",
+            "name": "attestation_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "The date they become a recruit",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "d\/m\/Y",
+            "first_day": 1
+        },
+        {
+            "key": "field_6356978974240",
+            "label": "Passing out date",
+            "name": "passing_out_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "The date they become a marine",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "d\/m\/Y",
+            "first_day": 1
+        },
+        {
+            "key": "field_6365a88ca963d",
+            "label": "Duties",
+            "name": "duties",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "admin": "Admin",
+                "rm": "Recruitment Manager",
+                "rti": "Recruit Training Instructor",
+                "ati": "Advanced Training Instructor",
+                "cm": "Commendations Manager",
+                "om": "Operations Manager",
+                "mt": "Media Team",
+                "pet": "Public Events Team"
+            },
+            "default_value": [],
+            "return_format": "array",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        },
+        {
+            "key": "field_635697d56d638",
+            "label": "LOA",
+            "name": "loa",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "frontend_admin_display_mode": "edit",
+            "only_front": 0,
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_636696d63cb98",
+            "label": "Steam ID",
+            "name": "steam_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "service-record"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183704
+}

@@ -1,0 +1,564 @@
+{
+    "key": "group_638ca355bf287",
+    "title": "Event Briefing",
+    "fields": [
+        {
+            "key": "field_63a39984d5546",
+            "label": "Title",
+            "name": "title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_638ca355cb528",
+            "label": "Situation",
+            "name": "brief_situation",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Describe the mission background.  \r\ne.g. Who are the opposing forces, what motivates the conflict, etc.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "TBA",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
+            "key": "field_638ca355cf0fa",
+            "label": "Mission",
+            "name": "brief_mission",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "A concise statement of the mission objective",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "TBA",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355d2ccc",
+            "label": "Execution",
+            "name": "brief_execution",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Brief summary of the mission phases.\r\n1-0 can refine at a later stage, if required",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "TBA",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355d68c1",
+            "label": "Intel",
+            "name": "brief_intel",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Any intel or maps",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "TBA",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
+            "key": "field_638ca355da467",
+            "label": "Map",
+            "name": "brief_map",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Name of the Arma 3 map",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355ddf9e",
+            "label": "Terrain",
+            "name": "brief_terrain",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "List the terrain features relevant to the mission.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Small fields, light woods and undulating terrain\r\nBUAs of varying sizes and widely dispersed",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355e1b7b",
+            "label": "Start Time",
+            "name": "brief_start_time",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "State the mission start time.\r\nIf the mission spans either sunrise or sunset, then include these times.\r\nIf the mission is partially or fully at night, then specify whether NVGs are available to players.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Start time 0700 hrs local\r\nSunrise at 0730 hrs (NVGs not required)",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355e571e",
+            "label": "Weather Effects",
+            "name": "brief_weather",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "List only the weather effects that directly impact the mission.  e.g. Fog reducing visibility.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Light fog: visibility 2kms\r\nChance of rain: 10%",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355e9255",
+            "label": "IED\/Mine Threat",
+            "name": "brief_iedmine_threat",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Specify the threat from mines or IEDs as: None, Low, Medium, High, Very High",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "None",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355ecdf2",
+            "label": "Enemy Forces",
+            "name": "brief_enemy_forces",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Enemy forces in the AO, including equipment, training, supplies, disposition and morale.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Russian Battle Group:\r\n- A mix of motorised, mechanised and armour.\r\n- Equipment qualities vary\r\n- Supplies are limited\r\n- Morale is low\r\n- The exact disposition is unknown",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": 10,
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca355f0b40",
+            "label": "Friendly Forces",
+            "name": "brief_friendly_forces",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Friendly forces in the AO.  Identify the players' unit.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "1 Troop, 42 Commando (players)\r\n\r\n2 Troop, 42 Commando\r\n\r\n3 Troop, 42 Commando",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca356005cc",
+            "label": "Civilians",
+            "name": "brief_civilians",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Civilians are expected within the AO.\r\nNeutral to friendly forces",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca3560423e",
+            "label": "Vehicles",
+            "name": "brief_vehicles",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Service Support:  List the vehicles available to the players",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "2 x WMIK GPMGs per section",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca35607e60",
+            "label": "Supplies",
+            "name": "brief_supplies",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Service Support:  List the supplies available to the players",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Section supplies at spawn",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca3560bb04",
+            "label": "Support",
+            "name": "brief_support",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Service Support:  List the support assets available to the players",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Very limited artillery support",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca3560f682",
+            "label": "Reinforcements",
+            "name": "brief_reinforcements",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Service Support:  State the reinforcement process available to the players",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "CTP with 1-0",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_639b76831fd8f",
+            "label": "Actions On",
+            "name": "brief_actions_on",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Only document changes to the SOP",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "As per SOP",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca35613222",
+            "label": "Rules of Engagement",
+            "name": "brief_rules_of_engagement",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Only include exceptions to the standard ROE",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "As per SOP",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca35616d9d",
+            "label": "Command and Signals",
+            "name": "brief_command_and_signals",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Only include exceptions to the standard command and signals",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "As per SOP",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_638ca3561a94e",
+            "label": "Modset",
+            "name": "brief_modset",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_6794d21c38f9c",
+            "label": "Mission Type",
+            "name": "brief_mission_type",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "This controls who has access to the briefing info and slotting tool",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "private": "Private",
+                "public": "Public",
+                "jo": "Joint Op"
+            },
+            "default_value": "private",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "allow_in_bindings": 1,
+            "layout": "vertical",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_639b77e33d78a",
+            "label": "Roster Type",
+            "name": "brief_roster_type",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "Select the most appropriate for the mission",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "std": "Sections with only SL \/ FLT sign-up",
+                "full44": "Sections (4+4) with full sign-up",
+                "full53": "Sections (5+3) with full sign-up",
+                "full222": "Sections (2+2+2) with full sign-up"
+            },
+            "default_value": "std",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "vertical",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_639b7964bc9c9",
+            "label": "Roster Comments",
+            "name": "brief_roster_comments",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Include any extra details e.g. 2 troop and not 1 troop",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": "wpautop"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "tribe_events"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183757
+}
