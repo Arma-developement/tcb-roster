@@ -17,7 +17,19 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<div class="tcb_briefing" >';
 
 	echo '<h2>Mission Details</h2>';
-
+	
+	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Author</h3>';
+	echo get_the_author();
+	echo '</div>';
+	
+	echo '<div class="one-third column"><h3>Map</h3>';
+	echo get_field('brief_map');
+	echo '</div>';
+	
+	echo '<div class="one-third column"><h3>Modset</h3>';
+	echo get_field('brief_modset');
+	echo '</div></div>';
+	
 	echo '<h3>Situation</h3>';
 	echo get_field('brief_situation');
 
@@ -39,8 +51,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	echo '<h3>Intel</h3>';
 	echo get_field('brief_intel');
 	
-	echo '<h3>Map</h3>';
-	echo get_field('brief_map');
+	
 	
 	// echo '<h3>Terrain</h3>';
 	// echo get_field('terrain');
@@ -80,9 +91,6 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 	// echo '<h3>Command and Signals</h3>';
 	// echo get_field('command_and_signals');
-
-	echo '<h3>Modset</h3>';
-	echo get_field('brief_modset');
 
 	echo '</div>';		
 
