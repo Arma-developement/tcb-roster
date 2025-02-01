@@ -486,6 +486,27 @@
             "save_other_choice": 0
         },
         {
+            "key": "field_679e63332f635",
+            "label": "Slotting Password",
+            "name": "slotting_password",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_639b77e33d78a",
             "label": "Roster Type",
             "name": "brief_roster_type",
@@ -560,5 +581,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738183757
+    "modified": 1738435736
 }

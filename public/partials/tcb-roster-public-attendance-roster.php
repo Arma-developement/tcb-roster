@@ -45,14 +45,36 @@ function tcb_roster_public_attendance_roster($attributes) {
 		return;
 	}
 
+	// Password protection for subscribers on joint-op missions
+	if ((in_array( 'subscriber', $currentUser->roles)) && (get_field('brief_mission_type') == 'jo')) {
+		if ($currentUser->slotting_password != get_field('slotting_password')) {
+
+			echo '<div class="tcb_submit_slotting_password">';
+
+			acfe_form( array( 
+				'post_id' => 'user_'.$currentUserID,
+				'name' => 'submit-slotting-password',
+				'submit_value' => 'Submit',
+				'return' => add_query_arg( 'updated', 'true', get_permalink() ),
+				'updated_message' => false
+			) );
+			
+			echo '</div>';
+		
+			echo '<br><br><p>This is a joint operations, open to 3CB guests only</p>';
+			echo '<p>For information about 3CB, click <a href="'. home_url() .'/information-centre/about-3cb">here</a></p>';
+			echo '<p>Interested in joining 3CB, click <a href="'. home_url() .'/information-centre/the-recruitment-process">here</a></p>';
+			echo '</div>';
+			return;
+		}
+	}
+
 	echo '<h3>Execution</h3>';
 	echo get_field('brief_execution');
 	
 	echo '<h3>Intel</h3>';
 	echo get_field('brief_intel');
-	
-	
-	
+		
 	// echo '<h3>Terrain</h3>';
 	// echo get_field('terrain');
 	

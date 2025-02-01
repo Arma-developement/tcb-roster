@@ -1,13 +1,13 @@
 {
-    "key": "group_635696802ad92",
-    "title": "User Profile Bio",
+    "key": "group_679e6af43224a",
+    "title": "User Profile Slotting Password",
     "fields": [
         {
-            "key": "field_635696802044a",
-            "label": "Location",
-            "name": "user-location",
+            "key": "field_679e6af482542",
+            "label": "Slotting Password",
+            "name": "slotting_password",
             "aria-label": "",
-            "type": "text",
+            "type": "password",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -16,10 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "frontend_admin_display_mode": "edit",
-            "only_front": 0,
-            "default_value": "",
-            "maxlength": "",
+            "allow_in_bindings": 0,
             "placeholder": "",
             "prepend": "",
             "append": ""
@@ -37,7 +34,7 @@
     "menu_order": 0,
     "position": "normal",
     "style": "default",
-    "label_placement": "top",
+    "label_placement": "left",
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": true,
@@ -50,5 +47,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738435293
+    "modified": 1738435959
 }
