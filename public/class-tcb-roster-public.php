@@ -136,10 +136,12 @@ class Tcb_Roster_Public {
 		add_action('acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5);
 		add_action('acfe/form/submit/post/form=submit-briefing', 'tcb_roster_public_mission_briefing_submission_callback', 10, 5);
 
-		add_filter('acfe/settings/json_save/forms/all', 'tcb_roster_public_json_save_point_ext', 10, 2);
-		add_filter('acfe/settings/json_load/forms', 'tcb_roster_public_json_load_point');
+		//add_filter('acfe/settings/json_save/forms', 'tcb_roster_public_json_save_point_1', 10, 1);
+		//add_filter('acfe/settings/json_save/forms/ID=1803', 'tcb_roster_public_json_save_point_2', 10, 2);
+		//add_filter('acfe/settings/json_save/forms/all', 'tcb_roster_public_json_save_point_2', 10, 2);
+		//add_filter('acfe/settings/json_load/forms', 'tcb_roster_public_json_load_point');
 
-		add_filter('acf/settings/save_json', 'tcb_roster_public_json_save_point', 10, 2);
+		add_filter('acf/settings/save_json', 'tcb_roster_public_json_save_point_1', 10, 1);
 		add_filter('acf/settings/load_json', 'tcb_roster_public_json_load_point');		
 	}
 
