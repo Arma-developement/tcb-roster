@@ -28,7 +28,7 @@ function tcb_roster_public_edit_profile($attributes) {
 		'name' => 'edit-user-profile',
 
 		'map' => array (
-			'field_679946c5aecd3' => array ( 'value' => get_the_author_meta( 'display_name', $userId ) ),
+			'field_679946c5aecd3' => array ( 'value' => get_the_author_meta( 'nickname', $userId ) ),
 			'field_67993c0abf12c' => array ( 'value' => get_the_author_meta( 'first_name', $userId ) ),
 			'field_67993c3bbf12d' => array ( 'value' => get_the_author_meta( 'last_name', $userId ) ),
 			'field_67993c5cbf12f' => array ( 'value' => get_the_author_meta( 'user_email', $userId ) ),
@@ -74,8 +74,10 @@ function tcb_roster_public_edit_profile_submit($form) {
 
 	update_user_meta( $userId, 'first_name', get_field('first_name') );
 	update_user_meta( $userId, 'last_name', get_field('last_name') );
-	update_user_meta( $userId, 'display_name', get_field('display_name') );
+	update_user_meta( $userId, 'nickname', get_field('display_name') );
 	update_user_meta( $userId, 'user_email', get_field('user_email') );
+	wp_update_user( array( 'ID' => $userId, 'display_name' => get_field('display_name') ) );
+
 	update_field( 'discord_id', get_field('discord_id'), $profileId );
 	update_field( 'communication_preference', get_field('communication_preference'), $profileId );
 	update_field( 'user-location', get_field('user-location'), $profileId );
