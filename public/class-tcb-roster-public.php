@@ -79,9 +79,11 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-slotting-tool-update.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-edit-status.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-news.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-admin-send-news.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../action-scheduler/action-scheduler.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing.php'; 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/tcb-roster-public-mission-briefing-edit.php'; 
@@ -110,6 +112,7 @@ class Tcb_Roster_Public {
 		add_shortcode('tcb_roster_public_report_view', 'tcb_roster_public_report_view');
 		add_shortcode('tcb_roster_public_interview_list', 'tcb_roster_public_interview_list');
 		add_shortcode('tcb_roster_public_interview_view', 'tcb_roster_public_interview_view');
+		add_shortcode('tcb_roster_public_mission_news', 'tcb_roster_public_mission_news');
 		add_shortcode('tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin');
 		add_shortcode('tcb_roster_public_mission_briefing', 'tcb_roster_public_mission_briefing');
 		add_shortcode('tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit');
@@ -134,6 +137,7 @@ class Tcb_Roster_Public {
 
 		add_action('acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5);
 		add_action('acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5);
+		add_action('acfe/form/submit/post/form=submit_mission_news', 'tcb_roster_public_mission_send_news', 10, 5);
 		add_action('acfe/form/submit/post/form=submit-briefing', 'tcb_roster_public_mission_briefing_submission_callback', 10, 5);
 
 		//add_filter('acfe/settings/json_save/forms', 'tcb_roster_public_json_save_point_1', 10, 1);

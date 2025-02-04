@@ -110,6 +110,10 @@ function tcb_roster_public_slotting_tool($attributes) {
 		echo '<a href="'. home_url() .'/mission-admin-panel/?id=' . $post_id . '" class="button button-secondary">Mission Admin Panel</a>';
 	}
 	
+	if (in_array( 'mission_admin', $roles) || in_array( 'administrator', $roles) || in_array( 'editor', $roles)) {
+		echo '<a href="'. home_url() .'/mission-news-panel/?id=' . $post_id . '" class="button button-secondary">Mission News Panel</a>';
+	}
+	
 	if (tcb_roster_public_find_user_in_slotting ( $post_id, $currentUser->user_login )) {
 		echo '<a href="'. home_url() .'/mission-briefing/?id=' . $post_id . '" class="button button-secondary">Mission Briefing</a>';
 	}
