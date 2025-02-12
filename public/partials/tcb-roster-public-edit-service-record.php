@@ -17,7 +17,7 @@ function tcb_roster_public_edit_service_record($attributes) {
 	if (($postId != "") && (!current_user_can( 'edit_post', $postId )))
 		return;
 
-	echo "<h2>" . $displayName . "</h2>";
+	echo "<h2>Edit service record: " . $displayName . "</h2>";
 
 	// echo "userID = " . $userId . "<br>";
 	// echo "postID = " . $postId . "<br>";
