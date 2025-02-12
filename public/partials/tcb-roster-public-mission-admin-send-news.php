@@ -17,6 +17,7 @@ function tcb_roster_public_mission_send_news ($postId, $type, $args, $form, $act
 
 	// Retrieve data
 	$title = get_field('title', $postId);
+	$brief_image = get_the_post_thumbnail_url($postId, 'large');
 	$brief_situation = get_field('brief_situation', $postId);
 	$brief_mission = get_field('brief_mission', $postId);
 	$post_op_summary = get_field('post_op_summary', $postId);
@@ -27,15 +28,15 @@ function tcb_roster_public_mission_send_news ($postId, $type, $args, $form, $act
 	$content = '<h2>Situation</h2>' . $brief_situation . '<h2>Mission</h2>' . $brief_mission;
 
 	if ($post_op_summary != "") {
-		$content .= '<h2>AAR</h2>' . $post_op_summary;
+		$content .= '<h2>AAR</h2><div>' . $post_op_summary . '</div>';
 	}
 	
-	if ( !empty( $post_op_image ) ) {
-		$content .= '<img src="' . esc_url($post_op_image['url']) . '" />';
-	}
+	// if ( !empty( $brief_image ) ) {
+	// 	$content .= '<p><img src="' . esc_url($brief_image) . '" ></p>';
+	// }
 
 	if ($post_op_secondary_image != "") {
-		$content .= '<img src="' . esc_url($post_op_secondary_image['url']) . '" />';
+		$content .= '<p><img src="' . esc_url($post_op_secondary_image['url']) . '" ></p>';
 	}
 
 	$new_post = array (
@@ -50,8 +51,14 @@ function tcb_roster_public_mission_send_news ($postId, $type, $args, $form, $act
 
 	if ($new_post_id) {
 		// Add post thumbnail
-		$image_id = $post_op_image['ID'];
-		if ($image_id)
-			set_post_thumbnail( $new_post_id, $image_id );
+		if ($post_op_image !="") {
+			$image_id = $post_op_image['ID'];
+			if ($image_id)
+				set_post_thumbnail( $new_post_id, $image_id );
+		} else {
+			if (!empty( $brief_image )) {
+				set_post_thumbnail( $new_post_id, $brief_image );
+			}
+		}
 	}
 }

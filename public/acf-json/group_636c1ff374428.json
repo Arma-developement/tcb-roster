@@ -176,8 +176,8 @@
         },
         {
             "key": "field_636c215430e47",
-            "label": "Extracurriucular roles ?",
-            "name": "extracurriucular_roles",
+            "label": "Extracurricular roles ?",
+            "name": "extracurricular_roles",
             "aria-label": "",
             "type": "textarea",
             "instructions": "Are there any extracurricular roles within the unit you would like to be involved with outside of playing Arma3? \r\nE.g. video creation, advanced training, etc.",
@@ -191,6 +191,7 @@
             "default_value": "",
             "acfe_textarea_code": 0,
             "maxlength": "",
+            "allow_in_bindings": 1,
             "rows": "",
             "placeholder": "",
             "new_lines": ""
@@ -277,7 +278,9 @@
     "style": "default",
     "label_placement": "left",
     "instruction_placement": "label",
-    "hide_on_screen": "",
+    "hide_on_screen": [
+        "comments"
+    ],
     "active": true,
     "description": "",
     "show_in_rest": 0,
@@ -288,5 +291,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738183662
+    "modified": 1739317216
 }
