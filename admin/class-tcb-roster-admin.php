@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
 /**
  * The admin-specific functionality of the plugin.
@@ -44,28 +44,24 @@ class Tcb_Roster_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param      string $plugin_name       The name of this plugin.
+	 * @param      string $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-display.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-edit-user-profile.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-post-to-discordDM.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/tcb-roster-admin-hide-create-post.php';
-
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-edit-user-profile.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discordDM.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
 
 		add_action( 'edit_user_profile', 'tcb_roster_admin_edit_user_profile' );
 		add_action( 'add_meta_boxes', 'add_hide_in_menu_editor_field' );
 		add_action( 'save_post', 'save_hide_in_menu_selector' );
-		add_action( 'init', 'tcb_roster_admin_hide_create_post' );
 
-		add_filter ( 'wp_nav_menu_objects', 'filter_draft_pages_from_menu', 10, 2 );
+		add_filter( 'wp_nav_menu_objects', 'filter_draft_pages_from_menu', 10, 2 );
 	}
 
 	/**
@@ -86,10 +82,6 @@ class Tcb_Roster_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		
-		// Nick - comment out css
-		// 	wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tcb-roster-admin.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -112,7 +104,5 @@ class Tcb_Roster_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tcb-roster-admin.js', array( 'jquery' ), $this->version, false );
-
 	}
-
 }
