@@ -17,12 +17,14 @@
                 "id": ""
             },
             "role": "",
-            "return_format": "array",
+            "return_format": "object",
             "multiple": 0,
             "acfe_bidirectional": {
                 "acfe_bidirectional_enabled": "0"
             },
             "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
             "bidirectional_target": []
         },
         {
@@ -291,5 +293,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1739317216
+    "modified": 1740009495
 }

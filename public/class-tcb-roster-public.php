@@ -52,6 +52,9 @@ class Tcb_Roster_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/interview.php';
+
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-info.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-training.php';
@@ -62,9 +65,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-service-record.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-training.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-commendations.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-application-form-email-args.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-interview-form-email-args.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool.php';
@@ -112,9 +113,7 @@ class Tcb_Roster_Public {
 
 		add_action( 'acfe/form/submit_form/form=edit-user-profile', 'tcb_roster_public_edit_profile_submit' );
 
-		add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcb_roster_public_application_form_email_args', 10, 3 );
 		add_filter( 'acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3 );
-		add_filter( 'acfe/form/submit/email_args/action=interview_form_email', 'tcb_roster_public_interview_form_email_args', 10, 3 );
 
 		add_action( 'acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5 );
 		add_action( 'acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5 );

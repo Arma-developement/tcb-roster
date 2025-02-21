@@ -23,26 +23,6 @@
             "append": ""
         },
         {
-            "key": "field_6365c203143e7",
-            "label": "Steam Name",
-            "name": "app_steam_name",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Your user ID on Steam",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_6365c218143e8",
             "label": "Steam ID64",
             "name": "app_steam_id64",
@@ -400,5 +380,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738183566
+    "modified": 1739919173
 }
