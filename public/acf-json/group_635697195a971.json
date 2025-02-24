@@ -1,13 +1,13 @@
 {
     "key": "group_635697195a971",
-    "title": "Service Record Status",
+    "title": "Service Record Info",
     "fields": [
         {
-            "key": "field_6356971929928",
+            "key": "field_67b8e1472f7bb",
             "label": "Rank",
             "name": "rank",
             "aria-label": "",
-            "type": "radio",
+            "type": "taxonomy",
             "instructions": "",
             "required": 1,
             "conditional_logic": 0,
@@ -16,23 +16,20 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "App": "Applicant",
-                "Rct": "Recruit",
-                "Mne": "Marine",
-                "LCpl": "Lance Corporal",
-                "Cpl": "Corporal",
-                "Sgt": "Sergeant",
-                "CSgt": "Colour Sergeant",
-                "Lt": "Lieutenant",
-                "Res": "Reserve"
-            },
-            "default_value": "Rct",
-            "return_format": "array",
+            "taxonomy": "tcb-rank",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "radio",
             "allow_null": 0,
-            "other_choice": 0,
-            "layout": "vertical",
-            "save_other_choice": 0
+            "acfe_bidirectional": {
+                "acfe_bidirectional_enabled": "0"
+            },
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "multiple": 0,
+            "bidirectional_target": []
         },
         {
             "key": "field_63669b6d0aeca",
@@ -123,26 +120,6 @@
             "ui": 0,
             "ui_on_text": "",
             "ui_off_text": ""
-        },
-        {
-            "key": "field_636696d63cb98",
-            "label": "Steam ID",
-            "name": "steam_id",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
         }
     ],
     "location": [
@@ -170,5 +147,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738183704
+    "modified": 1740436619
 }

@@ -52,25 +52,22 @@ class Tcb_Roster_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
+		// Refactored code base 2025.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/interview.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/service-record.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/transfer.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/user-profile.php';
 
+		// Original code base from 2022.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-info.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-training.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-ribbons.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-user-edit-options.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-training.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-ribbons.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-service-record.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-training.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool-update.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-status.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php';
@@ -81,26 +78,14 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-briefing-edit.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-briefing-submission.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-briefing-submission-callback.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-edit-profile.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-json-sync-location.php';
 
 		add_shortcode( 'tcb_roster_public_subsection', 'tcb_roster_public_subsection' );
-		add_shortcode( 'tcb_roster_public_user_info', 'tcb_roster_public_user_info' );
-		add_shortcode( 'tcb_roster_public_user_training', 'tcb_roster_public_user_training' );
-		add_shortcode( 'tcb_roster_public_user_ribbons', 'tcb_roster_public_user_ribbons' );
-		add_shortcode( 'tcb_roster_public_user_edit_options', 'tcb_roster_public_user_edit_options' );
-		add_shortcode( 'tcb_roster_public_edit_training', 'tcb_roster_public_edit_training' );
-		add_shortcode( 'tcb_roster_public_edit_status', 'tcb_roster_public_edit_status' );
-		add_shortcode( 'tcb_roster_public_edit_ribbons', 'tcb_roster_public_edit_ribbons' );
-		add_shortcode( 'tcb_roster_public_edit_service_record', 'tcb_roster_public_edit_service_record' );
-		add_shortcode( 'tcb_roster_public_training', 'tcb_roster_public_training' );
-		add_shortcode( 'tcb_roster_public_commendations', 'tcb_roster_public_commendations' );
 		add_shortcode( 'tcb_roster_public_mission_news', 'tcb_roster_public_mission_news' );
 		add_shortcode( 'tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin' );
 		add_shortcode( 'tcb_roster_public_mission_briefing', 'tcb_roster_public_mission_briefing' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_submission', 'tcb_roster_public_mission_briefing_submission' );
-		add_shortcode( 'tcb_roster_public_edit_profile', 'tcb_roster_public_edit_profile' );
 
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
 		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
@@ -110,8 +95,6 @@ class Tcb_Roster_Public {
 
 		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );
 		add_action( 'tcb_roster_public_mission_send_announcement_discord_action', 'tcb_roster_public_mission_send_announcement_discord' );
-
-		add_action( 'acfe/form/submit_form/form=edit-user-profile', 'tcb_roster_public_edit_profile_submit' );
 
 		add_filter( 'acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3 );
 

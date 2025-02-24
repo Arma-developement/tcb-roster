@@ -76,3 +76,43 @@ function tcbp_public_application_form_email( $args ) {
 
 	return $args;
 }
+
+/**
+ * Function to copy elements of the application to the user profile.
+ *
+ * @param int $user_id The ID of the applicant.
+ */
+function tcbp_public_application_to_profile( $user_id ) {
+
+	$profile_id     = 'user_' . $user_id;
+	$application_id = get_field( 'application', $profile_id );
+
+	if ( 0 === $application_id ) {
+		return;
+	}
+
+	$application_post = get_post( $application_id );
+	if ( ! $application_post ) {
+		return;
+	}
+
+	$discord_id = get_field( 'app_discord_id', $application_post );
+	if ( '' !== $discord_id ) {
+		update_field( 'discord_id', $discord_id, $profile_id );
+	}
+
+	$email = get_field( 'app_email', $application_post );
+	if ( '' !== $email ) {
+		update_user_meta( $user_id, 'user_email', $email );
+	}
+
+	$first_name = get_field( 'app_first_name', $application_post );
+	if ( '' !== $first_name ) {
+		update_user_meta( $user_id, 'first_name', $first_name );
+	}
+
+	$country = get_field( 'app_country', $application_post );
+	if ( '' !== $country ) {
+		update_field( 'user-location', $country, $profile_id );
+	}
+}

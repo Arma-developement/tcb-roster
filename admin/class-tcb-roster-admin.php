@@ -52,12 +52,10 @@ class Tcb_Roster_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
-		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-edit-user-profile.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discordDM.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
 
-		add_action( 'edit_user_profile', 'tcb_roster_admin_edit_user_profile' );
 		add_action( 'add_meta_boxes', 'add_hide_in_menu_editor_field' );
 		add_action( 'save_post', 'save_hide_in_menu_selector' );
 
