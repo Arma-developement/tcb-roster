@@ -78,8 +78,9 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// echo '<h3>Terrain</h3>';
 	// echo get_field('terrain');
 	
-	echo '<h3>Time</h3>';
+	echo '<div class="one-third column"><h3>Time</h3>';
 	echo get_field('brief_start_time');
+	echo '</div>';
 	
 	// echo '<h3>Weather</h3>';
 	// echo get_field('weather');
@@ -87,11 +88,13 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// echo '<h3>IED/Mine Threat</h3>';
 	// echo get_field('iedmine_threat');
 
-	echo '<h3>Enemy Forces</h3>';
+	echo '<div class="one-third column"><h3>Enemy Forces</h3>';
 	echo get_field('brief_enemy_forces');
-
-	echo '<h3>Friendly Forces</h3>';
+	echo '</div>';
+	
+	echo '<div class="one-third column"><h3>Friendly Forces</h3>';
 	echo get_field('brief_friendly_forces');
+	echo '</div>';
 
 	// echo '<h3>Civilians</h3>';
 	// echo get_field('civilians');
