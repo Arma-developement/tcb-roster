@@ -78,7 +78,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	// echo '<h3>Terrain</h3>';
 	// echo get_field('terrain');
 	
-	echo '<div class="one-third column"><h3>Time</h3>';
+	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Time</h3>';
 	echo get_field('brief_start_time');
 	echo '</div>';
 	
@@ -94,7 +94,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 	
 	echo '<div class="one-third column"><h3>Friendly Forces</h3>';
 	echo get_field('brief_friendly_forces');
-	echo '</div>';
+	echo '</div></div>';
 
 	// echo '<h3>Civilians</h3>';
 	// echo get_field('civilians');
@@ -134,7 +134,7 @@ function tcb_roster_public_attendance_roster($attributes) {
 		$i = get_row_index();
 
 		echo '<div class="attendanceCol" id="rsvpRow-' . $i . '">';
-		echo '<h3>'. get_sub_field( 'label' ) . '</h3>';
+		echo '<h4>'. get_sub_field( 'label' ) . '</h4>';
 
 		$alreadyRegistered = false;
 		$userIds = get_sub_field('user');	
