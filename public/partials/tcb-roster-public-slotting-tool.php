@@ -48,7 +48,7 @@ function tcb_roster_public_slotting_tool() {
 	}
 
 	// Calculate if already slotted.
-	$previously_slotted = tcb_roster_public_slotting_tool( $user_login );
+	$previously_slotted = tcb_roster_public_find_user_in_slotting( $post_id, $user_login );
 
 	echo '<div class=' . ( $previously_slotted ? '"slotTool slotPreviouslySlotted"' : '"slotTool"' ) . ' id="slotTool"><div class="inner">';
 	echo '<h2>Priority placements</h2>';
@@ -139,25 +139,4 @@ function tcb_roster_public_slotting_tool() {
 		echo '<a href="/mission-briefing/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Briefing</a>';
 	}
 	echo '</div>';
-}
-
-/**
- * Utility function to find if a user is slotted the slotting tool.
- *
- * @param string $user_login The login name of the user.
- */
-function tcb_roster_public_find_user( $user_login ) {
-	while ( have_rows( 'slots' ) ) :
-		the_row();
-		while ( have_rows( 'unit' ) ) :
-			the_row();
-			while ( have_rows( 'slot' ) ) :
-				the_row();
-				if ( get_sub_field( 'slot_member' ) === $user_login ) {
-					return true;
-				}
-			endwhile;
-		endwhile;
-	endwhile;
-	return false;
 }
