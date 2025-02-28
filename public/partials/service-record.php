@@ -63,6 +63,10 @@ function tcbp_public_sr_form() {
 
 			// Update user's profile with data from the application.
 			tcbp_public_application_to_profile( $user_id );
+
+			// Update the user's roles.
+			$user->remove_role( 'subscriber' );
+			$user->add_role( 'limited_member' );
 		}
 	}
 
@@ -277,4 +281,32 @@ function tcbp_public_edit_sr_ribbons() {
 	}
 
 	return ob_get_clean();
+}
+
+
+/**
+ * Utility function to promote a user to Marine.
+ *
+ * @param int $user_id The user id containing the service record information.
+ * @param int $post_id_ The post id of the service record.
+ */
+function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
+
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	if ( in_array( 'limited_member', $user->roles, true ) ) {
+		$user->remove_role( 'limited_member' );
+		$user->add_role( 'member' );
+
+		wp_set_post_terms( $post_id_, 'Marine', 'tcb-rank' );
+	}
 }
