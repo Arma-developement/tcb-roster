@@ -1,0 +1,275 @@
+{
+    "key": "group_67c439b282575",
+    "title": "Application Interview",
+    "fields": [
+        {
+            "key": "field_67c439b29cbec",
+            "label": "Interviewers",
+            "name": "interviewers",
+            "aria-label": "",
+            "type": "user",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "role": "",
+            "return_format": "array",
+            "multiple": 1,
+            "acfe_bidirectional": {
+                "acfe_bidirectional_enabled": "0"
+            },
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_67c439b2a08e5",
+            "label": "Arma Experience ?",
+            "name": "arma_experience",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "What experience with Arma3 do you have?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2a4536",
+            "label": "Other Arma units ?",
+            "name": "other_arma_units",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Have you been in any other Arma3 units prior to applying to 3CB? \r\nIf yes, why did you move on?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2a808b",
+            "label": "Military experience ?",
+            "name": "military_experience",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Do you have any real-world military experience?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2abc1a",
+            "label": "Why 3CB?",
+            "name": "why_3cb",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Why 3CB and what are your expectations from us as a unit?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2af921",
+            "label": "Discovery of 3CB ?",
+            "name": "discovery_of_3cb",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "How did you find out about us?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2b34f2",
+            "label": "Knowledge of 3CB ?",
+            "name": "knowledge_of_3cb",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "What do you know about us?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2b7094",
+            "label": "Extracurricular roles ?",
+            "name": "extracurricular_roles",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Are there any extracurricular roles within the unit you would like to be involved with outside of playing Arma3? \r\nE.g. video creation, advanced training, etc.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2bad58",
+            "label": "Downloaded mods and TFAR?",
+            "name": "downloaded_mods_and_tfar",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Have you downloaded our mods and have TFAR working correctly?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2be9e3",
+            "label": "Questions",
+            "name": "questions",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Do you have any questions for us?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_67c439b2c26b8",
+            "label": "Intervew Evaluation",
+            "name": "Interview_evaluation",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "Please evaluate the applicant.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "yes": "Can proceed to Basic Training",
+                "no": "Reject the applicant"
+            },
+            "default_value": "no",
+            "return_format": "array",
+            "allow_null": 0,
+            "other_choice": 0,
+            "allow_in_bindings": 1,
+            "layout": "vertical",
+            "save_other_choice": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "application"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "comments"
+    ],
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1740913255
+}

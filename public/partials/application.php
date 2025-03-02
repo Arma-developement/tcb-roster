@@ -77,6 +77,67 @@ function tcbp_public_application_form_email( $args ) {
 	return $args;
 }
 
+add_shortcode( 'tcbp_public_edit_app_interview', 'tcbp_public_edit_app_interview' );
+
+/**
+ * Called buy a shortcode to edit the status portion of the ribbons form.
+ */
+function tcbp_public_edit_app_interview() {
+
+	$allowed_roles = array( 'recruit_admin', 'snco', 'officer', 'administrator' );
+	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
+		return;
+	}
+
+	if ( ! isset( $_GET['id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return;
+	}
+
+	$user_id = sanitize_text_field( wp_unslash( $_GET['id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	$display_name = $user->get( 'display_name' );
+	$profile_id   = 'user_' . $user_id;
+	$post_id      = get_field( 'application', $profile_id );
+
+	if ( ! $post_id ) {
+		return;
+	}
+
+	ob_start();
+
+	echo '<div class="tcb_edit_interview">';
+	echo '<h2>' . esc_html( $display_name ) . '</h2>';
+
+	acf_form(
+		array(
+			'post_id'         => $post_id,
+			'field_groups'    => array( 'group_67c439b282575' ),
+			'return'          => wp_get_referer(),
+			'submit_value'    => 'Updated ' . $display_name . "'s Interview",
+			'updated_message' => false,
+		)
+	);
+
+	echo '</div>';
+
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info( 'Edited ' . $display_name . "'s Commendations" );
+	}
+
+	return ob_get_clean();
+}
+
 /**
  * Function to copy elements of the application to the user profile.
  *

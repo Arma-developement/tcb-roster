@@ -56,7 +56,6 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/duties.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/interview.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/service-record.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/status.php';
