@@ -310,3 +310,42 @@ function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
 		wp_set_post_terms( $post_id_, 'Marine', 'tcb-rank' );
 	}
 }
+
+
+/**
+ * Utility function to demote a user to Subscriber.
+ *
+ * @param int $user_id The user id containing the service record information.
+ * @param int $post_id_ The post id of the service record.
+ */
+function tcbp_public_sr_check_demotion_to_subscriber( $user_id, $post_id_ ) {
+
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	$found = false;
+	$roles = $user->roles;
+	foreach ( $roles as $role ) {
+		if ( 'subscriber' === $role ) {
+			$found = true;
+			continue;
+		}
+		$user->remove_role( $role );
+	}
+
+	if ( ! $found ) {
+		$user->add_role( 'subscriber' );
+
+		if ( $post_id_ ) {
+			wp_set_post_terms( $post_id_, '', 'tcb-rank' );
+		}
+	}
+}
