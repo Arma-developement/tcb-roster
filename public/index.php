@@ -1,1 +1,1 @@
-<?php // Silence is golden
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar

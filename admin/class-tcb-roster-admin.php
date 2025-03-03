@@ -53,13 +53,7 @@ class Tcb_Roster_Admin {
 		$this->version     = $version;
 
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
-		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discordDM.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
-
-		add_action( 'add_meta_boxes', 'add_hide_in_menu_editor_field' );
-		add_action( 'save_post', 'save_hide_in_menu_selector' );
-
-		add_filter( 'wp_nav_menu_objects', 'filter_draft_pages_from_menu', 10, 2 );
 	}
 
 	/**
@@ -68,18 +62,6 @@ class Tcb_Roster_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Plugin_Name_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 	}
 
 	/**
@@ -88,19 +70,6 @@ class Tcb_Roster_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Plugin_Name_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tcb-roster-admin.js', array( 'jquery' ), $this->version, false );
 	}
 }

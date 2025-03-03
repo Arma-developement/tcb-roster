@@ -1,94 +1,107 @@
-<?php
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
-function tcb_roster_public_mission_send_password_email($args) {
-	$listOfUserIDs = $args[0];
-	$password = $args[1];
+/**
+ * This file is part of the TCB Roster plugin.
+ *
+ * @param array $args An array of arguments for sending the password.
+ */
+function tcb_roster_public_mission_send_password_email( $args ) {
+	$list_of_user_ids = $args[0];
+	$password         = $args[1];
 
-	// error_log( print_r("send email", TRUE));
-	// error_log( print_r("args: " . json_encode($args), TRUE ));
-	//error_log( print_r("listOfUserIDs: " . json_encode($listOfUserIDs), TRUE ));
-	// error_log( print_r("password: " . $password, TRUE ));
+	$msg             = "\nThe password for today's 3CB Operation is: " . $password . "\n";
+	$discord_id_list = array();
+	foreach ( $list_of_user_ids as $user_id ) {
+		$user    = get_user_by( 'id', $user_id );
+		$profile = 'user_' . $user_id;
 
-	$msg = "\nThe password for today's 3CB Operation is: " . $password . "\n";
-	$discordIDList = [];
-	foreach ($listOfUserIDs as $userId) {
-		$user = get_user_by('id', $userId);
-		$userProfile = 'user_' . $userId;
-
-		$preference = get_field( 'communication_preference', $userProfile );
-		if (!$preference)
+		$preference = get_field( 'communication_preference', $profile );
+		if ( ! $preference ) {
 			continue;
+		}
 
-		//error_log( print_r("preference: " . json_encode($preference), TRUE ));
-
-		if (in_array ("discord", $preference)) {
-			$discordID = get_field( 'discord_id', $userProfile );
-			if ($discordID) {
-				$discordIDList[] = $discordID;
+		if ( in_array( 'discord', $preference, true ) ) {
+			$discord_id = get_field( 'discord_id', $profile );
+			if ( $discord_id ) {
+				$discord_id_list[] = $discord_id;
 			}
 		}
 
-		if (in_array ("email", $preference)) {
+		if ( in_array( 'email', $preference, true ) ) {
 			$email = $user->user_email;
-			wp_mail($user->user_email, "3CB Operation password", $msg);
+			wp_mail( $user->user_email, '3CB Operation password', $msg );
 		}
 	}
 
-	if ($discordIDList)
-		tcb_roster_admin_post_to_discordDM ("3CB-Bot", $discordList, $msg);
+	if ( $discord_id_list ) {
+		tcb_roster_admin_post_to_discordDM( '3CB-Bot', $discord_id_list, $msg );
+	}
 }
 
-function tcb_roster_public_mission_send_password($postId, $type, $args, $form, $action) {
-	
-	function signup_early($postId, $userId, $thresholdTime) {
-		$fields = get_field('time_stamp', $postId);
-		if (!$fields)
+/**
+ * This file is part of the TCB Roster plugin.
+ *
+ * @param int $post_id The ID of the post for which the password is being sent.
+ */
+function tcb_roster_public_mission_send_password( $post_id ) {
+
+	/**
+	 * Sends a password to the user for mission admin access.
+	 *
+	 * @param int $post_id The ID of the post for which the password is being sent.
+	 * @param int $user_id The ID of the user to send the password to.
+	 * @param int $threshold_time The time threshold for sending the password.
+	 */
+	function signup_early( $post_id, $user_id, $threshold_time ) {
+		$fields = get_field( 'time_stamp', $post_id );
+		if ( ! $fields ) {
 			return false;
-		foreach ($fields as $field)
-			if ($userId == $field['user'])
-				return $field['time'] < $thresholdTime;
+		}
+		foreach ( $fields as $field ) {
+			if ( $user_id === $field['user'] ) {
+				return $field['time'] < $threshold_time;
+			}
+		}
 		return false;
 	}
-		
-	// Retrieve data
-	$password = get_field('password', $postId);
-	$delay = get_field('delay', $postId);
 
-	// Set the threshold 24 hours previous
-	$dateTime = new DateTimeImmutable(); 
-	$dateTime = $dateTime->sub(new DateInterval('P1D'));
-	$thresholdTime = $dateTime->getTimestamp();
-		
-	$earlyEmail = [];
-	$lateEmail = [];
-	while( have_rows('rsvp', $postId) ) : the_row();
-		$i = get_row_index();
-		$users = get_sub_field('user');
-		if (!$users)
+	// Retrieve data.
+	$password = get_field( 'password', $post_id );
+	$delay    = get_field( 'delay', $post_id );
+
+	// Set the threshold 24 hours previous.
+	$date_time      = new DateTimeImmutable();
+	$date_time      = $date_time->sub( new DateInterval( 'P1D' ) );
+	$threshold_time = $date_time->getTimestamp();
+
+	$early_email = array();
+	$late_email  = array();
+	while ( have_rows( 'rsvp', $post_id ) ) :
+		the_row();
+		$i     = get_row_index();
+		$users = get_sub_field( 'user' );
+		if ( ! $users ) {
 			continue;
-		
-		foreach ($users as $userId) {
-			//$userId = get_user_by('login', $memberName);
+		}
 
-			// Add to early list if signed up as attending and early
-			if (($i == 1) && signup_early($postId, $userId, $thresholdTime)) 
-				$earlyEmail[] = $userId;
-			else 
-				$lateEmail[] = $userId;
+		foreach ( $users as $user_id ) {
+			// Add to early list if signed up as attending and early.
+			if ( ( 1 === $i ) && signup_early( $post_id, $user_id, $threshold_time ) ) {
+				$early_email[] = $user_id;
+			} else {
+				$late_email[] = $user_id;
+			}
 		}
 	endwhile;
 
-	$now = new DateTimeImmutable ();
-	$later = $now->add( new DateInterval('PT' . $delay . 'S') );
+	$now   = new DateTimeImmutable();
+	$later = $now->add( new DateInterval( 'PT' . $delay . 'S' ) );
 
-	// error_log( print_r("button press", TRUE ));
-	error_log( print_r("earlyEmail: " . json_encode($earlyEmail), TRUE ));
-	error_log( print_r("lateEmail: " . json_encode($lateEmail), TRUE ));
-	// error_log( print_r("delay: " . $delay, TRUE ));
-	// error_log( print_r("password: " . $password, TRUE ));
-	// error_log( print_r("timeStamp: " . $now->format('H:i:s'), TRUE ));
-	// error_log( print_r("timeStamp: " . $later->format('H:i:s'), TRUE ));
+	// error_log( print_r( 'early_email: ' . json_encode( $early_email ), true ) );
+	// .
+	// error_log( print_r( 'late_email: ' . json_encode( $late_email ), true ) );
+	// .
 
-	as_enqueue_async_action('tcb_roster_public_mission_send_password_email_action', array(array($earlyEmail, $password)));
-	as_schedule_single_action( DateTime::createFromImmutable($later), 'tcb_roster_public_mission_send_password_email_action', array(array($lateEmail, $password)));
+	as_enqueue_async_action( 'tcb_roster_public_mission_send_password_email_action', array( array( $early_email, $password ) ) );
+	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password ) ) );
 }

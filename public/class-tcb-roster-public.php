@@ -113,18 +113,6 @@ class Tcb_Roster_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Plugin_Name_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 	}
 
 	/**
@@ -133,18 +121,6 @@ class Tcb_Roster_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Plugin_Name_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 
 		wp_register_script( 'tcb_roster_public_rsvp_register', plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public-rsvp-register.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script(

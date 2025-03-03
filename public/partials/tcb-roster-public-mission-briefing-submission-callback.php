@@ -1,206 +1,211 @@
-<?php
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
-function tcb_roster_public_mission_briefing_submission_callback ($postId, $type, $args, $form, $action) {
+/**
+ * Callback function for mission briefing submission.
+ *
+ * @param int $post_id_ The ID of the post being processed.
+ */
+function tcb_roster_public_mission_briefing_submission_callback( $post_id_ ) {
 
-	// Set default perms
-	add_post_meta( $postId, '_members_access_role', 'limited_member' );
-	add_post_meta( $postId, '_members_access_role', 'member' );
+	// Set default perms.
+	add_post_meta( $post_id_, '_members_access_role', 'limited_member' );
+	add_post_meta( $post_id_, '_members_access_role', 'member' );
 
-	// Set roster type
-	$rosterType = get_field('brief_roster_type', $postId);
+	// Set roster type.
+	$roster_type = get_field( 'brief_roster_type', $post_id_ );
 
-	add_row('rsvp', array( 'label' => 'Attending' ), $postId);
-	add_row('rsvp', array( 'label' => 'Maybe' ), $postId);
-	add_row('rsvp', array( 'label' => 'Not Attending' ), $postId);
+	add_row( 'rsvp', array( 'label' => 'Attending' ), $post_id_ );
+	add_row( 'rsvp', array( 'label' => 'Maybe' ), $post_id_ );
+	add_row( 'rsvp', array( 'label' => 'Not Attending' ), $post_id_ );
 
-	switch ($rosterType) {
+	switch ( $roster_type ) {
 		case 'std':
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Coy' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Coy' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-0' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-2' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-3' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-4' ), $postId);
-			
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop Commander' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop 2iC' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-0' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-4' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Whiskey 6-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Pilot' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Co-pilot' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop Commander' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop 2iC' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Whiskey 6-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Pilot' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
 		case 'full44':
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Coy' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Coy' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-0' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-2' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-3' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-4' ), $postId);
-			
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop Commander' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop 2iC' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-0' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-4' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop Commander' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop 2iC' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'MG Asst' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Whiskey 6-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Pilot' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Co-pilot' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'MG Asst' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Whiskey 6-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Pilot' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
 		case 'full53':
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Coy' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Coy' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-0' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-2' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-3' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-4' ), $postId);
-			
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop Commander' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop 2iC' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-0' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-4' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);			
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'AT Asst' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop Commander' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop 2iC' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);			
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'AT Asst' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'AT Asst' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);			
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'AT' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'AT Asst' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'AT Asst' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'MG Asst' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'AT' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'AT Asst' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Whiskey 6-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Pilot' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Co-pilot' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'MG Asst' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Whiskey 6-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Pilot' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
 		case 'full222':
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Coy' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Zeus' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Coy' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Zeus' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-0' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-2' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-3' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => '1-4' ), $postId);
-			
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop Commander' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Troop 2iC' ), $postId);
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-0' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => '1-4' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 2, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop Commander' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Troop 2iC' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 3, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 2, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 4, 'slot'), array( 'slot_name' => 'LMG' ), $postId);;
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 3, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Section Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Medic' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Fire Team Leader' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Engineer' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'Marksman' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 5, 'slot'), array( 'slot_name' => 'LMG' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 4, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
 
-			$troop = add_row('slots', array(), $postId);
-			add_sub_row( array('slots', $troop, 'unit'), array( 'name' => 'Whiskey 6-1' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Pilot' ), $postId);
-			add_sub_row( array('slots', $troop, 'unit', 1, 'slot'), array( 'slot_name' => 'Co-pilot' ), $postId);
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Section Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Medic' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Fire Team Leader' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Engineer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'Marksman' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 5, 'slot' ), array( 'slot_name' => 'LMG' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Whiskey 6-1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Pilot' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
 	}
 }

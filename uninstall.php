@@ -1,5 +1,4 @@
-<?php
-
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 /**
  * Fired when the plugin is uninstalled.
  *

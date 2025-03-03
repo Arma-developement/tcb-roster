@@ -1,19 +1,19 @@
-<?php
-/*
-Plugin Name: 3CB Roster
-Plugin URI: https://github.com/Arma-developement/tcb-roster
-Description: Design by Nick at Intention and Lifetap
-Version: 1.3.56
-Author: Lifetap / Badger
-Author URI: https://github.com/Arma-developement/tcb-roster
-License: GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: roster
-Domain Path: arma
-
-GitHub Plugin URI: https://github.com/Arma-developement/tcb-roster
-Primary Branch: main
-*/
+<?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
+/**
+ * Plugin Name: 3CB Roster
+ * Plugin URI: https://github.com/Arma-developement/tcb-roster
+ * Description: Design by Nick at Intention and Lifetap
+ * Version: 1.3.56
+ * Author: Lifetap / Badger
+ * Author URI: https://github.com/Arma-developement/tcb-roster
+ * License: GPL2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: roster
+ * Domain Path: arma
+ *
+ * GitHub Plugin URI: https://github.com/Arma-developement/tcb-roster
+ * Primary Branch: main
+ */
 
 /**
  * If this file is called directly, abort.
@@ -62,16 +62,20 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-tcb-roster.php';
  * @since 1.0.0
  */
 function run_tcb_roster() {
-	$root        = $_SERVER['DOCUMENT_ROOT'];
-	$envFilepath = "$root/tcb.env";
+	$root          = isset( $_SERVER['DOCUMENT_ROOT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['DOCUMENT_ROOT'] ) ) : '';
+	$env_file_path = "$root/tcb.env";
 
-	if ( is_file( $envFilepath ) ) {
-		$file = new \SplFileObject( $envFilepath );
+	if ( is_file( $env_file_path ) ) {
+		$file = new \SplFileObject( $env_file_path );
 
 		// Loop until we reach the end of the file.
 		while ( ! $file->eof() ) {
 			// Get the current line value, trim it and save by putenv.
-			putenv( trim( $file->fgets() ) );
+			$line = trim( $file->fgets() );
+			if ( strpos( $line, '=' ) !== false ) {
+				list( $name, $value ) = explode( '=', $line, 2 );
+				$_ENV[ $name ]        = $value;
+			}
 		}
 	}
 
