@@ -9,21 +9,12 @@ function tcb_roster_public_slotting_tool_update() {
 	 * Function to handle attendance roster updates.
 	 */
 	function do_work() {
-		if ( ! isset( $_POST['postId'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-		if ( ! isset( $_POST['userId'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-		if ( ! isset( $_POST['slot'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-		if ( ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
+		if ( ! isset( $_POST['postId'] ) || ! isset( $_POST['userId'] ) || ! isset( $_POST['slot'] ) || ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return wp_send_json_error( 'Parameters missing' );
 		}
 
-		$post_id_ = sanitize_text_field( wp_unslash( $_POST['postId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$user_id  = sanitize_text_field( wp_unslash( $_POST['userId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_id  = (int) sanitize_text_field( wp_unslash( $_POST['postId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$user_id  = (int) sanitize_text_field( wp_unslash( $_POST['userId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$slot_str = sanitize_text_field( wp_unslash( $_POST['slot'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$nounce   = sanitize_text_field( wp_unslash( $_POST['nounce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
@@ -69,7 +60,7 @@ function tcb_roster_public_slotting_tool_update() {
 				return wp_send_json_error( 'Existing user ' . $slotted_member_name );
 		} elseif ( update_sub_field( $slot_index_array, $slotted_member_name, $post_id ) ) {
 			// Add to the rvsp as attending.
-			tcb_roster_public_addToRSVP( $post_id, $user_id, 1 );
+			tcbp_public_attendance_register_user( $post_id, $user_id, 1, false );
 			return wp_send_json_success( 'Added user ' . $slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );
 		} else {
 			return wp_send_json_error( 'Added user ' . $slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );

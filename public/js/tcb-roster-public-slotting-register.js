@@ -5,6 +5,7 @@
 
 		jQuery(document).on("submit", '.slotForm', function(event) { 
 			event.preventDefault();
+			
 			jQuery(this).parent().addClass('loading');
 			var userID = +jQuery(this).find(".userID").val();
 			var postID = +jQuery(this).find(".postID").val();

@@ -232,8 +232,8 @@
         },
         {
             "key": "field_637a59431d1b2",
-            "label": "Time Stamp",
-            "name": "time_stamp",
+            "label": "Stamp",
+            "name": "stamp",
             "aria-label": "",
             "type": "repeater",
             "instructions": "Do NOT edit this field",
@@ -256,9 +256,9 @@
                 {
                     "key": "field_637a59741d1b3",
                     "label": "User",
-                    "name": "user",
+                    "name": "stamp_user",
                     "aria-label": "",
-                    "type": "acfe_hidden",
+                    "type": "user",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -267,15 +267,24 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "role": "",
+                    "return_format": "id",
+                    "multiple": 0,
+                    "acfe_bidirectional": {
+                        "acfe_bidirectional_enabled": "0"
+                    },
+                    "allow_null": 0,
+                    "allow_in_bindings": 1,
+                    "bidirectional": 0,
+                    "bidirectional_target": [],
                     "parent_repeater": "field_637a59431d1b2"
                 },
                 {
                     "key": "field_637a59a01d1b4",
-                    "label": "Time",
-                    "name": "time",
+                    "label": "Date",
+                    "name": "stamp_date",
                     "aria-label": "",
-                    "type": "acfe_hidden",
+                    "type": "date_picker",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -284,7 +293,29 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "display_format": "d\/m\/Y",
+                    "return_format": "d\/m\/Y",
+                    "first_day": 1,
+                    "allow_in_bindings": 1,
+                    "parent_repeater": "field_637a59431d1b2"
+                },
+                {
+                    "key": "field_67c760e1f1d48",
+                    "label": "Time",
+                    "name": "stamp_time",
+                    "aria-label": "",
+                    "type": "time_picker",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "display_format": "H:i:s",
+                    "return_format": "H:i:s",
+                    "allow_in_bindings": 0,
                     "parent_repeater": "field_637a59431d1b2"
                 }
             ]
@@ -299,7 +330,7 @@
             }
         ]
     ],
-    "menu_order": 0,
+    "menu_order": 40,
     "position": "normal",
     "style": "default",
     "label_placement": "top",
@@ -315,5 +346,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738183727
+    "modified": 1741119888
 }

@@ -88,7 +88,7 @@
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": true,
-    "description": "",
+    "description": "Do NOT edit this field",
     "show_in_rest": 0,
     "acfe_display_title": "Back End User Profile",
     "acfe_autosync": [
@@ -98,5 +98,5 @@
     "acfe_form": 1,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1739920062
+    "modified": 1741123392
 }

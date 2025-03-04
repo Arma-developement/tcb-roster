@@ -54,8 +54,10 @@ class Tcb_Roster_Public {
 
 		// Refactored code base 2025.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/attendance.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/duties.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/service-record.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/status.php';
@@ -64,8 +66,6 @@ class Tcb_Roster_Public {
 		// Original code base from 2022.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-attendance-roster-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
@@ -86,9 +86,6 @@ class Tcb_Roster_Public {
 		add_shortcode( 'tcb_roster_public_mission_briefing', 'tcb_roster_public_mission_briefing' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_submission', 'tcb_roster_public_mission_briefing_submission' );
-
-		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_attendance_roster' );
-		add_action( 'tribe_events_single_event_after_the_meta', 'tcb_roster_public_slotting_tool' );
 
 		add_action( 'wp_ajax_tcb_roster_public_attendance_roster_update', 'tcb_roster_public_attendance_roster_update' );
 		add_action( 'wp_ajax_tcb_roster_public_slotting_tool_update', 'tcb_roster_public_slotting_tool_update' );
