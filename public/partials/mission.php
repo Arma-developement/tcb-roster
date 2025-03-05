@@ -105,8 +105,8 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
-	tcbp_public_attendance_roster( $post_id, $current_user );
-	tcbp_public_slotting_tool( $post_id, $current_user );
+	list( $attendance, $user_found ) = tcbp_public_attendance_roster( $post_id, $current_user );
+	tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_found );
 
 	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 
@@ -132,16 +132,22 @@ function tcbp_public_mission_overview() {
  *
  * @param int    $post_id The post ID.
  * @param object $current_user The current user object.
- * @return void
+ * @return array $attendance The number of users registered as attending, $user_found Whether the current user is registered as attending.
  */
 function tcbp_public_attendance_roster( $post_id, $current_user ) {
 
 	$current_user_id = $current_user->ID;
 
+	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+	error_log( print_r( 'tcbp_public_attendance_roster()', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	// .
+
 	echo '<div id="attendanceRoster"><div class="inner">';
 	echo '<h2>Attendance</h2>';
 	echo '<div class="wrap">';
 
+	$attendance = 0;
+	$user_found = false;
 	while ( have_rows( 'rsvp' ) ) :
 		the_row();
 		$i = get_row_index();
@@ -161,6 +167,7 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 			// Display list.
 			echo '<ul>';
 			foreach ( $user_ids as $user_id ) {
+				++$attendance;
 				$user   = get_user_by( 'id', $user_id );
 				$avatar = get_avatar_url( $user_id );
 				// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
@@ -187,8 +194,11 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 		}
 
 		echo '</div>';
+		$user_found |= $unregister;
 	endwhile;
 	echo '</div></div></div>';
+
+	return array( $attendance, $user_found );
 }
 
 /**
@@ -199,35 +209,24 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
  *
  * @param int    $post_id The post ID.
  * @param object $current_user The current user object.
+ * @param int    $attendance The number of users registered as attending.
+ * @param bool   $user_found Whether the current user is registered as attending.
  * @return void
  */
-function tcbp_public_slotting_tool( $post_id, $current_user ) {
-
-	$current_user_id = $current_user->ID;
+function tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_found ) {
 
 	// Early out if no entries in slots field.
 	if ( ! have_rows( 'slots' ) ) {
 		return;
 	}
 
-	// Calculate number of users registered as attending.
-	$attendance = 0;
-	if ( have_rows( 'rsvp' ) ) {
-		while ( have_rows( 'rsvp' ) ) :
-			the_row();
-			$user_ids = get_sub_field( 'user' );
-			if ( $user_ids ) {
-				$attendance = count( $user_ids );
-			}
-			break;
-		endwhile;
-	}
-
-	// Calculate if already slotted.
+	$current_user_id    = $current_user->ID;
 	$current_user_login = $current_user->user_login;
-	$previously_slotted = tcb_roster_public_find_user_in_slotting( $post_id, $current_user_login );
 
-	echo '<div class=' . ( $previously_slotted ? '"slotTool slotPreviouslySlotted"' : '"slotTool"' ) . ' id="slotTool"><div class="inner">';
+	error_log( print_r( 'attendance: ' . $attendance, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	error_log( print_r( 'user_found: ' . ( $user_found ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+
+	echo '<div class=' . ( $user_found ? '"slotTool slotPreviouslySlotted"' : '"slotTool"' ) . ' id="slotTool"><div class="inner">';
 	echo '<h2>Priority placements</h2>';
 	echo '<p>Avatar appears when member is slotted</p>';
 
@@ -278,10 +277,12 @@ function tcbp_public_slotting_tool( $post_id, $current_user ) {
 
 				echo '<div class=' . ( $is_owner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"' ) . ' id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
 				echo '<form class="slotForm">';
+
 				echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
 				echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
 				echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
 				echo '<input class="slotIcon ' . ( $is_disabled ? 'disabled"' : '"' ) . 'type="submit"';
+
 				echo ' style="background-image:url(' . esc_url( $profile_image ? $profile_image : '' ) . ')"';
 				echo '>';
 				echo '</form>';
