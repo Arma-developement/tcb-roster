@@ -66,7 +66,6 @@ class Tcb_Roster_Public {
 		// Original code base from 2022.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin.php';

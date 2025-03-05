@@ -105,8 +105,12 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
+	echo '<div id="dynamicContent">';
+
 	list( $attendance, $user_found ) = tcbp_public_attendance_roster( $post_id, $current_user );
 	tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_found );
+
+	echo '</div>';
 
 	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 
