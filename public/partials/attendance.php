@@ -8,7 +8,7 @@
  * @param int  $user_id The ID of the user.
  * @param bool $remove_slotting Flag to remove user from slotting tool.
  */
-function tcbp_public_attendance_remove_user( $post_id, $user_id, $remove_slotting = true ) {
+function tcbp_public_attendance_remove_user( $post_id, $user_id, $remove_slotting ) {
 
 	while ( have_rows( 'rsvp', $post_id ) ) :
 		the_row();
@@ -54,7 +54,7 @@ function tcbp_public_attendance_remove_user( $post_id, $user_id, $remove_slottin
  * @param int  $selection The selection data for the roster update.
  * @param bool $remove_slotting Flag to remove user from slotting tool.
  */
-function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $remove_slotting = true ) {
+function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $remove_slotting ) {
 
 	$fields = get_field( 'rsvp', $post_id );
 	if ( ! $fields ) {
@@ -70,9 +70,9 @@ function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $
 	}
 
 	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// error_log( print_r( 'unregister: ' . $unregister, true ) );
-	// error_log( print_r( 'user id: ' . $user_id, true ) );
-	// error_log( print_r( 'Registered users: ' . implode( ',', $registered_users ), true ) );
+	// error_log( print_r( 'user_id: ' . $user_id, true ) );
+	// error_log( print_r( 'registered_users: ' . implode( ',', $registered_users ), true ) );
+	// error_log( print_r( 'remove_slotting: ' . ( $remove_slotting ? 1 : 0 ), true ) );
 	// .
 
 	// Check for registered user, removing from old list and adding to new list.
@@ -115,6 +115,9 @@ function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $
 	return wp_send_json_success( 'New user added' );
 }
 
+// Important: These labels must match the function below, and also include "wp_ajax_".
+add_action( 'wp_ajax_tcbp_public_attendance_update', 'tcbp_public_attendance_update' );
+
 /**
  * Function to handle attendance roster updates.
  * Called from AJAX, when a user registers or unregisters from an event.
@@ -142,12 +145,12 @@ function tcbp_public_attendance_update() {
 
 		// Check for unregister, and remove user.
 		if ( $unregister ) {
-			tcbp_public_attendance_remove_user( $post_id, $user_id );
+			tcbp_public_attendance_remove_user( $post_id, $user_id, true );
 			return wp_send_json_success( 'User unregistered' );
 		}
 
 		// Register the user.
-		return tcbp_public_attendance_register_user( $post_id, $user_id, $selection );
+		return tcbp_public_attendance_register_user( $post_id, $user_id, $selection, true );
 	}
 
 	do_work();

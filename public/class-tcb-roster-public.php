@@ -87,7 +87,6 @@ class Tcb_Roster_Public {
 		add_shortcode( 'tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_submission', 'tcb_roster_public_mission_briefing_submission' );
 
-		add_action( 'wp_ajax_tcb_roster_public_attendance_roster_update', 'tcb_roster_public_attendance_roster_update' );
 		add_action( 'wp_ajax_tcb_roster_public_slotting_tool_update', 'tcb_roster_public_slotting_tool_update' );
 
 		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );

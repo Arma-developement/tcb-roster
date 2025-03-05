@@ -29,6 +29,12 @@ function tcb_roster_public_slotting_tool_update() {
 		$j          = (int) $slot_array[1];
 		$k          = (int) $slot_array[2];
 
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+		// error_log( print_r( 'i: ' . $i, true ) );
+		// error_log( print_r( 'j: ' . $j, true ) );
+		// error_log( print_r( 'k: ' . $k, true ) );
+		// .
+
 		// Check if the user is already slotted.
 		$user                = get_user_by( 'id', $user_id );
 		$slotted_member_name = $user->user_login;
