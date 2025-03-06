@@ -112,7 +112,11 @@ function tcbp_public_mission_overview() {
 	echo '<div id="dynamicContent">';
 
 	list( $attendance, $user_attending ) = tcbp_public_attendance_roster( $post_id, $current_user );
-	$user_slotted                        = tcbp_public_slotting_tool( $post_id, $current_user, $attendance );
+	if ( $user_attending ) {
+		$user_slotted = tcbp_public_slotting_tool( $post_id, $current_user, $attendance );
+	} else {
+		$user_slotted = tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendance );
+	}
 
 	echo '</div>';
 
@@ -198,7 +202,11 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 		}
 
 		echo '</div>';
-		$user_found |= $unregister;
+
+		// Check if user is in attending list.
+		if ( 1 === $i ) {
+			$user_found = $unregister;
+		}
 	endwhile;
 	echo '</div></div></div>';
 
@@ -228,14 +236,13 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 
 	// Search for user in slotting tool.
 	// Required for the class property prior to the loop.
-	$user_found = tcb_roster_public_find_user_in_slotting( $post_id, $current_user_id );
+	$user_found = tcbp_public_slotting_find_user( $post_id, $current_user_id );
 
 	error_log( print_r( 'attendance: ' . $attendance, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	error_log( print_r( 'user_found: ' . ( $user_found ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 	echo '<div class=' . ( $user_found ? '"slotTool slotPreviouslySlotted"' : '"slotTool"' ) . ' id="slotTool"><div class="inner">';
 	echo '<h2>Priority placements</h2>';
-	echo '<p>Avatar appears when member is slotted</p>';
 
 	// Loop through slot rows.
 	while ( have_rows( 'slots' ) ) :
@@ -271,29 +278,30 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 				$slotted_user_id      = get_sub_field( 'slot_member' );
 				$is_owner             = $slotted_user_id === $current_user_id;
 				$is_disabled          = $is_locked || ( $slotted_user_id && ! $is_owner );
+				$profile_image        = '';
 
 				if ( $slotted_user_id ) {
 					$slotted_user         = get_user_by( 'id', $slotted_user_id );
 					$profile_image        = get_avatar_url( $slotted_user_id );
 					$slotted_display_name = $slotted_user->display_name;
-				} else {
-					$profile_image        = '';
-					$slotted_display_name = '';
 				}
 
 				error_log( print_r( 'k: ' . $k . ' is_owner: ' . ( $is_owner ? 'true' : 'false' ) . ' is_disabled: ' . ( $is_disabled ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 				echo '<div class=' . ( $is_owner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"' ) . ' id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
 
-				echo '<form class="slotForm">';
-				echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
-				echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
-				echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
-				echo '<input class="slotIcon ' . ( $is_disabled ? 'disabled"' : '"' ) . 'type="submit"';
-
-				echo ' style="background-image:url(' . esc_url( $profile_image ? $profile_image : '' ) . ')"';
-				echo '>';
-				echo '</form>';
+				if ( $is_disabled ) {
+					echo '<div class="slotToolSlotDummyImage" style="background-image:url(' . esc_url( $profile_image ) . ')"></div>';
+				} else {
+					echo '<form class="slotForm">';
+					echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
+					echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
+					echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
+					echo '<input class="slotIcon ' . ( $is_disabled ? 'disabled"' : '"' ) . 'type="submit"';
+					echo ' style="background-image:url(' . esc_url( $profile_image ) . ')"';
+					echo '>';
+					echo '</form>';
+				}
 
 				if ( $is_locked ) {
 					if ( $attendance_threshold < 999 ) {
@@ -301,8 +309,10 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 					} else {
 						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  locked (command's decision)<br>";
 					}
-				} else {
+				} elseif ( $slotted_user_id ) {
 					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';
+				} else {
+					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <br>';
 				}
 				echo '</div>';
 			endwhile;
@@ -312,4 +322,90 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 	echo '</div></div>';
 
 	return $user_found;
+}
+
+/**
+ * Generates the public slotting tool (read only).
+ *
+ * This function is responsible for generating and displaying the public slotting tool
+ * for the TCB Roster plugin.
+ *
+ * @param int    $post_id The post ID.
+ * @param object $current_user The current user object.
+ * @param int    $attendance The number of users registered as attending.
+ * @return bool  $user_found Whether the current user is slotted.
+ */
+function tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendance ) {
+
+	// Early out if no entries in slots field.
+	if ( ! have_rows( 'slots' ) ) {
+		return;
+	}
+
+	echo '<div class="slotTool" id="slotTool"><div class="inner">';
+	echo '<h2>Priority placements</h2>';
+
+	// Loop through slot rows.
+	while ( have_rows( 'slots' ) ) :
+		the_row();
+		$i = get_row_index();
+
+		// Continue to next slot if unit is empty.
+		if ( ! have_rows( 'unit' ) ) {
+			continue;
+		}
+
+		// Loop through unit rows.
+		while ( have_rows( 'unit' ) ) :
+			the_row();
+			$j = get_row_index();
+
+			echo '<div class="unit" >';
+			echo '<h3>' . esc_html( get_sub_field( 'name' ) ) . '</h3>';
+
+			// Continue to next unit if slot is empty.
+			if ( ! have_rows( 'slot' ) ) {
+				continue;
+			}
+
+			// Loop through rows.
+			while ( have_rows( 'slot' ) ) :
+				the_row();
+				$k = get_row_index();
+
+				// Get profile pic for slotted member.
+				$attendance_threshold = get_sub_field( 'attendance_threshold' );
+				$is_locked            = $attendance < $attendance_threshold;
+				$slotted_user_id      = get_sub_field( 'slot_member' );
+
+				$profile_image        = '';
+				$slotted_display_name = '';
+
+				if ( $slotted_user_id ) {
+					$slotted_user         = get_user_by( 'id', $slotted_user_id );
+					$profile_image        = get_avatar_url( $slotted_user_id );
+					$slotted_display_name = $slotted_user->display_name;
+				}
+
+				echo '<div class="slotToolSlot" id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
+				echo '<div class="slotToolSlotDummyImage" style="background-image:url(' . esc_url( $profile_image ) . ')"></div>';
+				if ( $is_locked ) {
+					if ( $attendance_threshold < 999 ) {
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  locked (requires ' . esc_html( $attendance_threshold ) . ' attendees)<br>';
+					} else {
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  locked (command's decision)<br>";
+					}
+				} elseif ( $slotted_user_id ) {
+					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';
+				} else {
+					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <br>';
+				}
+				echo '</div>';
+			endwhile;
+			echo '</div>';
+		endwhile;
+	endwhile;
+	echo '</div></div>';
+
+	return false;
 }

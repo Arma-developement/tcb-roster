@@ -60,13 +60,13 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/service-record.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/slotting.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/status.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/user-profile.php';
 
 		// Original code base from 2022.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-slotting-tool-update.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php';
@@ -85,8 +85,6 @@ class Tcb_Roster_Public {
 		add_shortcode( 'tcb_roster_public_mission_briefing', 'tcb_roster_public_mission_briefing' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_edit', 'tcb_roster_public_mission_briefing_edit' );
 		add_shortcode( 'tcb_roster_public_mission_briefing_submission', 'tcb_roster_public_mission_briefing_submission' );
-
-		add_action( 'wp_ajax_tcb_roster_public_slotting_tool_update', 'tcb_roster_public_slotting_tool_update' );
 
 		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );
 		add_action( 'tcb_roster_public_mission_send_announcement_discord_action', 'tcb_roster_public_mission_send_announcement_discord' );

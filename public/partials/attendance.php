@@ -40,7 +40,7 @@ function tcbp_public_attendance_remove_user( $post_id, $user_id, $remove_slottin
 
 		// Remove from slotting tool.
 		if ( $remove_slotting && ( 1 === get_row_index() ) ) {
-			tcb_roster_public_remove_from_slotting( $post_id, $user_id );
+			tcbp_public_slotting_remove_user( $post_id, $user_id );
 		}
 		break;
 	endwhile;

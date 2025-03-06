@@ -20,7 +20,7 @@
 				type: 'post',
 				dataType: 'json',
 				url: slotting_localize.ajax_url,
-				data: {action: 'tcb_roster_public_slotting_tool_update', postId: postID, userId: userID, slot: slot, nounce: slotting_localize.ajax_nounce},
+				data: {action: 'tcbp_public_slotting_update', postId: postID, userId: userID, slot: slot, nounce: slotting_localize.ajax_nounce},
 				success: function(response) {
 					console.log(response);
 

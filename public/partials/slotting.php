@@ -1,9 +1,73 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
 /**
+ * Utility function to find if a user is slotted the slotting tool.
+ *
+ * @param int    $post_id The post ID for the slotting tool.
+ * @param string $user_id The login name of the user.
+ */
+function tcbp_public_slotting_find_user( $post_id, $user_id ) {
+	while ( have_rows( 'slots', $post_id ) ) :
+		the_row();
+		if ( ! have_rows( 'unit', $post_id ) ) {
+			continue;
+		}
+		while ( have_rows( 'unit', $post_id ) ) :
+			the_row();
+			if ( ! have_rows( 'slot', $post_id ) ) {
+				continue;
+			}
+			while ( have_rows( 'slot', $post_id ) ) :
+				the_row();
+				if ( get_sub_field( 'slot_member' ) === $user_id ) {
+					return true;
+				}
+			endwhile;
+		endwhile;
+	endwhile;
+	return false;
+}
+
+/**
+ * Updates the slotting tool with the provided user data.
+ *
+ * @param int   $post_id The post ID for the slotting tool.
+ * @param array $user_id An associative array containing user data to be updated.
+ */
+function tcbp_public_slotting_remove_user( $post_id, $user_id ) {
+	while ( have_rows( 'slots', $post_id ) ) :
+		the_row();
+		$i = get_row_index();
+		if ( ! have_rows( 'unit', $post_id ) ) {
+			continue;
+		}
+		while ( have_rows( 'unit', $post_id ) ) :
+			the_row();
+			$j = get_row_index();
+			if ( ! have_rows( 'slot', $post_id ) ) {
+				continue;
+			}
+			while ( have_rows( 'slot', $post_id ) ) :
+				the_row();
+				$k = get_row_index();
+				if ( get_sub_field( 'slot_member' ) === $user_id ) {
+					$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
+					update_sub_field( $slot_index_array, '', $post_id );
+					return true;
+				}
+			endwhile;
+		endwhile;
+	endwhile;
+	return false;
+}
+
+// Important: These labels must match the function below, and also include "wp_ajax_".
+add_action( 'wp_ajax_tcbp_public_slotting_update', 'tcbp_public_slotting_update' );
+
+/**
  * Function to handle attendance roster updates.
  */
-function tcb_roster_public_slotting_tool_update() {
+function tcbp_public_slotting_update() {
 
 	/**
 	 * Function to handle attendance roster updates.
@@ -38,7 +102,7 @@ function tcb_roster_public_slotting_tool_update() {
 		// Check if the user is already slotted.
 		$user            = get_user_by( 'id', $user_id );
 		$display_name    = $user->display_name;
-		$already_slotted = tcb_roster_public_find_user_in_slotting( $post_id, $user_id );
+		$already_slotted = tcbp_public_slotting_find_user( $post_id, $user_id );
 
 		// Retrieve the user at the specific location.
 		$fields           = get_field( 'slots', $post_id );
@@ -75,65 +139,4 @@ function tcb_roster_public_slotting_tool_update() {
 
 	do_work();
 	wp_die();
-}
-
-/**
- * Utility function to find if a user is slotted the slotting tool.
- *
- * @param int    $post_id The post ID for the slotting tool.
- * @param string $user_id The login name of the user.
- */
-function tcb_roster_public_find_user_in_slotting( $post_id, $user_id ) {
-	while ( have_rows( 'slots', $post_id ) ) :
-		the_row();
-		if ( ! have_rows( 'unit', $post_id ) ) {
-			continue;
-		}
-		while ( have_rows( 'unit', $post_id ) ) :
-			the_row();
-			if ( ! have_rows( 'slot', $post_id ) ) {
-				continue;
-			}
-			while ( have_rows( 'slot', $post_id ) ) :
-				the_row();
-				if ( get_sub_field( 'slot_member' ) === $user_id ) {
-					return true;
-				}
-			endwhile;
-		endwhile;
-	endwhile;
-	return false;
-}
-
-/**
- * Updates the slotting tool with the provided user data.
- *
- * @param int   $post_id The post ID for the slotting tool.
- * @param array $user_id An associative array containing user data to be updated.
- */
-function tcb_roster_public_remove_from_slotting( $post_id, $user_id ) {
-	while ( have_rows( 'slots', $post_id ) ) :
-		the_row();
-		$i = get_row_index();
-		if ( ! have_rows( 'unit', $post_id ) ) {
-			continue;
-		}
-		while ( have_rows( 'unit', $post_id ) ) :
-			the_row();
-			$j = get_row_index();
-			if ( ! have_rows( 'slot', $post_id ) ) {
-				continue;
-			}
-			while ( have_rows( 'slot', $post_id ) ) :
-				the_row();
-				$k = get_row_index();
-				if ( get_sub_field( 'slot_member' ) === $user_id ) {
-					$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
-					update_sub_field( $slot_index_array, '', $post_id );
-					return true;
-				}
-			endwhile;
-		endwhile;
-	endwhile;
-	return false;
 }
