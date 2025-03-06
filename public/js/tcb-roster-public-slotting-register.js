@@ -25,9 +25,6 @@
 					console.log(response);
 
 					// Reload the attendance roster part of the page with AJAX
-					// jQuery('#attendanceRoster').load(document.URL +  ' #attendanceRoster .inner');
-					// jQuery('#slotTool').load(document.URL +  ' #slotTool .inner');
-					// jQuery('#slotToolButtons').load(document.URL +  ' #slotToolButtons');
 					jQuery('#dynamicContent').load(document.URL + ' #dynamicContent');
 				},
 				error: function(response) {

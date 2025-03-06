@@ -92,6 +92,7 @@ function tcbp_public_slotting_update() {
 		$i          = (int) $slot_array[0];
 		$j          = (int) $slot_array[1];
 		$k          = (int) $slot_array[2];
+		$owner      = (bool) $slot_array[3];
 
 		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		// error_log( print_r( 'i: ' . $i, true ) );
@@ -99,38 +100,24 @@ function tcbp_public_slotting_update() {
 		// error_log( print_r( 'k: ' . $k, true ) );
 		// .
 
-		// Check if the user is already slotted.
-		$user            = get_user_by( 'id', $user_id );
-		$display_name    = $user->display_name;
-		$already_slotted = tcbp_public_slotting_find_user( $post_id, $user_id );
-
-		// Retrieve the user at the specific location.
-		$fields           = get_field( 'slots', $post_id );
+		$user             = get_user_by( 'id', $user_id );
+		$display_name     = $user->display_name;
 		$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
 
-		// 1 subtracted to compensate for ACF rows starting at 1, whilst arrays start at 0.
-		$old_user_id = $fields[ $i - 1 ]['unit'][ $j - 1 ]['slot'][ $k - 1 ]['slot_member'];
-		$old_user    = get_user_by( 'id', $old_user_id );
-
-		if ( $old_user ) {
-			$old_display_name = $old_user->display_name;
-			if ( $old_user_id === $user_id ) {
-				// Delete user.
-				if ( update_sub_field( $slot_index_array, '', $post_id ) ) {
-					return wp_send_json_success( 'Removed user ' . $old_display_name . ', ' . $i . ', ' . $j . ', ' . $k );
-				} else {
-					return wp_send_json_error( 'Removed user ' . $old_display_name . ', ' . $i . ', ' . $j . ', ' . $k );
-				}
+		// If the user is in the current slot, remove the user.
+		if ( $owner ) {
+			if ( update_sub_field( $slot_index_array, '', $post_id ) ) {
+				return wp_send_json_success( 'Removed user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 			} else {
-				// Do nothing, slot already taken.
-				return wp_send_json_error( 'Slot already taken by ' . $old_display_name );
+				return wp_send_json_error( 'Removed user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 			}
-		} elseif ( $already_slotted ) {
-				// Do nothing, already slotted.
-				return wp_send_json_error( 'Existing user ' . $display_name );
-		} elseif ( update_sub_field( $slot_index_array, $user_id, $post_id ) ) {
-			// Add to the rvsp as attending.
-			tcbp_public_attendance_register_user( $post_id, $user_id, 1, false );
+		}
+
+		// Remove the user from all other slots.
+		tcbp_public_slotting_remove_user( $post_id, $user_id );
+
+		// Add the user to the current slot.
+		if ( update_sub_field( $slot_index_array, $user_id, $post_id ) ) {
 			return wp_send_json_success( 'Added user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 		} else {
 			return wp_send_json_error( 'Added user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );

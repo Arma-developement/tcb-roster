@@ -118,11 +118,9 @@ function tcbp_public_mission_overview() {
 		$user_slotted = tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendance );
 	}
 
-	echo '</div>';
-
 	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 
-	$allowed_roles = array( 'mission_admin', 'snco', 'officer' );
+	$allowed_roles = array( 'mission_admin', 'snco', 'officer', 'administrator' );
 	if ( array_intersect( $allowed_roles, $current_user_roles ) ) {
 		echo '<a href="/mission-admin-panel/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Admin Panel</a>';
 		echo '<a href="/mission-news-panel/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission News Panel</a>';
@@ -132,7 +130,7 @@ function tcbp_public_mission_overview() {
 		echo '<a href="/mission-briefing/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Briefing</a>';
 	}
 
-	echo '</div>';
+	echo '</div></div>';
 }
 
 
@@ -231,17 +229,13 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 		return;
 	}
 
+	$user_found         = false;
 	$current_user_id    = $current_user->ID;
 	$current_user_login = $current_user->user_login;
 
-	// Search for user in slotting tool.
-	// Required for the class property prior to the loop.
-	$user_found = tcbp_public_slotting_find_user( $post_id, $current_user_id );
-
 	error_log( print_r( 'attendance: ' . $attendance, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
-	error_log( print_r( 'user_found: ' . ( $user_found ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
-	echo '<div class=' . ( $user_found ? '"slotTool slotPreviouslySlotted"' : '"slotTool"' ) . ' id="slotTool"><div class="inner">';
+	echo '<div class="slotTool" id="slotTool"><div class="inner">';
 	echo '<h2>Priority placements</h2>';
 
 	// Loop through slot rows.
@@ -285,6 +279,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 					$profile_image        = get_avatar_url( $slotted_user_id );
 					$slotted_display_name = $slotted_user->display_name;
 				}
+				$user_found |= $is_owner;
 
 				error_log( print_r( 'k: ' . $k . ' is_owner: ' . ( $is_owner ? 'true' : 'false' ) . ' is_disabled: ' . ( $is_disabled ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
@@ -296,10 +291,8 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 					echo '<form class="slotForm">';
 					echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
 					echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
-					echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
-					echo '<input class="slotIcon ' . ( $is_disabled ? 'disabled"' : '"' ) . 'type="submit"';
-					echo ' style="background-image:url(' . esc_url( $profile_image ) . ')"';
-					echo '>';
+					echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . ',' . esc_attr( $is_owner ) . '">';
+					echo '<input class="slotIcon" type="submit" style="background-image:url(' . esc_url( $profile_image ) . ')">';
 					echo '</form>';
 				}
 
@@ -320,6 +313,8 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 		endwhile;
 	endwhile;
 	echo '</div></div>';
+
+	error_log( print_r( 'user_found: ' . $user_found, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 	return $user_found;
 }
