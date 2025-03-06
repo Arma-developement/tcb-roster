@@ -105,10 +105,14 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
+	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+	error_log( print_r( 'dynamicContent', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	// .
+
 	echo '<div id="dynamicContent">';
 
-	list( $attendance, $user_found ) = tcbp_public_attendance_roster( $post_id, $current_user );
-	tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_found );
+	list( $attendance, $user_attending ) = tcbp_public_attendance_roster( $post_id, $current_user );
+	$user_slotted                        = tcbp_public_slotting_tool( $post_id, $current_user, $attendance );
 
 	echo '</div>';
 
@@ -120,7 +124,7 @@ function tcbp_public_mission_overview() {
 		echo '<a href="/mission-news-panel/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission News Panel</a>';
 	}
 
-	if ( tcb_roster_public_find_user_in_slotting( $post_id, $current_user->user_login ) ) {
+	if ( $user_slotted ) {
 		echo '<a href="/mission-briefing/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Briefing</a>';
 	}
 
@@ -141,10 +145,6 @@ function tcbp_public_mission_overview() {
 function tcbp_public_attendance_roster( $post_id, $current_user ) {
 
 	$current_user_id = $current_user->ID;
-
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	error_log( print_r( 'tcbp_public_attendance_roster()', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
-	// .
 
 	echo '<div id="attendanceRoster"><div class="inner">';
 	echo '<h2>Attendance</h2>';
@@ -214,10 +214,9 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
  * @param int    $post_id The post ID.
  * @param object $current_user The current user object.
  * @param int    $attendance The number of users registered as attending.
- * @param bool   $user_found Whether the current user is registered as attending.
- * @return void
+ * @return bool  $user_found Whether the current user is slotted.
  */
-function tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_found ) {
+function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 
 	// Early out if no entries in slots field.
 	if ( ! have_rows( 'slots' ) ) {
@@ -226,6 +225,10 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_
 
 	$current_user_id    = $current_user->ID;
 	$current_user_login = $current_user->user_login;
+
+	// Search for user in slotting tool.
+	// Required for the class property prior to the loop.
+	$user_found = tcb_roster_public_find_user_in_slotting( $post_id, $current_user_id );
 
 	error_log( print_r( 'attendance: ' . $attendance, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	error_log( print_r( 'user_found: ' . ( $user_found ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -263,25 +266,26 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_
 				$k = get_row_index();
 
 				// Get profile pic for slotted member.
-				$profile_image        = '';
-				$slotted_user_id      = 1;
-				$slotted_member_login = get_sub_field( 'slot_member' );
 				$attendance_threshold = get_sub_field( 'attendance_threshold' );
 				$is_locked            = $attendance < $attendance_threshold;
-				$is_owner             = $slotted_member_login === $current_user_login;
-				$is_disabled          = ( ( '' !== $slotted_member_login ) && ! $is_owner ) || $is_locked;
-				$slotted_user         = get_user_by( 'login', $slotted_member_login );
-				if ( $slotted_user ) {
-					$slotted_user_id      = $slotted_user->ID;
+				$slotted_user_id      = get_sub_field( 'slot_member' );
+				$is_owner             = $slotted_user_id === $current_user_id;
+				$is_disabled          = $is_locked || ( $slotted_user_id && ! $is_owner );
+
+				if ( $slotted_user_id ) {
+					$slotted_user         = get_user_by( 'id', $slotted_user_id );
 					$profile_image        = get_avatar_url( $slotted_user_id );
 					$slotted_display_name = $slotted_user->display_name;
 				} else {
+					$profile_image        = '';
 					$slotted_display_name = '';
 				}
 
-				echo '<div class=' . ( $is_owner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"' ) . ' id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
-				echo '<form class="slotForm">';
+				error_log( print_r( 'k: ' . $k . ' is_owner: ' . ( $is_owner ? 'true' : 'false' ) . ' is_disabled: ' . ( $is_disabled ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
+				echo '<div class=' . ( $is_owner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"' ) . ' id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
+
+				echo '<form class="slotForm">';
 				echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
 				echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
 				echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
@@ -306,4 +310,6 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance, $user_
 		endwhile;
 	endwhile;
 	echo '</div></div>';
+
+	return $user_found;
 }

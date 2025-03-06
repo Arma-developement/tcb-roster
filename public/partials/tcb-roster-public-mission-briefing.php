@@ -5,7 +5,8 @@
  */
 function tcb_roster_public_mission_briefing() {
 
-	$user = wp_get_current_user();
+	$user    = wp_get_current_user();
+	$user_id = $user->ID;
 
 	if ( ! isset( $_GET['id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return;
@@ -92,7 +93,7 @@ function tcb_roster_public_mission_briefing() {
 	echo esc_html( get_field( 'brief_command_and_signals', $post_id_ ) );
 	echo '<p><a href="/information-centre/command-and-signals-tfar/">SOP: C&S<br></a></p>';
 
-	if ( tcb_roster_public_find_user_in_slotting( $post_id_, $user->user_login ) ) {
+	if ( tcb_roster_public_find_user_in_slotting( $post_id_, $user_id ) ) {
 		echo '<br><br><a href="/mission-briefing-edit/?id=' . esc_attr( $post_id_ ) . '" class="button button-secondary">Edit Mission Briefing</a><br>';
 	}
 

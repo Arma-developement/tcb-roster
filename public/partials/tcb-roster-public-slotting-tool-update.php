@@ -36,40 +36,40 @@ function tcb_roster_public_slotting_tool_update() {
 		// .
 
 		// Check if the user is already slotted.
-		$user                = get_user_by( 'id', $user_id );
-		$slotted_member_name = $user->user_login;
-		$already_slotted     = tcb_roster_public_find_user_in_slotting( $post_id, $slotted_member_name );
+		$user            = get_user_by( 'id', $user_id );
+		$display_name    = $user->display_name;
+		$already_slotted = tcb_roster_public_find_user_in_slotting( $post_id, $user_id );
 
 		// Retrieve the user at the specific location.
 		$fields           = get_field( 'slots', $post_id );
 		$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
 
 		// 1 subtracted to compensate for ACF rows starting at 1, whilst arrays start at 0.
-		$old_slotted_member_name = $fields[ $i - 1 ]['unit'][ $j - 1 ]['slot'][ $k - 1 ]['slot_member'];
-		$old_user                = get_user_by( 'login', $old_slotted_member_name );
-		$old_user_id             = $old_user ? $old_user->ID : 1;
+		$old_user_id = $fields[ $i - 1 ]['unit'][ $j - 1 ]['slot'][ $k - 1 ]['slot_member'];
+		$old_user    = get_user_by( 'id', $old_user_id );
 
 		if ( $old_user ) {
+			$old_display_name = $old_user->display_name;
 			if ( $old_user_id === $user_id ) {
 				// Delete user.
 				if ( update_sub_field( $slot_index_array, '', $post_id ) ) {
-					return wp_send_json_success( 'Removed user ' . $old_slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );
+					return wp_send_json_success( 'Removed user ' . $old_display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 				} else {
-					return wp_send_json_error( 'Removed user ' . $old_slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );
+					return wp_send_json_error( 'Removed user ' . $old_display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 				}
 			} else {
 				// Do nothing, slot already taken.
-				return wp_send_json_error( 'Slot already taken by ' . $old_slotted_member_name );
+				return wp_send_json_error( 'Slot already taken by ' . $old_display_name );
 			}
 		} elseif ( $already_slotted ) {
 				// Do nothing, already slotted.
-				return wp_send_json_error( 'Existing user ' . $slotted_member_name );
-		} elseif ( update_sub_field( $slot_index_array, $slotted_member_name, $post_id ) ) {
+				return wp_send_json_error( 'Existing user ' . $display_name );
+		} elseif ( update_sub_field( $slot_index_array, $user_id, $post_id ) ) {
 			// Add to the rvsp as attending.
 			tcbp_public_attendance_register_user( $post_id, $user_id, 1, false );
-			return wp_send_json_success( 'Added user ' . $slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );
+			return wp_send_json_success( 'Added user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 		} else {
-			return wp_send_json_error( 'Added user ' . $slotted_member_name . ', ' . $i . ', ' . $j . ', ' . $k );
+			return wp_send_json_error( 'Added user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 		}
 	}
 
@@ -81,9 +81,9 @@ function tcb_roster_public_slotting_tool_update() {
  * Utility function to find if a user is slotted the slotting tool.
  *
  * @param int    $post_id The post ID for the slotting tool.
- * @param string $user_login The login name of the user.
+ * @param string $user_id The login name of the user.
  */
-function tcb_roster_public_find_user_in_slotting( $post_id, $user_login ) {
+function tcb_roster_public_find_user_in_slotting( $post_id, $user_id ) {
 	while ( have_rows( 'slots', $post_id ) ) :
 		the_row();
 		if ( ! have_rows( 'unit', $post_id ) ) {
@@ -96,7 +96,7 @@ function tcb_roster_public_find_user_in_slotting( $post_id, $user_login ) {
 			}
 			while ( have_rows( 'slot', $post_id ) ) :
 				the_row();
-				if ( get_sub_field( 'slot_member' ) === $user_login ) {
+				if ( get_sub_field( 'slot_member' ) === $user_id ) {
 					return true;
 				}
 			endwhile;
@@ -109,9 +109,9 @@ function tcb_roster_public_find_user_in_slotting( $post_id, $user_login ) {
  * Updates the slotting tool with the provided user data.
  *
  * @param int   $post_id The post ID for the slotting tool.
- * @param array $user An associative array containing user data to be updated.
+ * @param array $user_id An associative array containing user data to be updated.
  */
-function tcb_roster_public_remove_from_slotting( $post_id, $user ) {
+function tcb_roster_public_remove_from_slotting( $post_id, $user_id ) {
 	while ( have_rows( 'slots', $post_id ) ) :
 		the_row();
 		$i = get_row_index();
@@ -127,7 +127,7 @@ function tcb_roster_public_remove_from_slotting( $post_id, $user ) {
 			while ( have_rows( 'slot', $post_id ) ) :
 				the_row();
 				$k = get_row_index();
-				if ( get_sub_field( 'slot_member' ) === $user ) {
+				if ( get_sub_field( 'slot_member' ) === $user_id ) {
 					$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
 					update_sub_field( $slot_index_array, '', $post_id );
 					return true;

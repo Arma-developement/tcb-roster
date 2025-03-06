@@ -118,7 +118,7 @@
                                     "label": "Slot member assigned",
                                     "name": "slot_member",
                                     "aria-label": "",
-                                    "type": "text",
+                                    "type": "user",
                                     "instructions": "",
                                     "required": 0,
                                     "conditional_logic": 0,
@@ -127,11 +127,16 @@
                                         "class": "",
                                         "id": ""
                                     },
-                                    "default_value": "",
-                                    "maxlength": "",
-                                    "placeholder": "",
-                                    "prepend": "",
-                                    "append": "",
+                                    "role": "",
+                                    "return_format": "id",
+                                    "multiple": 0,
+                                    "acfe_bidirectional": {
+                                        "acfe_bidirectional_enabled": "0"
+                                    },
+                                    "allow_null": 0,
+                                    "allow_in_bindings": 1,
+                                    "bidirectional": 0,
+                                    "bidirectional_target": [],
                                     "parent_repeater": "field_6347f5912ca18"
                                 },
                                 {
@@ -346,5 +351,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1741119888
+    "modified": 1741216747
 }
