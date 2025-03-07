@@ -66,7 +66,6 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/user-profile.php';
 
 		// Original code base from 2022.
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-subsection.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin.php';
@@ -76,7 +75,6 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . '../action-scheduler/action-scheduler.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-json-sync-location.php';
 
-		add_shortcode( 'tcb_roster_public_subsection', 'tcb_roster_public_subsection' );
 		add_shortcode( 'tcb_roster_public_mission_news', 'tcb_roster_public_mission_news' );
 		add_shortcode( 'tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin' );
 
