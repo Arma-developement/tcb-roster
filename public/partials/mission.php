@@ -28,14 +28,16 @@ function tcbp_public_mission_overview() {
 	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Author</h3>';
 	$author_id = get_the_author_meta( 'ID' );
 	echo '<a href="/service-record/service-record-' . esc_attr( $author_id ) . '">' . esc_html( get_the_author_meta( 'display_name' ) ) . '</a>';
+	echo '<h3>Modset</h3>';
+	echo get_field( 'brief_modset' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 
 	echo '<div class="one-third column"><h3>Map</h3>';
 	echo get_field( 'brief_map' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 
-	echo '<div class="one-third column"><h3>Modset</h3>';
-	echo get_field( 'brief_modset' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<div class="one-third column"><h3>Time</h3>';
+	echo get_field( 'brief_start_time' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div></div>';
 
 	echo '<h3>Situation</h3>';
@@ -86,16 +88,16 @@ function tcbp_public_mission_overview() {
 	echo '<h3>Intel</h3>';
 	echo get_field( 'brief_intel' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Time</h3>';
-	echo get_field( 'brief_start_time' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '</div>';
-
-	echo '<div class="one-third column"><h3>Enemy Forces</h3>';
+	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Enemy Forces</h3>';
 	echo get_field( 'brief_enemy_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 
 	echo '<div class="one-third column"><h3>Friendly Forces</h3>';
 	echo get_field( 'brief_friendly_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '</div>';
+
+	echo '<div class="one-third column"><h3>Section Composition</h3>';
+	echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div></div>';
 
 	echo '</div>';

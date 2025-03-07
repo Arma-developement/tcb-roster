@@ -283,6 +283,28 @@
             "new_lines": "wpautop"
         },
         {
+            "key": "field_67ca34bed5aa1",
+            "label": "Section Composition",
+            "name": "brief_section_composition",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Equipment:\r\n3CB 2015 equipment\r\nL85, L129, L110, L7 and light AT.\r\nGPS, SR\/LR\r\n\r\nFormation: \r\nStandard 4-4.",
+            "acfe_textarea_code": 0,
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
             "key": "field_638ca3560423e",
             "label": "Vehicles",
             "name": "brief_vehicles",
@@ -565,7 +587,7 @@
             }
         ]
     ],
-    "menu_order": 0,
+    "menu_order": 20,
     "position": "normal",
     "style": "default",
     "label_placement": "left",
@@ -581,5 +603,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738435736
+    "modified": 1741306674
 }
