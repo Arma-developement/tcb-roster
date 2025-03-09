@@ -300,9 +300,9 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 
 				if ( $is_locked ) {
 					if ( $attendance_threshold < 999 ) {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  locked (requires ' . esc_html( $attendance_threshold ) . ' attendees)<br>';
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( $attendance_threshold ) . ' attending)<br>';
 					} else {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  locked (command's decision)<br>";
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  (Coy's decision)<br>";
 					}
 				} elseif ( $slotted_user_id ) {
 					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';
@@ -388,9 +388,9 @@ function tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendan
 				echo '<div class="slotToolSlotDummyImage" style="background-image:url(' . esc_url( $profile_image ) . ')"></div>';
 				if ( $is_locked ) {
 					if ( $attendance_threshold < 999 ) {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  locked (requires ' . esc_html( $attendance_threshold ) . ' attendees)<br>';
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( $attendance_threshold ) . ' attending)<br>';
 					} else {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  locked (command's decision)<br>";
+						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  (Coy's decision)<br>";
 					}
 				} elseif ( $slotted_user_id ) {
 					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';

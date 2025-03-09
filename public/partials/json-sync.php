@@ -1,9 +1,11 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
+add_filter( 'acf/settings/save_json', 'tcbp_public_json_save_point_1', 10, 1 );
+
 /**
  * Syncs the roster data from a JSON file located at the specified path.
  */
-function tcb_roster_public_json_save_point_1() {
+function tcbp_public_json_save_point_1() {
 	return plugin_dir_path( __DIR__ ) . 'acf-json';
 }
 
@@ -15,6 +17,7 @@ function tcb_roster_public_json_save_point_2() {
 	return plugin_dir_path( __DIR__ ) . 'acf-json';
 }
 
+add_filter( 'acf/settings/load_json', 'tcbp_public_json_load_point' );
 
 /**
  * Loads the JSON data from the specified paths.
@@ -23,7 +26,7 @@ function tcb_roster_public_json_save_point_2() {
  *
  * @return array
  */
-function tcb_roster_public_json_load_point( $paths ) {
+function tcbp_public_json_load_point( $paths ) {
 	// append path.
 	$paths[] = plugin_dir_path( __DIR__ ) . 'acf-json';
 	return $paths;

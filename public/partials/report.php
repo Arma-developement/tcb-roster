@@ -1,11 +1,13 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
+add_filter( 'acfe/form/submit/email_args/action=report_form_email', 'tcbp_public_report_form_email_args', 10, 1 );
+
 /**
  * Generates the email arguments for the public report form.
  *
  * @param array $args The arguments for the email.
  */
-function tcb_roster_public_report_form_email_args( $args ) {
+function tcbp_public_report_form_email_args( $args ) {
 
 	$query = array(
 		'numberposts' => -1,

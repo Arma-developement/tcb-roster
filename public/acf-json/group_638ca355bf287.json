@@ -296,13 +296,13 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Equipment:\r\n3CB 2015 equipment\r\nL85, L129, L110, L7 and light AT.\r\nGPS, SR\/LR\r\n\r\nFormation: \r\nStandard 4-4.",
+            "default_value": "Equipment:\r\n- 3CB 2015 equipment\r\n- L85, L129, L110, L7 and light AT.\r\n- GPS, SR\/LR\r\n\r\nFormation: \r\n- Standard 4-4",
             "acfe_textarea_code": 0,
             "maxlength": "",
             "allow_in_bindings": 0,
             "rows": "",
             "placeholder": "",
-            "new_lines": ""
+            "new_lines": "wpautop"
         },
         {
             "key": "field_638ca3560423e",
@@ -603,5 +603,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1741306674
+    "modified": 1741372885
 }

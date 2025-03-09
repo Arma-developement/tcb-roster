@@ -57,38 +57,19 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/attendance.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/duties.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/json-sync.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission-admin.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission-briefing.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/report.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/service-record.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/slotting.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/status.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/training.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/user-profile.php';
 
 		// Original code base from 2022.
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-report-form-email-args.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-news.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin-send-password.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin-send-announcement.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-mission-admin-send-news.php';
 		require_once plugin_dir_path( __DIR__ ) . '../action-scheduler/action-scheduler.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/tcb-roster-public-json-sync-location.php';
-
-		add_shortcode( 'tcb_roster_public_mission_news', 'tcb_roster_public_mission_news' );
-		add_shortcode( 'tcb_roster_public_mission_admin', 'tcb_roster_public_mission_admin' );
-
-		add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcb_roster_public_mission_send_password_email' );
-		add_action( 'tcb_roster_public_mission_send_announcement_discord_action', 'tcb_roster_public_mission_send_announcement_discord' );
-
-		add_filter( 'acfe/form/submit/email_args/action=report_form_email', 'tcb_roster_public_report_form_email_args', 10, 3 );
-
-		add_action( 'acfe/form/submit/post/form=send-password', 'tcb_roster_public_mission_send_password', 10, 5 );
-		add_action( 'acfe/form/submit/post/form=send-announcement', 'tcb_roster_public_mission_send_announcement', 10, 5 );
-		add_action( 'acfe/form/submit/post/form=submit_mission_news', 'tcb_roster_public_mission_send_news', 10, 5 );
-
-		add_filter( 'acf/settings/save_json', 'tcb_roster_public_json_save_point_1', 10, 1 );
-		add_filter( 'acf/settings/load_json', 'tcb_roster_public_json_load_point' );
 	}
 
 	/**
