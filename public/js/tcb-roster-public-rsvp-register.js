@@ -6,6 +6,8 @@
 		jQuery(document).on("submit", '.rsvpFormUnregister', function(event) { 
 			event.preventDefault();
 			
+			jQuery(this).addClass('loading');
+			
 			var rsvpUserID = +jQuery(this).find(".rsvpUserID").val();
 			var rsvpPostID = +jQuery(this).find(".rsvpPostID").val();
 			var rsvpSelection = +jQuery(this).find(".rsvpSelection").val();
