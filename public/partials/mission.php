@@ -197,9 +197,9 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 		echo '<input type="hidden" name="registered" class="rsvpUnregister" value="' . esc_attr( $unregister ) . '">';
 
 		if ( $unregister ) {
-			echo '<input type="submit" value="Unregister"></form>';
+			echo '<input type="submit" value="Unregister"><span class="spinner unreg"></span></form>';
 		} else {
-			echo '<input type="submit" value="Register"></form>';
+			echo '<input type="submit" value="Register"><span class="spinner reg"></span></form>';
 		}
 
 		echo '</div>';
