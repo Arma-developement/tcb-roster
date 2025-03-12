@@ -26,7 +26,7 @@ function tcbp_public_mission_overview() {
 	echo '<h2>Mission Details</h2>';
 
 	echo '<div class="container briefing-meta">';
- 	echo '<div class="one-quarter column"><h3>Author</h3>';
+	echo '<div class="one-quarter column"><h3>Author</h3>';
 	$author_id = get_the_author_meta( 'ID' );
 	echo '<a href="/service-record/service-record-' . esc_attr( $author_id ) . '">' . esc_html( get_the_author_meta( 'display_name' ) ) . '</a>';
 	echo '</div>';
@@ -39,7 +39,7 @@ function tcbp_public_mission_overview() {
 	echo '<div class="one-quarter column"><h3>Time</h3>';
 	echo get_field( 'brief_start_time' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
- 	echo '</div>';
+	echo '</div>';
 
 	echo '<h3>Situation</h3>';
 	echo get_field( 'brief_situation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -159,15 +159,15 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 	$user_found = false;
 	while ( have_rows( 'rsvp' ) ) :
 		the_row();
-		$i = get_row_index();
+		$i          = get_row_index();
+		$user_ids   = get_sub_field( 'user' );
+		$unregister = false;
 
 		echo '<div class="attendanceCol" id="rsvpRow-' . esc_attr( $i ) . '">';
-		echo '<h4>' . esc_html( get_sub_field( 'label' ) ) . '</h4>';
-
-		$unregister = false;
-		$user_ids   = get_sub_field( 'user' );
 
 		if ( $user_ids ) {
+			echo '<h5>' . esc_html( get_sub_field( 'label' ) ) . ' - ' . count( $user_ids ) . '</h5>';
+
 			// Check if user in list.
 			if ( in_array( $current_user_id, $user_ids, true ) ) {
 				$unregister = true;
@@ -188,6 +188,8 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 				}
 			}
 			echo '</ul>';
+		} else {
+			echo '<h5>' . esc_html( get_sub_field( 'label' ) ) . ' - 0</h5>';
 		}
 
 		echo '<form class="rsvpFormUnregister" id="rsvpFormUnregister-' . esc_attr( $i ) . '">';
