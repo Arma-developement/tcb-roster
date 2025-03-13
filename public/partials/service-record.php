@@ -34,8 +34,8 @@ function tcbp_public_sr_form() {
 	$profile_id   = 'user_' . $user_id;
 	$post_id      = get_field( 'service_record', $profile_id );
 
-	// Security check.
-	if ( ( $post_id ) && ( ! current_user_can( 'edit_post', $post_id ) ) ) {
+	$allowed_roles = array( 'recruit_admin', 'snco', 'officer', 'administrator' );
+	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
 		return;
 	}
 

@@ -21,8 +21,8 @@ function tcbp_public_edit_status() {
 		return;
 	}
 
-	// Security check.
-	if ( ( '' !== $post_id ) && ( ! current_user_can( 'edit_post', $post_id ) ) ) {
+	$allowed_roles = array( 'training_admin', 'recruit_admin', 'mission_admin', 'snco', 'officer', 'administrator' );
+	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
 		return;
 	}
 
@@ -67,8 +67,8 @@ function tcbp_public_edit_selection() {
 		return;
 	}
 
-	// Security check.
-	if ( ( '' !== $post_id ) && ( ! current_user_can( 'edit_post', $post_id ) ) ) {
+	$allowed_roles = array( 'recruit_admin', 'snco', 'officer', 'administrator' );
+	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
 		return;
 	}
 

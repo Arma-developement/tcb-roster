@@ -9,15 +9,7 @@ function tcbp_public_json_save_point_1() {
 	return plugin_dir_path( __DIR__ ) . 'acf-json';
 }
 
-
-/**
- * Syncs the roster data from a JSON file located at the specified path.
- */
-function tcb_roster_public_json_save_point_2() {
-	return plugin_dir_path( __DIR__ ) . 'acf-json';
-}
-
-add_filter( 'acf/settings/load_json', 'tcbp_public_json_load_point' );
+add_filter( 'acf/settings/load_json', 'tcbp_public_json_load_point', 10, 1 );
 
 /**
  * Loads the JSON data from the specified paths.

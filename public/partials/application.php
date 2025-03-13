@@ -29,6 +29,8 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	$profile_id = 'user_' . $user_id;
 
 	update_field( 'application', $post_id_, $profile_id );
+
+	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
 }
 
 add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcbp_public_application_form_email', 10, 1 );
