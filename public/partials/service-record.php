@@ -74,12 +74,15 @@ function tcbp_public_sr_form() {
 
 	$term_ = get_term_by( 'name', 'Recruit', 'tcb-rank' );
 
+	// error_log( 'tcbp_public_sr_form Rank ID: ' . $term_->term_taxonomy_id );
+	// .
+
 	acfe_form(
 		array(
 			'post_id'         => $post_id,
 			'field_groups'    => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
 			'map'             => array(
-				'field_67b8e1472f7bb' => array( 'value' => $term_->id ), // Rank - Recruit.
+				'field_67b8e1472f7bb' => array( 'value' => $term_->term_taxonomy_id ), // Rank - Recruit.
 			),
 			'submit_value'    => 'Update ' . $display_name . "'s Service Record",
 			'updated_message' => false,
