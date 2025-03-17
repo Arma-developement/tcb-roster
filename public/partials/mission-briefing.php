@@ -23,7 +23,7 @@ function tcbp_public_mission_briefing() {
 	ob_start();
 
 	echo '<div class="tcb_mission_briefing">';
-	echo '<h2>Mission Details</h2>';
+	echo '<h2>Mission Statement</h2>';
 
 	echo '<h3>Situation</h3>';
 	echo get_field( 'brief_situation', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -36,9 +36,6 @@ function tcbp_public_mission_briefing() {
 		echo '</div>';
 		return ob_get_clean();
 	}
-
-	echo '<h3>Execution</h3>';
-	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<h3>Environment</h3>';
 
@@ -65,6 +62,11 @@ function tcbp_public_mission_briefing() {
 
 	echo '<h3>Civilians</h3>';
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h2>Scheme of Manoeuvre</h2>';
+
+	echo '<h3>Command Intent</h3>';
+	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<h3>Plan</h3>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
