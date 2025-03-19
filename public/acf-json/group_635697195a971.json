@@ -24,7 +24,10 @@
             "field_type": "radio",
             "allow_null": 0,
             "acfe_bidirectional": {
-                "acfe_bidirectional_enabled": "0"
+                "acfe_bidirectional_enabled": "1",
+                "acfe_bidirectional_related": [
+                    "field_67b8e1472f7bb"
+                ]
             },
             "allow_in_bindings": 0,
             "bidirectional": 0,
@@ -72,7 +75,7 @@
             "label": "Duties",
             "name": "duties",
             "aria-label": "",
-            "type": "checkbox",
+            "type": "taxonomy",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -81,23 +84,23 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "admin": "Admin",
-                "rm": "Recruitment Manager",
-                "rti": "Recruit Training Instructor",
-                "ati": "Advanced Training Instructor",
-                "cm": "Commendations Manager",
-                "om": "Operations Manager",
-                "mt": "Media Team",
-                "pet": "Public Events Team"
+            "taxonomy": "tcb-duty",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "checkbox",
+            "acfe_bidirectional": {
+                "acfe_bidirectional_enabled": "1",
+                "acfe_bidirectional_related": [
+                    "field_6365a88ca963d"
+                ]
             },
-            "default_value": [],
-            "return_format": "array",
-            "allow_custom": 0,
-            "layout": "vertical",
-            "toggle": 0,
-            "save_custom": 0,
-            "custom_choice_button_text": "Add new choice"
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional_target": []
         },
         {
             "key": "field_635697d56d638",
@@ -147,5 +150,5 @@
     "acfe_form": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1740436619
+    "modified": 1742415893
 }

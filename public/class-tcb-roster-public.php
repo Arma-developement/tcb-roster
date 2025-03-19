@@ -57,7 +57,7 @@ class Tcb_Roster_Public {
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/attendance.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/duties.php';
-		require_once plugin_dir_path( __DIR__ ) . 'public/partials/json-sync.php';
+		// require_once plugin_dir_path( __DIR__ ) . 'public/partials/json-sync.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission-admin.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/mission-briefing.php';
