@@ -209,7 +209,7 @@ function tcbp_public_edit_sr_training() {
 		array(
 			'post_id'         => $post_id,
 			'field_groups'    => array( 'group_6356984d2ce21' ),
-			'return'          => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
+			'return'          => wp_get_referer(),
 			'submit_value'    => 'Update ' . $display_name . "'s Training Record",
 			'updated_message' => false,
 		),
@@ -271,7 +271,7 @@ function tcbp_public_edit_sr_ribbons() {
 		array(
 			'post_id'         => $post_id,
 			'field_groups'    => array( 'group_6356980addb3c' ),
-			'return'          => add_query_arg( 'id', $user->ID, home_url() . '/user-info' ),
+			'return'          => wp_get_referer(),
 			'submit_value'    => 'Update ' . $display_name . "'s Commendations",
 			'updated_message' => false,
 		)
