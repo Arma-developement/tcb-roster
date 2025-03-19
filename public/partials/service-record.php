@@ -42,6 +42,7 @@ function tcbp_public_sr_form() {
 	ob_start();
 
 	echo '<h2>' . esc_html( $display_name ) . '</h2>';
+	echo '<div class="tcb_service_record_form">';
 
 	// Create a new page if one does not exist.
 	if ( ! $post_id ) {
@@ -68,27 +69,35 @@ function tcbp_public_sr_form() {
 			$user->remove_role( 'subscriber' );
 			$user->add_role( 'limited_member' );
 		}
+
+		$term_ = get_term_by( 'name', 'Recruit', 'tcb-rank' );
+
+		// error_log( 'tcbp_public_sr_form Rank ID: ' . $term_->term_taxonomy_id );
+		// .
+
+		acfe_form(
+			array(
+				'post_id'         => $post_id,
+				'field_groups'    => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
+				'map'             => array(
+					'field_67b8e1472f7bb' => array( 'value' => $term_->term_taxonomy_id ), // Rank - Recruit.
+				),
+				'submit_value'    => 'Update ' . $display_name . "'s Service Record",
+				'return'          => wp_get_referer(),
+				'updated_message' => false,
+			)
+		);
+	} else {
+		acfe_form(
+			array(
+				'post_id'         => $post_id,
+				'field_groups'    => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
+				'submit_value'    => 'Update ' . $display_name . "'s Service Record",
+				'return'          => wp_get_referer(),
+				'updated_message' => false,
+			)
+		);
 	}
-
-	echo '<div class="tcb_service_record_form">';
-
-	$term_ = get_term_by( 'name', 'Recruit', 'tcb-rank' );
-
-	// error_log( 'tcbp_public_sr_form Rank ID: ' . $term_->term_taxonomy_id );
-	// .
-
-	acfe_form(
-		array(
-			'post_id'         => $post_id,
-			'field_groups'    => array( 'group_635697195a971', 'group_6356984d2ce21', 'group_6356980addb3c' ),
-			'map'             => array(
-				'field_67b8e1472f7bb' => array( 'value' => $term_->term_taxonomy_id ), // Rank - Recruit.
-			),
-			'submit_value'    => 'Update ' . $display_name . "'s Service Record",
-			'updated_message' => false,
-		)
-	);
-
 	echo '</div>';
 
 	if ( function_exists( 'SimpleLogger' ) ) {
