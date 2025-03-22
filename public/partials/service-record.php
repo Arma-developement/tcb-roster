@@ -61,9 +61,6 @@ function tcbp_public_sr_form() {
 			update_field( 'service_record', $post_id, $profile_id );
 			update_field( 'user_id', $user_id, $post_id ); // Required to link service record to user.
 
-			// Update user's profile with data from the application.
-			tcbp_public_application_to_profile( $user_id );
-
 			// Update the user's roles.
 			$user->remove_role( 'subscriber' );
 			$user->add_role( 'limited_member' );

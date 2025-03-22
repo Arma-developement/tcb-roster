@@ -30,6 +30,40 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 
 	update_field( 'application', $post_id_, $profile_id );
 
+	// Replace display name with discord ID if the user's profile does not show evidence that the display name has been previously edited.
+	if ( ! get_field( 'fe_display_name', $profile_id ) ) {
+		wp_update_user(
+			array(
+				'ID'           => $user_id,
+				'display_name' => get_field( 'app_discord_id', $post_id_ ),
+			)
+		);
+	}
+
+	// Replace email name with app email if the user's profile does not show evidence that the email has been previously edited.
+	if ( ! get_field( 'fe_email', $profile_id ) ) {
+		$email     = esc_attr( get_field( 'app_email', $post_id_ ) );
+		$user_data = wp_update_user(
+			array(
+				'ID'         => $user_id,
+				'user_email' => $email,
+			)
+		);
+		if ( is_wp_error( $user_data ) ) {
+			error_log( 'Failure: Email not updated to: ' . $email . ' for userID ' . $user_id );
+		}
+	}
+
+	// Replace first name with app first name if the user's profile does not show evidence that the first name has been previously edited.
+	if ( ! get_field( 'fe_first_name', $profile_id ) ) {
+		update_user_meta( $user_id, 'first_name', get_field( 'app_first_name', $post_id_ ) );
+	}
+
+	// Replace location with app location if the user's profile does not show evidence that the location has been previously edited.
+	if ( ! get_field( 'fe_user_location', $profile_id ) ) {
+		update_field( 'user-location', get_field( 'app_country', $post_id_ ), $profile_id );
+	}
+
 	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
 }
 
@@ -138,49 +172,4 @@ function tcbp_public_edit_app_interview() {
 	}
 
 	return ob_get_clean();
-}
-
-/**
- * Function to copy elements of the application to the user profile.
- * Called during creation of the service record, within the plugin.
- *
- * @param int $user_id The ID of the applicant.
- */
-function tcbp_public_application_to_profile( $user_id ) {
-
-	$profile_id     = 'user_' . $user_id;
-	$application_id = get_field( 'application', $profile_id );
-
-	if ( 0 === $application_id ) {
-		return;
-	}
-
-	$application_post = get_post( $application_id );
-	if ( ! $application_post ) {
-		return;
-	}
-
-	error_log( 'Copying application to profile' );
-
-	$discord_id = get_field( 'app_discord_id', $application_post );
-	if ( '' !== $discord_id ) {
-		update_field( 'discord_id', $discord_id, $profile_id );
-		error_log( 'Copied discord id ' . $discord_id );
-	}
-
-	$email = get_field( 'app_email', $application_post );
-	if ( '' !== $email ) {
-		update_user_meta( $user_id, 'user_email', $email );
-		error_log( 'Copied email ' . $email );
-	}
-
-	$first_name = get_field( 'app_first_name', $application_post );
-	if ( '' !== $first_name ) {
-		update_user_meta( $user_id, 'first_name', $first_name );
-	}
-
-	$country = get_field( 'app_country', $application_post );
-	if ( '' !== $country ) {
-		update_field( 'user-location', $country, $profile_id );
-	}
 }

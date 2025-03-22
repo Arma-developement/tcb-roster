@@ -85,23 +85,23 @@ function tcbp_public_edit_profile_submit( $form ) {
 
 	$post_id = $form['post_id'];
 
-	update_user_meta( $user_id, 'first_name', get_field( 'first_name' ) );
-	update_user_meta( $user_id, 'last_name', get_field( 'last_name' ) );
-	update_user_meta( $user_id, 'nickname', get_field( 'display_name' ) );
-	update_user_meta( $user_id, 'user_email', get_field( 'user_email' ) );
 	wp_update_user(
 		array(
 			'ID'           => $user_id,
-			'display_name' => get_field( 'display_name' ),
+			'first_name'   => get_field( 'fe_first_name' ),
+			'last_name'    => get_field( 'fe_last_name' ),
+			'nickname'     => get_field( 'fe_display_name' ),
+			'user_email'   => get_field( 'fe_email' ),
+			'display_name' => get_field( 'fe_display_name' ),
 		)
 	);
 
-	update_field( 'discord_id', get_field( 'discord_id' ), $profile_id );
-	update_field( 'communication_preference', get_field( 'communication_preference' ), $profile_id );
-	update_field( 'user-location', get_field( 'user-location' ), $profile_id );
-	update_field( 'thechamp_avatar', get_field( 'small_avatar_url' ), $profile_id );
-	update_field( 'thechamp_large_avatar', get_field( 'large_avatar_url' ), $profile_id );
-	update_field( 'thechamp_dontupdate_avatar', get_field( 'steam_avatar_update' ), $profile_id );
+	update_field( 'discord_id', get_field( 'fe_discord_id' ), $profile_id );
+	update_field( 'communication_preference', get_field( 'fe_communication_preference' ), $profile_id );
+	update_field( 'user-location', get_field( 'fe_user_location' ), $profile_id );
+	update_field( 'thechamp_avatar', get_field( 'fe_thechamp_avatar' ), $profile_id );
+	update_field( 'thechamp_large_avatar', get_field( 'fe_thechamp_large_avatar' ), $profile_id );
+	update_field( 'thechamp_dontupdate_avatar', get_field( 'fe_thechamp_dontupdate_avatar' ), $profile_id );
 
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited own user profile' );
