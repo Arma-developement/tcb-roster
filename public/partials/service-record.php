@@ -97,8 +97,12 @@ add_shortcode( 'tcbp_public_edit_sr_info', 'tcbp_public_edit_sr_info' );
  */
 function tcbp_public_edit_sr_info() {
 
-	$allowed_roles = array( 'officer', 'administrator' );
-	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
+	$allowed_roles           = array( 'officer', 'administrator', 'snco', 'recruit_admin' );
+	$officer_roles           = array( 'officer', 'administrator' );
+	$requires_officer_rights = array( 'officer', 'snco', 'nco' );
+	$current_user_roles      = wp_get_current_user()->roles;
+
+	if ( ! array_intersect( $allowed_roles, $current_user_roles ) ) {
 		return;
 	}
 
@@ -114,10 +118,12 @@ function tcbp_public_edit_sr_info() {
 
 	$user = get_user_by( 'id', $user_id );
 
+	ob_start();
+
 	// Early out for no user.
 	if ( ! $user ) {
 		echo '<p>Error: Selected user does not exist ' . esc_attr( $user_id ) . '</p>';
-		return;
+		return ob_get_clean();
 	}
 
 	$display_name = $user->get( 'display_name' );
@@ -127,10 +133,15 @@ function tcbp_public_edit_sr_info() {
 	if ( ! $post_id_ ) {
 		echo '<p>profile ' . esc_attr( $profile_id ) . '</p>';
 		echo '<p>Error: No service record ' . esc_attr( $post_id_ ) . '</p>';
-		return;
+		return ob_get_clean();
 	}
 
-	ob_start();
+	if ( ! array_intersect( $officer_roles, $current_user_roles ) ) {
+		if ( array_intersect( $requires_officer_rights, $user->roles ) ) {
+			echo '<p class="negative">Error: Not authorised to edit ' . esc_attr( $display_name ) . "'s service record</p>";
+			return ob_get_clean();
+		}
+	}
 
 	echo '<div class="tcb_edit_status">';
 
@@ -422,6 +433,18 @@ function tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ ) {
 	}
 	$rank_name = $terms[0]->name;
 
+	$officer_roles           = array( 'officer', 'administrator' );
+	$requires_officer_rights = array( 'Lance Corporal', 'Corporal', 'Sergeant', 'Colour Sergeant', 'Officer' );
+	$current_user_roles      = wp_get_current_user()->roles;
+
+	// Check if user has the required role to promote, if not then default to Marine.
+	if ( ! array_intersect( $officer_roles, $current_user_roles ) ) {
+		if ( in_array( $rank_name, $requires_officer_rights, true ) ) {
+			$rank_name = 'Marine';
+			wp_set_post_terms( $post_id_, $rank_name, 'tcb-rank' );
+		}
+	}
+
 	$all_roles = array( 'subscriber', 'limited_member', 'member', 'nco', 'snco', 'officer' );
 
 	switch ( $rank_name ) {
@@ -490,23 +513,25 @@ function tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ ) {
 
 	$allowed_roles = array();
 	$terms         = get_the_terms( $post_id_, 'tcb-duty' );
-	foreach ( $terms as $term ) {
-		switch ( $term->slug ) {
-			case 'rm':
-				array_push( $allowed_roles, 'recruit_admin' );
-				break;
-			case 'rti':
-			case 'ati':
-				array_push( $allowed_roles, 'training_admin' );
-				break;
-			case 'om':
-				array_push( $allowed_roles, 'mission_admin' );
-				break;
-			case 'cm':
-				array_push( $allowed_roles, 'commendation_admin' );
-				break;
-			default:
-				break;
+	if ( $terms ) {
+		foreach ( $terms as $term ) {
+			switch ( $term->slug ) {
+				case 'rm':
+					array_push( $allowed_roles, 'recruit_admin' );
+					break;
+				case 'rti':
+				case 'ati':
+					array_push( $allowed_roles, 'training_admin' );
+					break;
+				case 'om':
+					array_push( $allowed_roles, 'mission_admin' );
+					break;
+				case 'cm':
+					array_push( $allowed_roles, 'commendation_admin' );
+					break;
+				default:
+					break;
+			}
 		}
 	}
 

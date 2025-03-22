@@ -4,7 +4,7 @@
  * Description: Handles the code associated with the application form in the tcb plugin.
  */
 
-add_action( 'acfe/form/submit/post/form=submit-application', 'tcbp_public_submit_application_action', 10, 1 );
+add_action( 'acfe/form/submit/post/form=submit-application', 'tcbp_public_submit_application_action', 20, 1 );
 
 /**
  * Handles the submission callback for the public application form.
@@ -142,6 +142,7 @@ function tcbp_public_edit_app_interview() {
 
 /**
  * Function to copy elements of the application to the user profile.
+ * Called during creation of the service record, within the plugin.
  *
  * @param int $user_id The ID of the applicant.
  */
@@ -159,14 +160,18 @@ function tcbp_public_application_to_profile( $user_id ) {
 		return;
 	}
 
+	error_log( 'Copying application to profile' );
+
 	$discord_id = get_field( 'app_discord_id', $application_post );
 	if ( '' !== $discord_id ) {
 		update_field( 'discord_id', $discord_id, $profile_id );
+		error_log( 'Copied discord id ' . $discord_id );
 	}
 
 	$email = get_field( 'app_email', $application_post );
 	if ( '' !== $email ) {
 		update_user_meta( $user_id, 'user_email', $email );
+		error_log( 'Copied email ' . $email );
 	}
 
 	$first_name = get_field( 'app_first_name', $application_post );
