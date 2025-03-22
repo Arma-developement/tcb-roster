@@ -154,6 +154,28 @@ function tcbp_public_edit_sr_info() {
 }
 
 
+add_action( 'acf/save_post', 'tcbp_public_edit_sr_info_submission_callback', 20, 1 );
+
+/**
+ * Callback function for editing the SR information.
+ *
+ * @param int $post_id_ The ID of the post being processed.
+ */
+function tcbp_public_edit_sr_info_submission_callback( $post_id_ ) {
+
+	// Only set for post_type = post!
+	if ( 'service-record' !== get_post_type( $post_id_ ) ) {
+		return;
+	}
+
+	$user_id = get_field( 'user_id', $post_id_ );
+
+	tcbp_public_sr_check_sr_name( $user_id, $post_id_ );
+	tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ );
+	tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ );
+}
+
+
 add_shortcode( 'tcbp_public_edit_sr_training', 'tcbp_public_edit_sr_training' );
 
 /**
@@ -279,6 +301,36 @@ function tcbp_public_edit_sr_ribbons() {
 
 
 /**
+ * Utility function to ensure SR has the correct name.
+ *
+ * @param int $user_id The user id containing the service record information.
+ * @param int $post_id_ The post id of the service record.
+ */
+function tcbp_public_sr_check_sr_name( $user_id, $post_id_ ) {
+
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	$display_name = $user->get( 'display_name' );
+
+	$update = array(
+		'ID'         => $post_id_,
+		'post_title' => $display_name . "'s Service Record",
+	);
+
+	wp_update_post( $update );
+}
+
+
+/**
  * Utility function to promote a user to Marine.
  *
  * @param int $user_id The user id containing the service record information.
@@ -341,5 +393,135 @@ function tcbp_public_sr_check_demotion_to_subscriber( $user_id, $post_id_ ) {
 		if ( $post_id_ ) {
 			wp_set_post_terms( $post_id_, '', 'tcb-rank' );
 		}
+	}
+}
+
+
+/**
+ * Utility function to assign a user role based on rank.
+ *
+ * @param int $user_id The user id containing the service record information.
+ * @param int $post_id_ The post id of the service record.
+ */
+function tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ ) {
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	// Early out no rank.
+	$terms = get_the_terms( $post_id_, 'tcb-rank' );
+	if ( ! $terms || ! $terms[0] ) {
+		return;
+	}
+	$rank_name = $terms[0]->name;
+
+	$all_roles = array( 'subscriber', 'limited_member', 'member', 'nco', 'snco', 'officer' );
+
+	switch ( $rank_name ) {
+		case 'Reserve':
+			$allowed_roles = array( 'member' );
+			array_push( $all_roles, 'editor' );
+			break;
+		case 'Recruit':
+			$allowed_roles = array( 'limited_member' );
+			array_push( $all_roles, 'editor' );
+			break;
+		case 'Marine':
+			$allowed_roles = array( 'member' );
+			array_push( $all_roles, 'editor' );
+			break;
+		case 'Lance Corporal':
+		case 'Corporal':
+			$allowed_roles = array( 'nco', 'member' );
+			array_push( $all_roles, 'editor' );
+			break;
+		case 'Sergeant':
+		case 'Colour Sergeant':
+			$allowed_roles = array( 'snco', 'member' );
+			break;
+		case 'Officer':
+			$allowed_roles = array( 'officer', 'member' );
+			break;
+		default:
+			$allowed_roles = array( 'subscriber' );
+			array_push( $all_roles, 'editor' );
+			break;
+	}
+
+	// Remove all rank related roles.
+	$roles = $user->roles;
+	foreach ( $roles as $role ) {
+		if ( in_array( $role, $all_roles, true ) ) {
+			$user->remove_role( $role );
+		}
+	}
+
+	// Add new rank related roles.
+	foreach ( $allowed_roles as $role ) {
+		$user->add_role( $role );
+	}
+}
+
+
+/**
+ * Utility function to assign a user role based on rank.
+ *
+ * @param int $user_id The user id containing the service record information.
+ * @param int $post_id_ The post id of the service record.
+ */
+function tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ ) {
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+
+	// Early out for no user.
+	if ( ! $user ) {
+		return;
+	}
+
+	$allowed_roles = array();
+	$terms         = get_the_terms( $post_id_, 'tcb-duty' );
+	foreach ( $terms as $term ) {
+		switch ( $term->slug ) {
+			case 'rm':
+				array_push( $allowed_roles, 'recruit_admin' );
+				break;
+			case 'rti':
+			case 'ati':
+				array_push( $allowed_roles, 'training_admin' );
+				break;
+			case 'om':
+				array_push( $allowed_roles, 'mission_admin' );
+				break;
+			case 'cm':
+				array_push( $allowed_roles, 'commendation_admin' );
+				break;
+			default:
+				break;
+		}
+	}
+
+	$all_roles = array( 'recruit_admin', 'training_admin', 'mission_admin', 'commendation_admin' );
+
+	// Remove all duty related roles.
+	$roles = $user->roles;
+	foreach ( $roles as $role ) {
+		if ( in_array( $role, $all_roles, true ) ) {
+			$user->remove_role( $role );
+		}
+	}
+
+	// Add new duty related roles.
+	foreach ( $allowed_roles as $role ) {
+		$user->add_role( $role );
 	}
 }
