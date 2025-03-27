@@ -30,16 +30,6 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 
 	update_field( 'application', $post_id_, $profile_id );
 
-	// Replace display name with discord ID if the user's profile does not show evidence that the display name has been previously edited.
-	if ( ! get_field( 'fe_display_name', $profile_id ) ) {
-		wp_update_user(
-			array(
-				'ID'           => $user_id,
-				'display_name' => get_field( 'app_discord_id', $post_id_ ),
-			)
-		);
-	}
-
 	// Replace email name with app email if the user's profile does not show evidence that the email has been previously edited.
 	if ( ! get_field( 'fe_email', $profile_id ) ) {
 		$email     = esc_attr( get_field( 'app_email', $post_id_ ) );

@@ -274,7 +274,7 @@ function tcbp_public_mission_send_password_email( $args ) {
 	}
 
 	if ( $discord_id_list ) {
-		tcb_roster_admin_post_to_discordDM( '3CB-Bot', $discord_id_list, $msg );
+		tcb_roster_admin_post_to_discord_dm( '3CB-Bot', $discord_id_list, $msg );
 	}
 }
 

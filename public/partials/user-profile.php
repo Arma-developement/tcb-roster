@@ -40,7 +40,7 @@ function tcbp_public_edit_profile() {
 				'field_67993c0abf12c' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_67993c3bbf12d' => array( 'value' => get_the_author_meta( 'last_name', $user_id ) ),
 				'field_67993c5cbf12f' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-				'field_67993c68bf130' => array( 'value' => get_field( 'discord_id', $profile_id ) ),
+				'field_67993c68bf130' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 				'field_67993c75bf131' => array( 'value' => get_field( 'communication_preference', $profile_id ) ),
 				'field_67993c4cbf12e' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 				'field_67993cabbf132' => array( 'value' => get_field( 'thechamp_avatar', $profile_id ) ),
@@ -96,12 +96,21 @@ function tcbp_public_edit_profile_submit( $form ) {
 		)
 	);
 
-	update_field( 'discord_id', get_field( 'fe_discord_id' ), $profile_id );
 	update_field( 'communication_preference', get_field( 'fe_communication_preference' ), $profile_id );
 	update_field( 'user-location', get_field( 'fe_user_location' ), $profile_id );
 	update_field( 'thechamp_avatar', get_field( 'fe_thechamp_avatar' ), $profile_id );
 	update_field( 'thechamp_large_avatar', get_field( 'fe_thechamp_large_avatar' ), $profile_id );
 	update_field( 'thechamp_dontupdate_avatar', get_field( 'fe_thechamp_dontupdate_avatar' ), $profile_id );
+
+	$discord_username = get_field( 'fe_discord_username' );
+	update_field( 'discord_username', $discord_username, $profile_id );
+	if ( $discord_username ) {
+		$discord_id = tcb_roster_admin_query_discord_username( $discord_username );
+		if ( $discord_id ) {
+			update_field( 'discord_id', $discord_id, $profile_id );
+			tcb_roster_admin_post_to_discord_dm( $discord_id, 'Your profile has been updated.' );
+		}
+	}
 
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited own user profile' );
