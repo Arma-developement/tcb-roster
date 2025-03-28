@@ -108,7 +108,7 @@ function tcbp_public_edit_profile_submit( $form ) {
 		$discord_id = tcb_roster_admin_query_discord_username( $discord_username );
 		if ( $discord_id ) {
 			update_field( 'discord_id', $discord_id, $profile_id );
-			tcb_roster_admin_post_to_discord_dm( $discord_id, 'Your profile has been updated.' );
+			tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your profile has been updated.' );
 		}
 	}
 

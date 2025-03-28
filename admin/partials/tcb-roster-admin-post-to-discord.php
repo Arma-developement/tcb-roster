@@ -52,7 +52,7 @@ function tcb_roster_admin_post_to_discord_dm( $receivers, $message ) {
 	// error_log( print_r( 'Discord DM: ' . $sender . ' ' . json_encode( $receivers ) . ' ' . $message, true ) );
 	// .
 
-	$key = getenv( 'WP_3CB_KEY', true );
+	$key = getenv( 'WP_3CB_KEY' );
 
 	$data = array(
 		'api_key'    => $key,
@@ -79,7 +79,7 @@ function tcb_roster_admin_post_to_discord_dm( $receivers, $message ) {
  */
 function tcb_roster_admin_query_discord_username( $username ) {
 
-	$key = getenv( 'WP_3CB_KEY', true );
+	$key = getenv( 'WP_3CB_KEY' );
 
 	$data = array(
 		'api_key'  => $key,
