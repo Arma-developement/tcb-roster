@@ -15,10 +15,10 @@ function tcb_roster_admin_post_to_discord( $sender, $channel, $message ) {
 
 	switch ( $channel ) {
 		case 'recruitment-managers':
-			$webhook = getenv( 'DISCORD_WEBHOOK_RECRUITMENT_MANAGERS', true );
+			$webhook = getenv( 'DISCORD_WEBHOOK_RECRUITMENT_MANAGERS' );
 			break;
 		case 'announcements':
-			$webhook = getenv( 'DISCORD_WEBHOOK_ANNOUNCEMENTS', true );
+			$webhook = getenv( 'DISCORD_WEBHOOK_ANNOUNCEMENTS' );
 			break;
 		default:
 			return false;

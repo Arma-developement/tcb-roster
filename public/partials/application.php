@@ -4,6 +4,61 @@
  * Description: Handles the code associated with the application form in the tcb plugin.
  */
 
+add_shortcode( 'tcbp_public_edit_application', 'tcbp_public_edit_application' );
+
+/**
+ * Shortcode to allow editing of user profile.
+ */
+function tcbp_public_edit_application() {
+
+	$user = wp_get_current_user();
+
+	// Early out for no user.
+	if ( ! $user->exists() ) {
+		return;
+	}
+
+	// Early out for logged out users.
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+
+	$user_id    = $user->ID;
+	$profile_id = 'user_' . $user_id;
+
+	ob_start();
+
+	echo '<div class="tcb_edit_application">';
+
+	acfe_form(
+		array(
+			'post_id'         => $profile_id,
+			'post_title'      => $user->name,
+			'post_name'       => $user->name,
+			'post_status'     => 'publish',
+			'post_author'     => $user_id,
+			'name'            => 'submit-application',
+
+			'map'             => array(
+				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
+				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
+				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
+				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
+			),
+
+			'submit_value'    => 'Submit Application',
+			'return'          => wp_get_referer(),
+			'updated_message' => '<p>Thank you for submitting an application to join 3CB.</p>
+				<p>A Recruitment Manager will be in contact via Discord.</p>
+				<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
+		)
+	);
+
+	echo '</div>';
+
+	return ob_get_clean();
+}
+
 add_action( 'acfe/form/submit/post/form=submit-application', 'tcbp_public_submit_application_action', 20, 1 );
 
 /**
