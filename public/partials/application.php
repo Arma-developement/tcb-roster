@@ -32,25 +32,91 @@ function tcbp_public_edit_application() {
 
 	acfe_form(
 		array(
-			'post_id'         => $profile_id,
-			'post_title'      => $user->name,
-			'post_name'       => $user->name,
-			'post_status'     => 'publish',
-			'post_author'     => $user_id,
-			'name'            => 'submit-application',
+			'name'       => 'submit-application',
+			'title'      => 'Submit Application',
 
-			'map'             => array(
+			'map'        => array(
 				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
 				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 			),
 
-			'submit_value'    => 'Submit Application',
-			'return'          => wp_get_referer(),
-			'updated_message' => '<p>Thank you for submitting an application to join 3CB.</p>
+			'return'     => wp_get_referer(),
+			'attributes' => array(
+				'submit' => array(
+					'value' => 'Submit Application',
+				),
+			),
+			'success'    => array(
+				'hide_form' => true,
+				'message'   => '<p>Thank you for submitting an application to join 3CB.</p>
 				<p>A Recruitment Manager will be in contact via Discord.</p>
 				<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
+			),
+			'actions'    => array(
+				array(
+					'action' => 'post',
+					'name'   => 'submit-application',
+					'type'   => 'insert_post',
+					'save'   => array(
+						'post_type'    => 'application',
+						'post_status'  => 'publish',
+						'post_title'   => '{user:user_login}',
+						'post_name'    => '{user:user_login}',
+						'post_author'  => '{user}',
+						'post_terms'   => array(
+							67,
+						),
+						'append_terms' => true,
+						'acf_fields'   => array(
+							'field_6365c195143e6',
+							'field_6365c218143e8',
+							'field_6365c23b143e9',
+							'field_67bb543da97fc',
+							'field_6365c24d143ea',
+							'field_6365c2b0143ec',
+							'field_6365c27e143eb',
+							'field_67decca349702',
+							'field_6365c3f2f7c37',
+						),
+					),
+					'load'   => array(
+						'source'     => '{post}',
+						'acf_fields' => array(
+							'field_6365c195143e6',
+							'field_6365c218143e8',
+							'field_6365c23b143e9',
+							'field_67bb543da97fc',
+							'field_6365c24d143ea',
+							'field_6365c2b0143ec',
+							'field_6365c27e143eb',
+							'field_67decca349702',
+							'field_6365c3f2f7c37',
+						),
+					),
+				),
+				array(
+					'action'      => 'email',
+					'name'        => 'application_form_email',
+					'email'       => array(
+						'from'     => '',
+						'to'       => '',
+						'reply_to' => '',
+						'cc'       => '',
+						'bcc'      => '',
+						'subject'  => '3CB application from {user:user_login} [{field:app_discord_id}]',
+						'content'  => 'An application to 3CB was submitted by {user:user_login} ({user:display_name})
+		
+							<strong>Application details:</strong>
+							{fields}
+		
+							GDPR Notice: Please delete this email once the applicant becomes a Recruit.',
+						'html'     => false,
+					),
+					'attachments' => array(),
+				),
+			),
 		)
 	);
 
@@ -107,6 +173,12 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	// Replace location with app location if the user's profile does not show evidence that the location has been previously edited.
 	if ( ! get_field( 'fe_user_location', $profile_id ) ) {
 		update_field( 'user-location', get_field( 'app_country', $post_id_ ), $profile_id );
+	}
+
+	// Check Steam ID for VAC bans and store the result in the profile.
+	$steam_info = tcb_roster_admin_steam_query_vac( $user->name );
+	if ( $steam_info ) {
+		update_field( 'steam_info', $steam_info, $profile_id );
 	}
 
 	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
