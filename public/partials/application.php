@@ -28,52 +28,102 @@ function tcbp_public_edit_application() {
 
 	ob_start();
 
+	// Check Steam ID.
+	$steam_info = tcb_roster_admin_steam_query_vac( $user->name );
+	if ( $steam_info ) {
+		$steam_id = $steam_info['SteamId'];
+	} else {
+		$steam_id = false;
+	}
+
 	echo '<div class="tcb_edit_application">';
 
 	acfe_form(
 		array(
-			'name'       => 'submit-application',
-			'title'      => 'Submit Application',
-
-			'map'        => array(
+			'name'         => 'submit-application',
+			'title'        => 'Submit Application',
+			'active'       => true,
+			'field_groups' => array(
+				'group_6365c19511ca1',
+			),
+			'map'          => array(
 				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
+				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
 				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 			),
-
-			'return'     => wp_get_referer(),
-			'attributes' => array(
+			'settings'     => array(
+				'location' => false,
+				'honeypot' => true,
+				'kses'     => true,
+				'uploader' => 'default',
+			),
+			'attributes'   => array(
+				'form'   => array(
+					'element' => 'form',
+					'class'   => 'acf-form',
+					'id'      => '',
+				),
+				'fields' => array(
+					'element'       => 'div',
+					'wrapper_class' => '',
+					'class'         => '',
+					'label'         => 'top',
+					'instruction'   => 'label',
+				),
 				'submit' => array(
-					'value' => 'Submit Application',
+					'value'   => 'Submit Application',
+					'button'  => '<input type="submit" class="acf-button button button-primary button-large" value="%s" />',
+					'spinner' => '<span class="acf-spinner"></span>',
 				),
 			),
-			'success'    => array(
-				'hide_form' => true,
-				'message'   => '<p>Thank you for submitting an application to join 3CB.</p>
-				<p>A Recruitment Manager will be in contact via Discord.</p>
-				<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
+			'validation'   => array(
+				'hide_error'        => false,
+				'hide_revalidation' => false,
+				'hide_unload'       => false,
+				'errors_position'   => 'above',
+				'errors_class'      => '',
+				'messages'          => array(
+					'failure' => 'Validation failed',
+					'success' => 'Validation successful',
+					'error'   => '1 field requires attention',
+					'errors'  => '%d fields require attention',
+				),
 			),
-			'actions'    => array(
+			'success'      => array(
+				'hide_form' => true,
+				'scroll'    => false,
+				'message'   => '<p>Thank you for submitting an application to join 3CB.</p>
+					<p>A Recruitment Manager will be in contact via Discord.</p>
+					<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
+				'wrapper'   => '<div id="message" class="updated">%s</div>',
+			),
+			'actions'      => array(
 				array(
 					'action' => 'post',
 					'name'   => 'submit-application',
 					'type'   => 'insert_post',
 					'save'   => array(
-						'post_type'    => 'application',
-						'post_status'  => 'publish',
-						'post_title'   => '{user:user_login}',
-						'post_name'    => '{user:user_login}',
-						'post_author'  => '{user}',
-						'post_terms'   => array(
+						'post_type'      => 'application',
+						'post_status'    => 'publish',
+						'post_title'     => '{user:user_login}',
+						'post_name'      => '{user:user_login}',
+						'post_content'   => '',
+						'post_excerpt'   => '',
+						'post_author'    => '{user}',
+						'post_parent'    => '',
+						'post_date'      => '',
+						'post_thumbnail' => '',
+						'post_terms'     => array(
 							67,
 						),
-						'append_terms' => true,
-						'acf_fields'   => array(
+						'append_terms'   => true,
+						'acf_fields'     => array(
 							'field_6365c195143e6',
-							'field_6365c218143e8',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
+							'field_67e82b57d2cd7',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
@@ -82,12 +132,23 @@ function tcbp_public_edit_application() {
 						),
 					),
 					'load'   => array(
-						'source'     => '{post}',
-						'acf_fields' => array(
+						'source'         => '{post}',
+						'post_type'      => '',
+						'post_status'    => '',
+						'post_title'     => '',
+						'post_name'      => '',
+						'post_content'   => '',
+						'post_excerpt'   => '',
+						'post_author'    => '',
+						'post_parent'    => '',
+						'post_date'      => '',
+						'post_thumbnail' => '',
+						'post_terms'     => '',
+						'acf_fields'     => array(
 							'field_6365c195143e6',
-							'field_6365c218143e8',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
+							'field_67e82b57d2cd7',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
@@ -107,16 +168,15 @@ function tcbp_public_edit_application() {
 						'bcc'      => '',
 						'subject'  => '3CB application from {user:user_login} [{field:app_discord_id}]',
 						'content'  => 'An application to 3CB was submitted by {user:user_login} ({user:display_name})
-		
 							<strong>Application details:</strong>
 							{fields}
-		
 							GDPR Notice: Please delete this email once the applicant becomes a Recruit.',
 						'html'     => false,
 					),
 					'attachments' => array(),
 				),
 			),
+			'render'       => '',
 		)
 	);
 
@@ -175,16 +235,25 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 		update_field( 'user-location', get_field( 'app_country', $post_id_ ), $profile_id );
 	}
 
-	// Check Steam ID for VAC bans and store the result in the profile.
-	$steam_info = tcb_roster_admin_steam_query_vac( $user->name );
-	if ( $steam_info ) {
-		update_field( 'steam_info', $steam_info, $profile_id );
-	}
+	// Check Steam ID in the profile.
+	update_field( 'steam_id', get_field( 'app_steam_id', $post_id_ ), $profile_id );
 
 	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
+
+	// DM applicant.
+	$discord_id = get_field( 'discord_id', $profile_id );
+	if ( $discord_id ) {
+		tcb_roster_admin_post_to_discord_dm( $discord_id, 'Your application has been submitted.\nA Recruitment Manager will be in contact.' );
+	}
+
+	// DM recruitment manager's channel.
+	$message  = '@here A new application has been submitted by ' . $user->display_name . ' (' . $user->name . ')\n';
+	$message .= '\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n';
+	$message .= "\nThe applicant's discord ID is " . get_field( 'app_discord_username', $post_id_ ) . '\n';
+	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
 }
 
-add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcbp_public_application_form_email', 10, 1 );
+// add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcbp_public_application_form_email', 10, 1 );
 
 /**
  * Handles the email after application form submission.

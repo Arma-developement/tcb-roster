@@ -175,7 +175,7 @@
 			if ( hash_equals( hash( 'sha256', $request_data->api_key ), getenv( '3CB_API_KEY_HASH' ) ) ) {
 				$message    = $request_data->message;
 				$client     = new Browser();
-				$channel_id = '1048963747277963344';
+				$channel_id = $request_data->channel_id;
 				send_channel_message( $channel_id, $message, $client, $header, $out, $debug );
 			} else {
 				http_response_code( 401 );

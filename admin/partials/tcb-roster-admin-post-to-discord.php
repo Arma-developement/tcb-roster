@@ -41,6 +41,46 @@ function tcb_roster_admin_post_to_discord( $sender, $channel, $message ) {
 }
 
 /**
+ * Sends a message to a specified Discord channel.
+ *
+ * @param string $sender  The name of the sender.
+ * @param string $channel The Discord channel ID.
+ * @param string $message The message to be sent.
+ */
+function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
+
+	$key = getenv( 'WP_3CB_KEY' );
+
+	switch ( $channel ) {
+		case 'recruitment-managers':
+			$channel_id = '384647101277274112';
+			break;
+		case 'announcements':
+			$channel_id = '384647504937091072';
+			break;
+		default:
+			return false;
+	}
+
+	$data = array(
+		'api_key'    => $key,
+		'message'    => $message,
+		'channel_id' => $channel_id,
+	);
+
+	$curl = curl_init( 'http://127.0.0.1:8084/3cb-channel-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+	return true;
+}
+
+/**
  * Sends a message to a specified Discord user.
  *
  * @param string $receivers The Discord user ID.
