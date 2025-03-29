@@ -26,15 +26,17 @@ function tcbp_public_edit_application() {
 	$user_id    = $user->ID;
 	$profile_id = 'user_' . $user_id;
 
-	ob_start();
-
 	// Check Steam ID.
-	$steam_info = tcb_roster_admin_steam_query_vac( $user->name );
+	$username   = $user->user_login;
+	$steam_info = tcb_roster_admin_steam_query_vac( $username );
+	error_log( json_encode( $steam_info ) );
 	if ( $steam_info ) {
 		$steam_id = $steam_info['SteamId'];
 	} else {
 		$steam_id = false;
 	}
+
+	ob_start();
 
 	echo '<div class="tcb_edit_application">';
 
