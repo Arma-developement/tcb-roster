@@ -31,7 +31,16 @@ function tcbp_public_mission_overview() {
 	echo '<a href="/service-record/service-record-' . esc_attr( $author_id ) . '">' . esc_html( get_the_author_meta( 'display_name' ) ) . '</a>';
 	echo '</div>';
 	echo '<div class="one-quarter column"><h3>Modset</h3>';
-	echo get_field( 'brief_modset' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$modset = get_field( 'brief_modset' );
+	if ( is_array( $modset ) && ! empty( $modset ) ) {
+		echo '<ul>';
+		foreach ( $modset as $mod ) {
+			echo '<li>' . esc_html( $mod ) . '</li>';
+		}
+		echo '</ul>';
+	} else {
+		echo 'None';
+	}
 	echo '</div>';
 	echo '<div class="one-quarter column"><h3>Map</h3>';
 	echo get_field( 'brief_map' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
