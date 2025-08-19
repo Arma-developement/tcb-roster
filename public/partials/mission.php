@@ -33,13 +33,11 @@ function tcbp_public_mission_overview() {
 	echo '<div class="one-quarter column"><h3>Modset</h3>';
 	$modset = get_field( 'brief_modset' );
 	if ( is_array( $modset ) && ! empty( $modset ) ) {
-		echo '<ul>';
 		foreach ( $modset as $mod ) {
-			echo '<li>' . esc_html( $mod ) . '</li>';
+			echo esc_html( $mod ) . '<br>';
 		}
-		echo '</ul>';
 	} else {
-		echo 'None';
+		echo 'TBA';
 	}
 	echo '</div>';
 	echo '<div class="one-quarter column"><h3>Map</h3>';
