@@ -104,8 +104,9 @@ function tcbp_public_mission_briefing() {
 		echo '<br><br><a href="/mission-briefing-edit/?id=' . esc_attr( $post_id_ ) . '" class="button button-secondary">Edit Mission Briefing</a><br>';
 	}
 
-	echo '</div>';
+	echo '<br><a href="javascript:history.back()" class="button button-secondary">Back</a>';
 
+	echo '</div>';
 	return ob_get_clean();
 }
 
