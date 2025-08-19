@@ -49,7 +49,8 @@ function tcbp_public_mission_overview() {
 
 	// Early out for subscribers on private missions.
 	$current_user_roles = $current_user->roles;
-	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && ( get_field( 'brief_mission_type' ) === 'private' ) ) {
+	$brief_mission_type = get_field( 'brief_mission_type', $post_id_ );
+	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
 		echo '<br><br><p>This is a 3CB members only mission</p>';
 		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
 		echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';
@@ -58,7 +59,7 @@ function tcbp_public_mission_overview() {
 	}
 
 	// Password protection for subscribers on joint-op missions.
-	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && ( get_field( 'brief_mission_type' ) === 'jo' ) ) {
+	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && ( 'jo' === $brief_mission_type ) ) {
 		if ( get_field( 'slotting_password' ) !== $current_user->slotting_password ) {
 
 			echo '<div class="tcb_submit_slotting_password">';
