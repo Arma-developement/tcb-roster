@@ -73,7 +73,7 @@ function tcbp_public_archive_duties() {
 	}
 
 	echo '</div>';
-
+	echo '<hr>';
 	echo '<div class="tcb_generic_duties">';
 	echo '<h1>Rank related duties</h1>';
 	echo '<p>Ranks with responsibility for generic administrative support within 3CB</p>';
