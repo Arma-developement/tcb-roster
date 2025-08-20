@@ -184,7 +184,7 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_leadership_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Leadership Commendations</h4>';
-			ksort( $list_of_leadership_titles );
+			krsort( $list_of_leadership_titles );
 			$column = 0;
 			foreach ( $list_of_leadership_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
@@ -204,7 +204,7 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_mention_in_despatches_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Mention in Despatches</h4>';
-			ksort( $list_of_mention_in_despatches_titles );
+			krsort( $list_of_mention_in_despatches_titles );
 			$column = 0;
 			foreach ( $list_of_mention_in_despatches_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
@@ -224,7 +224,7 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_mission_creation_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Mission Creation</h4>';
-			ksort( $list_of_mission_creation_titles );
+			krsort( $list_of_mission_creation_titles );
 			$column = 0;
 			foreach ( $list_of_mission_creation_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
