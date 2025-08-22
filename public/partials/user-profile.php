@@ -125,9 +125,17 @@ add_action( 'user_register', 'tcbp_public_user_register' );
  *
  * @param int $user_id The ID of the user being registered.
  */
-function tcbp_public_edit_profile_submit( $user_id ) {
+function tcbp_public_user_register( $user_id ) {
 
 	$username = get_userdata( $user_id )->user_login;
-	update_user_meta( $user_id, 'display_name', $username );
-	update_user_meta( $user_id, 'user_email', '' );
+	wp_update_user(
+		array(
+			'ID'           => $user_id,
+			'display_name' => $username,
+			'user_email'   => '',
+		)
+	);
+
+	// update_user_meta( $user_id, 'display_name', $username );
+	// update_user_meta( $user_id, 'user_email', '' );
 }
