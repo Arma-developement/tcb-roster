@@ -22,6 +22,14 @@ function tcbp_public_archive_duties() {
 		return;
 	}
 
+	// Check if the user has the required role.
+	$view_access = true;
+	$roles       = wp_get_current_user()->roles;
+	if ( ! array_intersect( array( 'member', 'limited_member', 'administrator' ), $roles ) ) {
+		$view_access = false;
+		// Not authorised to view this service record.
+	}
+
 	ob_start();
 
 	echo '<p>Named roles with responsibility for specific areas of support within 3CB</p>';
@@ -66,7 +74,12 @@ function tcbp_public_archive_duties() {
 				continue;
 			}
 			$display_name = $user->get( 'display_name' );
-			echo '<li><a href="' . esc_url( get_permalink() ) . '">' . esc_html( $display_name ) . '</a></li>';
+			if ( $view_access ) {
+				// User has access to view the service record.
+				echo '<li><a href="' . esc_url( get_permalink() ) . '">' . esc_html( $display_name ) . '</a></li>';
+			} else {
+				echo '<li>' . esc_html( $display_name ) . '</li>';
+			}
 		}
 		echo '</ul>';
 		wp_reset_postdata();
@@ -124,7 +137,12 @@ function tcbp_public_archive_duties() {
 				continue;
 			}
 			$display_name = $user->get( 'display_name' );
-			echo '<li><a href="' . esc_url( get_permalink() ) . '">' . esc_html( $display_name ) . '</a></li>';
+			if ( $view_access ) {
+				// User has access to view the service record.
+				echo '<li><a href="' . esc_url( get_permalink() ) . '">' . esc_html( $display_name ) . '</a></li>';
+			} else {
+				echo '<li>' . esc_html( $display_name ) . '</li>';
+			}
 		}
 		echo '</ul>';
 		wp_reset_postdata();
