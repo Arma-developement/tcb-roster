@@ -112,6 +112,18 @@ function tcbp_public_edit_profile_submit( $form ) {
 		}
 	}
 
+	// Find the service record and update the title.
+	$service_record_id = get_field( 'service_record', $profile_id );
+	if ( $service_record_id ) {
+		$display_name = get_field( 'fe_display_name' );
+		wp_update_post(
+			array(
+				'ID'         => $service_record_id,
+				'post_title' => $display_name . "'s Service Record",
+			)
+		);
+	}
+
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited own user profile' );
 	}
