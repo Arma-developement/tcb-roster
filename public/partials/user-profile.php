@@ -127,15 +127,13 @@ add_action( 'user_register', 'tcbp_public_user_register' );
  */
 function tcbp_public_user_register( $user_id ) {
 
-	$username = get_userdata( $user_id )->user_login;
+	$user_login = get_userdata( $user_id )->user_login;
 	wp_update_user(
 		array(
 			'ID'           => $user_id,
-			'display_name' => $username,
+			'display_name' => $user_login,
+			'nickname'     => $user_login,
 			'user_email'   => '',
 		)
 	);
-
-	// update_user_meta( $user_id, 'display_name', $username );
-	// update_user_meta( $user_id, 'user_email', '' );
 }
