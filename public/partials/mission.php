@@ -57,7 +57,7 @@ function tcbp_public_mission_overview() {
 	// Early out for subscribers on private missions.
 	$current_user_roles       = $current_user->roles;
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
-	$brief_mission_type       = $brief_mission_type_array['name'];
+	$brief_mission_type       = $brief_mission_type_array['value'];
 	echo '<pre>';
 	var_dump( $brief_mission_type_array );
 	echo '</pre>';

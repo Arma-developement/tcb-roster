@@ -33,7 +33,7 @@ function tcbp_public_mission_briefing() {
 
 	// Early out for subscribers on private missions.
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
-	$brief_mission_type       = $brief_mission_type_array['name'];
+	$brief_mission_type       = $brief_mission_type_array['value'];
 	if ( in_array( 'subscriber', $user->roles, true ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
 		echo '</div>';
 		return ob_get_clean();
