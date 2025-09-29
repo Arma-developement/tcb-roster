@@ -55,8 +55,9 @@ function tcbp_public_mission_overview() {
 	echo get_field( 'brief_mission' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	// Early out for subscribers on private missions.
-	$current_user_roles = $current_user->roles;
-	$brief_mission_type = get_field( 'brief_mission_type', $post_id_ )['name'];
+	$current_user_roles       = $current_user->roles;
+	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
+	$brief_mission_type       = $brief_mission_type_array['name'];
 	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
 		echo '<br><br><p>This is a 3CB members only mission</p>';
 		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
