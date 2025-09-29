@@ -32,7 +32,7 @@ function tcbp_public_mission_briefing() {
 	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	// Early out for subscribers on private missions.
-	$brief_mission_type = get_field( 'brief_mission_type', $post_id_ )[0];
+	$brief_mission_type = get_field( 'brief_mission_type', $post_id_ )['name'];
 	if ( in_array( 'subscriber', $user->roles, true ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
 		echo '</div>';
 		return ob_get_clean();
