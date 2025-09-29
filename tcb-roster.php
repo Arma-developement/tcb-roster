@@ -3,7 +3,7 @@
  * Plugin Name: 3CB Roster
  * Plugin URI: https://github.com/Arma-developement/tcb-roster
  * Description: Design by Nick at Intention and Lifetap
- * Version: 1.3.91
+ * Version: 1.3.92
  * Author: Lifetap / Badger
  * Author URI: https://github.com/Arma-developement/tcb-roster
  * License: GPL2
