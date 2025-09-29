@@ -56,7 +56,7 @@ function tcbp_public_mission_overview() {
 
 	// Early out for subscribers on private missions.
 	$current_user_roles       = $current_user->roles;
-	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
+	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
 	$brief_mission_type       = $brief_mission_type_array['name'];
 	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
 		echo '<br><br><p>This is a 3CB members only mission</p>';
