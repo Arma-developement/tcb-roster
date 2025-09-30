@@ -245,7 +245,7 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	// DM applicant.
 	$discord_id = get_field( 'discord_id', $profile_id );
 	if ( $discord_id ) {
-		tcb_roster_admin_post_to_discord_dm( $discord_id, 'Your application has been submitted.\nA Recruitment Manager will be in contact.' );
+		tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted.\nA Recruitment Manager will be in contact.' );
 	}
 
 	// DM recruitment manager's channel.

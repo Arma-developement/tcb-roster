@@ -155,9 +155,9 @@ function tcb_roster_admin_steam_query_vac( $user ) {
 		break;
 	}
 
-	// echo '<pre>';
-	// print_r( $response );
-	// echo '</pre>';
+	echo '<pre>';
+	print_r( $response );
+	echo '</pre>';
 
 	return $response;
 }
