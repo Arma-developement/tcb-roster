@@ -52,7 +52,7 @@ function tcbp_public_edit_application() {
 				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
+				'field_67e82b9019e2e' => array( 'value' => $steam_id ),
 				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 			),
 			'settings'     => array(
@@ -125,7 +125,7 @@ function tcbp_public_edit_application() {
 							'field_6365c195143e6',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
-							'field_67e82b57d2cd7',
+							'field_67e82b9019e2e',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
@@ -150,7 +150,7 @@ function tcbp_public_edit_application() {
 							'field_6365c195143e6',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
-							'field_67e82b57d2cd7',
+							'field_67e82b9019e2e',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
@@ -187,7 +187,7 @@ function tcbp_public_edit_application() {
 	return ob_get_clean();
 }
 
-add_action( 'acfe/form/submit/post/form=submit-application', 'tcbp_public_submit_application_action', 20, 1 );
+add_action( 'acfe/form/submit_post/form=submit-application', 'tcbp_public_submit_application_action', 20, 1 );
 
 /**
  * Handles the submission callback for the public application form.
@@ -245,7 +245,7 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	// DM applicant.
 	$discord_id = get_field( 'discord_id', $profile_id );
 	if ( $discord_id ) {
-		tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted.\nA Recruitment Manager will be in contact.' );
+		tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted. A Recruitment Manager will be in contact.' );
 	}
 
 	// DM recruitment manager's channel.

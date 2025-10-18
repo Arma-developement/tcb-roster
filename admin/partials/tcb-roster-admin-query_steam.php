@@ -103,7 +103,7 @@ function format_steam_ids( $steam_api_key, $steam_ids ) {
 			// SteamCustomURL.
 			case ( preg_match( '~^(https://steamcommunity\.com/id/[a-zA-Z0-9/]{1,})|([a-zA-Z0-9]{1,})$~', $steam_id ) ? true : false ):
 				$steam_id             = preg_match( '~^https://steamcommunity\.com/id/[a-zA-Z0-9/]{1,}$~', $steam_id ) ? str_replace( 'https://steamcommunity.com/id/', '', substr( $steam_id, 0, -1 ) ) : $steam_id;
-				$formatted_steam_ids .= steam_custom_url_to_steam_id64( $steam_api_key, $steam_id )['body']->response->steamid;
+				$formatted_steam_ids .= steam_custom_url_to_steam_id64( $steam_api_key, $steam_id )['body']->response->SteamId;
 				break;
 			// Default.
 			default:
