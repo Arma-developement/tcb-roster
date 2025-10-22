@@ -30,7 +30,7 @@ function tcbp_public_edit_application() {
 	$steam_id   = false;
 	$username   = $user->user_login;
 	$steam_info = tcb_roster_admin_steam_query_vac( $username );
-	error_log( json_encode( $steam_info ) );
+	// error_log( json_encode( $steam_info ) );
 	if ( $steam_info ) {
 		$steam_id = $steam_info['SteamId'];
 	}
