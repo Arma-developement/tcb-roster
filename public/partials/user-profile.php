@@ -32,10 +32,10 @@ function tcbp_public_edit_profile() {
 
 	acfe_form(
 		array(
-			'post_id'         => $profile_id,
-			'name'            => 'edit-user-profile',
+			'post_id' => $profile_id,
+			'name'    => 'edit-user-profile',
 
-			'map'             => array(
+			'map'     => array(
 				'field_679946c5aecd3' => array( 'value' => get_the_author_meta( 'nickname', $user_id ) ),
 				'field_67993c0abf12c' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_67993c3bbf12d' => array( 'value' => get_the_author_meta( 'last_name', $user_id ) ),
@@ -47,11 +47,7 @@ function tcbp_public_edit_profile() {
 				'field_67993cbfbf133' => array( 'value' => get_field( 'thechamp_large_avatar', $profile_id ) ),
 				'field_67993ccfbf134' => array( 'value' => get_field( 'thechamp_dontupdate_avatar', $profile_id ) ),
 			),
-
-			'submit_value'    => 'Update Profile',
-			'return'          => wp_get_referer(),
-			'updated_message' => false,
-		)
+		),
 	);
 
 	echo '</div>';

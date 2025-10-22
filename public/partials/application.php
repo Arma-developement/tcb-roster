@@ -27,13 +27,12 @@ function tcbp_public_edit_application() {
 	$profile_id = 'user_' . $user_id;
 
 	// Check Steam ID.
+	$steam_id   = false;
 	$username   = $user->user_login;
 	$steam_info = tcb_roster_admin_steam_query_vac( $username );
 	error_log( json_encode( $steam_info ) );
 	if ( $steam_info ) {
 		$steam_id = $steam_info['SteamId'];
-	} else {
-		$steam_id = false;
 	}
 
 	ob_start();
@@ -52,7 +51,7 @@ function tcbp_public_edit_application() {
 				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-				'field_67e82b9019e2e' => array( 'value' => $steam_id ),
+				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
 				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 			),
 			'settings'     => array(
@@ -125,7 +124,7 @@ function tcbp_public_edit_application() {
 							'field_6365c195143e6',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
-							'field_67e82b9019e2e',
+							'field_67e82b57d2cd7',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
@@ -150,7 +149,7 @@ function tcbp_public_edit_application() {
 							'field_6365c195143e6',
 							'field_6365c23b143e9',
 							'field_67bb543da97fc',
-							'field_67e82b9019e2e',
+							'field_67e82b57d2cd7',
 							'field_6365c24d143ea',
 							'field_6365c2b0143ec',
 							'field_6365c27e143eb',
