@@ -1,0 +1,276 @@
+{
+    "key": "group_67993c074b1f1",
+    "title": "Front End User Profile",
+    "fields": [
+        {
+            "key": "field_679946c5aecd3",
+            "label": "Display Name",
+            "name": "display_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "maxlength": "",
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c0abf12c",
+            "label": "First Name",
+            "name": "first_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c3bbf12d",
+            "label": "Last Name",
+            "name": "last_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c4cbf12e",
+            "label": "Location",
+            "name": "user-location",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "maxlength": "",
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c5cbf12f",
+            "label": "Email",
+            "name": "email",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c68bf130",
+            "label": "Discord",
+            "name": "discord_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "maxlength": "",
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_67993c75bf131",
+            "label": "Communication Preference",
+            "name": "communication_preference",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "email": "Email",
+                "discord": "Discord"
+            },
+            "default_value": [
+                "email"
+            ],
+            "return_format": "value",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "allow_custom": 0,
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        },
+        {
+            "key": "field_67993cabbf132",
+            "label": "Small Avatar URL",
+            "name": "thechamp_avatar",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_67993cbfbf133",
+            "label": "Large Avatar URL",
+            "name": "thechamp_large_avatar",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_67993ccfbf134",
+            "label": "Steam Avatar Update",
+            "name": "thechamp_dontupdate_avatar",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": [
+                "Enable",
+                "Disable"
+            ],
+            "default_value": "disable",
+            "return_format": "value",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "allow_null": 0,
+            "other_choice": 0,
+            "acfe_permissions": "",
+            "allow_in_bindings": 0,
+            "layout": "vertical",
+            "save_other_choice": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "user_form",
+                "operator": "==",
+                "value": "edit"
+            },
+            {
+                "param": "user_role",
+                "operator": "!=",
+                "value": "administrator"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "Front End User Profile",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_permissions": "",
+    "acfe_form": 1,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183523
+}

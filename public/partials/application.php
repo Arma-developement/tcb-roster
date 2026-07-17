@@ -27,13 +27,13 @@ function tcbp_public_edit_application() {
 	$profile_id = 'user_' . $user_id;
 
 	// Check Steam ID.
-	$steam_id   = false;
-	$username   = $user->user_login;
-	//$steam_info = tcb_roster_admin_steam_query_vac( $username );
-	$steam_info = tcb_roster_get_steam_user_info( $username );
-	// error_log( json_encode( $steam_info ) );
-	if ( $steam_info ) {
-		$steam_id = $steam_info['SteamId'];
+	$steam_id       = false;
+	$saved_steam_id = get_field( 'steam_id', $profile_id );
+	if ( $saved_steam_id ) {
+		$steam_info = tcb_roster_get_steam_user_info( $saved_steam_id );
+		if ( $steam_info ) {
+			$steam_id = $steam_info['SteamId'];
+		}
 	}
 
 	ob_start();
@@ -69,7 +69,7 @@ function tcbp_public_edit_application() {
 		echo '<div id="message" class="updated">
 			<p>Thank you for submitting an application to join 3CB.</p>
 			<p>A Recruitment Manager will be in contact via Discord.</p>
-			<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.
+			<p>If you have not already done so, please join the <a href="https://discord.gg/5pCCQf9jPQ">3CB Discord</a></p>.
 		</div>';
 	} else {
 		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

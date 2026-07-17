@@ -102,8 +102,10 @@ function format_steam_ids( $steam_api_key, $steam_ids ) {
 				break;
 			// SteamCustomURL.
 			case ( preg_match( '~^(https://steamcommunity\.com/id/[a-zA-Z0-9/]{1,})|([a-zA-Z0-9]{1,})$~', $steam_id ) ? true : false ):
-				$steam_id             = preg_match( '~^https://steamcommunity\.com/id/[a-zA-Z0-9/]{1,}$~', $steam_id ) ? str_replace( 'https://steamcommunity.com/id/', '', substr( $steam_id, 0, -1 ) ) : $steam_id;
-				$formatted_steam_ids .= steam_custom_url_to_steam_id64( $steam_api_key, $steam_id )['body']->response->steamid;
+				$steam_id      = preg_match( '~^https://steamcommunity\.com/id/[a-zA-Z0-9/]{1,}$~', $steam_id ) ? str_replace( 'https://steamcommunity.com/id/', '', substr( $steam_id, 0, -1 ) ) : $steam_id;
+				$resolved_body = steam_custom_url_to_steam_id64( $steam_api_key, $steam_id )['body'];
+				// Steam returns a response with no steamid property when the vanity URL doesn't resolve to a player.
+				$formatted_steam_ids .= isset( $resolved_body->response->steamid ) ? $resolved_body->response->steamid : '';
 				break;
 			// Default.
 			default:

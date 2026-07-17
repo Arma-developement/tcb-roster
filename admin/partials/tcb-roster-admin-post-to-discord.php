@@ -68,7 +68,7 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 		'channel_id' => $channel_id,
 	);
 
-	$curl = curl_init( 'http://127.0.0.1:8084/3cb-channel-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
+	$curl = curl_init( 'http://10.88.0.1:8084/3cb-channel-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
 	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
@@ -99,7 +99,7 @@ function tcb_roster_admin_post_to_discord_dm( $receivers, $message ) {
 		'message'    => $message,
 		'player_ids' => $receivers,
 	);
-	$curl = curl_init( 'http://127.0.0.1:8084/3cb-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
+	$curl = curl_init( 'http://10.88.0.1:8084/3cb-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
 	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
@@ -125,7 +125,7 @@ function tcb_roster_admin_query_discord_username( $username ) {
 		'api_key'  => $key,
 		'username' => $username,
 	);
-	$curl = curl_init( 'http://127.0.0.1:8084/3cb-id' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
+	$curl = curl_init( 'http://10.88.0.1:8084/3cb-id' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
 	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt

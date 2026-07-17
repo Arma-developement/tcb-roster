@@ -1,0 +1,75 @@
+{
+    "key": "group_6356984d2ce21",
+    "title": "Service Record Training",
+    "fields": [
+        {
+            "key": "field_6356984dfce36",
+            "label": "Courses completed",
+            "name": "courses_completed",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "basic-1": "Basic Training Stage 1",
+                "basic-2": "Basic Training Stage 2",
+                "rotary-1": "Rotary Wing - Transport and Logistics",
+                "rotary-2": "Rotary Wing - Communication Essentials",
+                "rotary-3": "Rotary Wing - CAS",
+                "fac-1": "Forward Air Controller",
+                "mortar-1": "Mortar - Gunner",
+                "mortar-2": "Mortar - Section Commander",
+                "mortar-3": "Mortar - Fire Controller",
+                "sl-1": "SL\/FTL",
+                "cqb-1": "CQB 1",
+                "cqb-2": "CQB 2",
+                "eod-1": "EOD 1",
+                "eod-2": "EOD 2",
+                "nav-1": "Map Reading",
+                "mech-1": "Mechanised Course"
+            },
+            "default_value": [
+                "basic-1",
+                "basic-2"
+            ],
+            "return_format": "array",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "service-record"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183720
+}

@@ -1,0 +1,154 @@
+{
+    "key": "group_635697195a971",
+    "title": "Service Record Info",
+    "fields": [
+        {
+            "key": "field_67b8e1472f7bb",
+            "label": "Rank",
+            "name": "rank",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "tcb-rank",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "radio",
+            "allow_null": 0,
+            "acfe_bidirectional": {
+                "acfe_bidirectional_enabled": "1",
+                "acfe_bidirectional_related": [
+                    "field_67b8e1472f7bb"
+                ]
+            },
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "multiple": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_63669b6d0aeca",
+            "label": "Attestation date",
+            "name": "attestation_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "The date they become a recruit",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "d\/m\/Y",
+            "first_day": 1
+        },
+        {
+            "key": "field_6356978974240",
+            "label": "Passing out date",
+            "name": "passing_out_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "The date they become a marine",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "d\/m\/Y",
+            "first_day": 1
+        },
+        {
+            "key": "field_6365a88ca963d",
+            "label": "Duties",
+            "name": "duties",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "tcb-duty",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "checkbox",
+            "acfe_bidirectional": {
+                "acfe_bidirectional_enabled": "1",
+                "acfe_bidirectional_related": [
+                    "field_6365a88ca963d"
+                ]
+            },
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_635697d56d638",
+            "label": "LOA",
+            "name": "loa",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "frontend_admin_display_mode": "edit",
+            "only_front": 0,
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "service-record"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1742415893
+}

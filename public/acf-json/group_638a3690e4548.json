@@ -1,0 +1,52 @@
+{
+    "key": "group_638a3690e4548",
+    "title": "Event Plan",
+    "fields": [
+        {
+            "key": "field_638a3691f4cde",
+            "label": "Plan",
+            "name": "brief_plan",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Add the plan as a series of phases",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "TBD",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "tribe_events"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738183743
+}
