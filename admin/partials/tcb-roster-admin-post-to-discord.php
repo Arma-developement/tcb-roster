@@ -35,9 +35,18 @@ function tcb_roster_admin_post_to_discord( $sender, $channel, $message ) {
 	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+	if ( $curl_errno ) {
+		error_log( 'Discord webhook post failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+	} elseif ( $http_code >= 300 ) {
+		error_log( 'Discord webhook post to ' . $channel . ' returned HTTP ' . $http_code );
+	}
 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-	return true;
+	return ! $curl_errno && $http_code < 300;
 }
 
 /**
@@ -75,9 +84,18 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+	if ( $curl_errno ) {
+		error_log( 'Discord channel-message bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+	} elseif ( $http_code >= 300 ) {
+		error_log( 'Discord channel-message bridge call returned HTTP ' . $http_code );
+	}
 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-	return true;
+	return ! $curl_errno && $http_code < 300;
 }
 
 /**
@@ -106,10 +124,19 @@ function tcb_roster_admin_post_to_discord_dm( $receivers, $message ) {
 	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt,WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+	if ( $curl_errno ) {
+		error_log( 'Discord DM bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+	} elseif ( $http_code >= 300 ) {
+		error_log( 'Discord DM bridge call returned HTTP ' . $http_code );
+	}
 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
-	return true;
+	return ! $curl_errno && $http_code < 300;
 }
 
 /**
@@ -132,7 +159,12 @@ function tcb_roster_admin_query_discord_username( $username ) {
 	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt,WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	$get_url  = curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+	$get_url = curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	if ( curl_errno( $curl ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+		error_log( 'Discord username lookup bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+	}
 	$get_info = json_decode( $get_url, true );
 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 

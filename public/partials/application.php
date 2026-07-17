@@ -289,16 +289,23 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 
 	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
 
-	// DM applicant.
-	$discord_id = get_field( 'discord_id', $profile_id );
-	if ( $discord_id ) {
-		tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted. A Recruitment Manager will be in contact.' );
+	// Check Discord Username in the profile.
+	$discord_username = get_field( 'app_discord_username', $post_id_ );
+	update_field( 'discord_username', $discord_username, $profile_id );
+	if ( $discord_username ) {
+		$discord_id = tcb_roster_admin_query_discord_username( $discord_username );
+		if ( $discord_id ) {
+			update_field( 'discord_id', $discord_id, $profile_id );
+
+			// DM applicant.
+			tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted. A Recruitment Manager will be in contact.' );
+		}
 	}
 
 	// DM recruitment manager's channel.
-	$message  = '@here A new application has been submitted by ' . $user->display_name . ' (' . $user->name . ')\n';
-	$message .= '\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n';
-	$message .= "\nThe applicant's discord ID is " . get_field( 'app_discord_username', $post_id_ ) . '\n';
+	$message  = '@here A new application has been submitted by ' . $user->display_name . ' (' . $user->name . ")\n";
+	$message .= "\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n";
+	$message .= "\nThe applicant's discord ID is " . get_field( 'app_discord_username', $post_id_ ) . "\n";
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
 
 	set_transient( 'tcbp_app_submitted_' . $user_id, true, 60 );
