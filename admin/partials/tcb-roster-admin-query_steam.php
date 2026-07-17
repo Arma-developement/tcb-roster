@@ -118,6 +118,7 @@ function format_steam_ids( $steam_api_key, $steam_ids ) {
 
 /**
  * Contact Steam API to check if a user is VAC banned.
+ * DEPRECATED: Use tcb_roster_get_steam_user_info() instead.
  *
  * @param string $user  The name of the user.
  */
@@ -160,4 +161,56 @@ function tcb_roster_admin_steam_query_vac( $user ) {
 	// echo '</pre>';
 
 	return $response;
+}
+
+/**
+ * Function: tcb_roster_get_steam_user_info
+ *
+ * Look up a Steam user's public profile info and ban status from a single Steam ID.
+ * Accepts steam_id32, steam_id64, a profile URL, or a vanity URL/name.
+ *
+ * @param  string $steam_id Steam ID in any format supported by format_steam_ids().
+ *
+ * @return array|false Associative array of profile and ban info, or false on failure.
+ */
+function tcb_roster_get_steam_user_info( $steam_id ) {
+
+	$steam_api_key = getenv( 'STEAM_3CB_KEY' );
+
+	// Normalise whatever format we were given into a steam_id64.
+	$formatted_steam_id = format_steam_ids( $steam_api_key, array( $steam_id ) );
+
+	if ( empty( $formatted_steam_id ) ) {
+		return false;
+	}
+
+	// Fetch the public profile summary.
+	$summary_result = get_steam_api( 'ISteamUser/GetPlayerSummaries/v0002/', $steam_api_key, '&steamids=' . $formatted_steam_id );
+
+	if ( ! isset( $summary_result['body']->response->players[0] ) ) {
+		return false;
+	}
+	$summary = $summary_result['body']->response->players[0];
+
+	// Fetch ban status.
+	$ban_result = check_ban( $steam_api_key, $formatted_steam_id );
+
+	if ( ! isset( $ban_result['body']->players[0] ) ) {
+		return false;
+	}
+	$bans = $ban_result['body']->players[0];
+
+	return array(
+		'SteamId'           => $summary->steamid,
+		'PersonaName'       => $summary->personaname,
+		'ProfileUrl'        => $summary->profileurl,
+		'Avatar'            => $summary->avatarfull,
+		'ProfileVisibility' => $summary->communityvisibilitystate, // 1 = private, 3 = public.
+		'CommunityBanned'   => $bans->CommunityBanned,
+		'VACBanned'         => $bans->VACBanned,
+		'NumberOfVACBans'   => $bans->NumberOfVACBans,
+		'DaysSinceLastBan'  => $bans->DaysSinceLastBan,
+		'NumberOfGameBans'  => $bans->NumberOfGameBans,
+		'EconomyBan'        => $bans->EconomyBan,
+	);
 }
