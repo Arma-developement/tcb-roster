@@ -29,7 +29,8 @@ function tcbp_public_edit_application() {
 	// Check Steam ID.
 	$steam_id   = false;
 	$username   = $user->user_login;
-	$steam_info = tcb_roster_admin_steam_query_vac( $username );
+	//$steam_info = tcb_roster_admin_steam_query_vac( $username );
+	$steam_info = tcb_roster_get_steam_user_info( $username );
 	// error_log( json_encode( $steam_info ) );
 	if ( $steam_info ) {
 		$steam_id = $steam_info['SteamId'];
@@ -39,11 +40,48 @@ function tcbp_public_edit_application() {
 
 	echo '<div class="tcb_edit_application">';
 
+	// tcbp_public_submit_application_action() sets this transient once a submission of this
+	// form has actually completed. ACFE's own success/render state can't be trusted here (see
+	// tcbp_public_submit_application_action() docblock) - it appears to process the submission
+	// via a separate internal request, so a $GLOBALS flag doesn't survive to this render pass.
+	// The transient does, since it's stored in the database rather than process memory.
+	$tcbp_transient_key = 'tcbp_app_submitted_' . $user_id;
+
+	ob_start();
+	acfe_form(
+		array(
+			'name'         => 'submit-application',
+			'map'          => array(
+				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
+				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
+				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
+				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
+				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
+			),
+		)
+	);
+	$acfe_form_output = ob_get_clean();
+
+	$tcbp_just_submitted = (bool) get_transient( $tcbp_transient_key );
+
+	if ( $tcbp_just_submitted ) {
+		delete_transient( $tcbp_transient_key );
+		echo '<div id="message" class="updated">
+			<p>Thank you for submitting an application to join 3CB.</p>
+			<p>A Recruitment Manager will be in contact via Discord.</p>
+			<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.
+		</div>';
+	} else {
+		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/*
 	acfe_form(
 		array(
 			'name'         => 'submit-application',
 			'title'        => 'Submit Application',
 			'active'       => true,
+			'ajax'         => true,
 			'field_groups' => array(
 				'group_6365c19511ca1',
 			),
@@ -95,6 +133,7 @@ function tcbp_public_edit_application() {
 			'success'      => array(
 				'hide_form' => true,
 				'scroll'    => false,
+				'shortcode' => true,
 				'message'   => '<p>Thank you for submitting an application to join 3CB.</p>
 					<p>A Recruitment Manager will be in contact via Discord.</p>
 					<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
@@ -173,6 +212,7 @@ function tcbp_public_edit_application() {
 							{fields}
 							GDPR Notice: Please delete this email once the applicant becomes a Recruit.',
 						'html'     => false,
+						'shortcode' => false,
 					),
 					'attachments' => array(),
 				),
@@ -180,6 +220,7 @@ function tcbp_public_edit_application() {
 			'render'       => '',
 		)
 	);
+	*/
 
 	echo '</div>';
 
@@ -190,6 +231,13 @@ add_action( 'acfe/form/submit_post/form=submit-application', 'tcbp_public_submit
 
 /**
  * Handles the submission callback for the public application form.
+ *
+ * ACF Extended's own success/render state for this form isn't reliable (it can report the
+ * actions as done via its hooks while still re-rendering the empty form to the visitor), so
+ * this sets a short-lived transient that tcbp_public_edit_application() uses to override the
+ * rendered output directly rather than trusting ACFE's success flag. A transient (not a
+ * $GLOBALS flag) is required because ACFE appears to run this submission pipeline via a
+ * separate internal request/process from the one that renders the page.
  *
  * @param int $post_id_ The ID of the post being processed.
  */
@@ -252,6 +300,8 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	$message .= '\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n';
 	$message .= "\nThe applicant's discord ID is " . get_field( 'app_discord_username', $post_id_ ) . '\n';
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
+
+	set_transient( 'tcbp_app_submitted_' . $user_id, true, 60 );
 }
 
 // add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcbp_public_application_form_email', 10, 1 );
