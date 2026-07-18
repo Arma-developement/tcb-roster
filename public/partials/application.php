@@ -303,9 +303,9 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	}
 
 	// DM recruitment manager's channel.
-	$message  = '@here A new application has been submitted by ' . $user->display_name . ' (' . $user->name . ")\n";
+	$message  = '@here A new application has been submitted by ' . $user->display_name . "\n";
 	$message .= "\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n";
-	$message .= "\nThe applicant's discord ID is " . get_field( 'app_discord_username', $post_id_ ) . "\n";
+	$message .= "\nThe applicant's discord ID is " . $discord_username . "\n";
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
 
 	set_transient( 'tcbp_app_submitted_' . $user_id, true, 60 );
