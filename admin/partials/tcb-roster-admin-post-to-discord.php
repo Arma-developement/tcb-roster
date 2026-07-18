@@ -176,7 +176,7 @@ function tcb_roster_admin_query_discord_username( $username ) {
 		return false;
 	}
 
-	if ( $get_info['username'] !== $username ) {
+	if ( strcasecmp( $get_info['username'], $username ) !== 0 ) {
 		return false;
 	}
 
