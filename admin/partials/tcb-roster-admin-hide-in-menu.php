@@ -66,3 +66,19 @@ function filter_draft_pages_from_menu( $items ) {
 	}
 	return $items;
 }
+
+// Disable WordPress Administration Email verification Screen
+//add_filter( 'admin_email_check_interval', '__return_false' );
+
+add_action( 'user_profile_update_errors', 'tcb_roster_admin_allow_empty_user_email' );
+
+/**
+ * Removes the "empty email" validation error from the edit-user screen so admins can save a
+ * user's profile even when that user has no email address (e.g. accounts created via Steam
+ * login, since Steam's API doesn't provide one).
+ *
+ * @param WP_Error $errors Validation errors for the profile update, passed by reference by core.
+ */
+function tcb_roster_admin_allow_empty_user_email( $errors ) {
+	$errors->remove( 'empty_email' );
+}
