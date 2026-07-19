@@ -133,13 +133,13 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 		return;
 	}
 
-	$announcement = "{@members} {@recruits} {@candidates}\n\n" . $title . "\n" . $start_time->format( DateTimeInterface::RFC850 ) . "\n\n" . $message;
+	$announcement = "{@members} {@recruits} {@candidate}\n\n" . $title . "\n" . $start_time->format( DateTimeInterface::RFC850 ) . "\n\n" . $message;
 
 	// Schedule the announcements.
 	$current_time = new DateTimeImmutable();
 
 	if ( in_array( 'now', $schedule, true ) ) {
-		as_enqueue_async_action( 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
+		tcbp_public_mission_send_announcement_discord( $announcement );
 	}
 
 	if ( in_array( 'hour', $schedule, true ) ) {
@@ -336,6 +336,6 @@ function tcbp_public_mission_send_password( $post_id ) {
 	// error_log( print_r( 'late_email: ' . json_encode( $late_email ), true ) );
 	// .
 
-	as_enqueue_async_action( 'tcb_roster_public_mission_send_password_email_action', array( array( $early_email, $password ) ) );
+	tcbp_public_mission_send_password_email( array( $early_email, $password ) );
 	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password ) ) );
 }
