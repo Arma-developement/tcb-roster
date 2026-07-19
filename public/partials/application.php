@@ -75,153 +75,6 @@ function tcbp_public_edit_application() {
 		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
-	/*
-	acfe_form(
-		array(
-			'name'         => 'submit-application',
-			'title'        => 'Submit Application',
-			'active'       => true,
-			'ajax'         => true,
-			'field_groups' => array(
-				'group_6365c19511ca1',
-			),
-			'map'          => array(
-				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
-				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
-				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
-				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
-			),
-			'settings'     => array(
-				'location' => false,
-				'honeypot' => true,
-				'kses'     => true,
-				'uploader' => 'default',
-			),
-			'attributes'   => array(
-				'form'   => array(
-					'element' => 'form',
-					'class'   => 'acf-form',
-					'id'      => '',
-				),
-				'fields' => array(
-					'element'       => 'div',
-					'wrapper_class' => '',
-					'class'         => '',
-					'label'         => 'top',
-					'instruction'   => 'label',
-				),
-				'submit' => array(
-					'value'   => 'Submit Application',
-					'button'  => '<input type="submit" class="acf-button button button-primary button-large" value="%s" />',
-					'spinner' => '<span class="acf-spinner"></span>',
-				),
-			),
-			'validation'   => array(
-				'hide_error'        => false,
-				'hide_revalidation' => false,
-				'hide_unload'       => false,
-				'errors_position'   => 'above',
-				'errors_class'      => '',
-				'messages'          => array(
-					'failure' => 'Validation failed',
-					'success' => 'Validation successful',
-					'error'   => '1 field requires attention',
-					'errors'  => '%d fields require attention',
-				),
-			),
-			'success'      => array(
-				'hide_form' => true,
-				'scroll'    => false,
-				'shortcode' => true,
-				'message'   => '<p>Thank you for submitting an application to join 3CB.</p>
-					<p>A Recruitment Manager will be in contact via Discord.</p>
-					<p>If you have not already done so, please join the <a href="https://discord.gg/yHe2pZw">3CB Discord</a></p>.',
-				'wrapper'   => '<div id="message" class="updated">%s</div>',
-			),
-			'actions'      => array(
-				array(
-					'action' => 'post',
-					'name'   => 'submit-application',
-					'type'   => 'insert_post',
-					'save'   => array(
-						'post_type'      => 'application',
-						'post_status'    => 'publish',
-						'post_title'     => '{user:user_login}',
-						'post_name'      => '{user:user_login}',
-						'post_content'   => '',
-						'post_excerpt'   => '',
-						'post_author'    => '{user}',
-						'post_parent'    => '',
-						'post_date'      => '',
-						'post_thumbnail' => '',
-						'post_terms'     => array(
-							67,
-						),
-						'append_terms'   => true,
-						'acf_fields'     => array(
-							'field_6365c195143e6',
-							'field_6365c23b143e9',
-							'field_67bb543da97fc',
-							'field_67e82b57d2cd7',
-							'field_6365c24d143ea',
-							'field_6365c2b0143ec',
-							'field_6365c27e143eb',
-							'field_67decca349702',
-							'field_6365c3f2f7c37',
-						),
-					),
-					'load'   => array(
-						'source'         => '{post}',
-						'post_type'      => '',
-						'post_status'    => '',
-						'post_title'     => '',
-						'post_name'      => '',
-						'post_content'   => '',
-						'post_excerpt'   => '',
-						'post_author'    => '',
-						'post_parent'    => '',
-						'post_date'      => '',
-						'post_thumbnail' => '',
-						'post_terms'     => '',
-						'acf_fields'     => array(
-							'field_6365c195143e6',
-							'field_6365c23b143e9',
-							'field_67bb543da97fc',
-							'field_67e82b57d2cd7',
-							'field_6365c24d143ea',
-							'field_6365c2b0143ec',
-							'field_6365c27e143eb',
-							'field_67decca349702',
-							'field_6365c3f2f7c37',
-						),
-					),
-				),
-				array(
-					'action'      => 'email',
-					'name'        => 'application_form_email',
-					'email'       => array(
-						'from'     => '',
-						'to'       => '',
-						'reply_to' => '',
-						'cc'       => '',
-						'bcc'      => '',
-						'subject'  => '3CB application from {user:user_login} [{field:app_discord_id}]',
-						'content'  => 'An application to 3CB was submitted by {user:user_login} ({user:display_name})
-							<strong>Application details:</strong>
-							{fields}
-							GDPR Notice: Please delete this email once the applicant becomes a Recruit.',
-						'html'     => false,
-						'shortcode' => false,
-					),
-					'attachments' => array(),
-				),
-			),
-			'render'       => '',
-		)
-	);
-	*/
-
 	echo '</div>';
 
 	return ob_get_clean();
@@ -303,7 +156,7 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	}
 
 	// DM recruitment manager's channel.
-	$message  = '@here A new application has been submitted by ' . $user->display_name . "\n";
+	$message  = "@here\nA new application has been submitted by " . $user->display_name . "\n";
 	$message .= "\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n";
 	$message .= "\nThe applicant's discord ID is " . $discord_username . "\n";
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
@@ -314,11 +167,12 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 // add_filter( 'acfe/form/submit/email_args/action=application_form_email', 'tcbp_public_application_form_email', 10, 1 );
 
 /**
+ * DEPRECATED: Handles the email after application form submission.
  * Handles the email after application form submission.
  *
  * @param int $args Arguments for the application partial.
  */
-function tcbp_public_application_form_email( $args ) {
+/*function tcbp_public_application_form_email( $args ) {
 
 	$query = array(
 		'numberposts' => -1,
@@ -346,7 +200,7 @@ function tcbp_public_application_form_email( $args ) {
 
 	wp_reset_postdata();
 
-	tcb_roster_admin_post_to_discord( 'Recruit Bot', 'recruitment-managers', '@here' . $args['subject'] );
+	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', '@here' . $args['subject'] );
 
 	// Find and replace the tag with a link to the application.
 	// $contents = explode ('XXXXX', $args['content'] );
@@ -355,7 +209,7 @@ function tcbp_public_application_form_email( $args ) {
 	// }.
 
 	return $args;
-}
+}*/
 
 add_shortcode( 'tcbp_public_edit_app_interview', 'tcbp_public_edit_app_interview' );
 
