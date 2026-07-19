@@ -106,9 +106,7 @@ function tcbp_public_mission_send_announcement_discord( $announcement ) {
 	// error_log( print_r( 'Announcement: ' . $announcement, true ) );
 	// .
 
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// tcb_roster_admin_post_to_discord ( 'Mission Bot', 'announcements', $announcement );
-	// .
+	tcb_roster_admin_post_to_discord_channel( 'announcements', $announcement );
 }
 
 add_action( 'acfe/form/submit/post/form=send-announcement', 'tcbp_public_mission_send_announcement', 10, 1 );
@@ -124,27 +122,21 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 	$message  = get_field( 'message', $post_id );
 	$schedule = get_field( 'schedule', $post_id );
 
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// error_log( print_r("schedule: " . json_encode($schedule), TRUE ));
-	// .
-
 	// Build message.
-	$title          = get_the_title( $post_id );
-	$start_time_str = tribe_get_start_date( $post_id, true, DateTimeInterface::RFC850 );
-	$announcement   = $title . '\n' . $start_time_str . '\n' . $message;
+	$title            = get_the_title( $post_id );
+	$event_start_date = get_field( 'event_start_date', $post_id ); // Return format: Y-m-d.
+	$event_start_time = get_field( 'event_start_time', $post_id ); // Return format: g:i a.
+	$start_time       = DateTimeImmutable::createFromFormat( 'Y-m-d g:i a', $event_start_date . ' ' . $event_start_time );
 
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// error_log( print_r("start_time_str: " . $start_time_str, TRUE ));
-	// .
+	if ( ! $start_time ) {
+		error_log( 'Could not parse event start date/time for mission ' . $post_id );
+		return;
+	}
+
+	$announcement = "{@members} {@recruits} {@candidates}\n\n" . $title . "\n" . $start_time->format( DateTimeInterface::RFC850 ) . "\n\n" . $message;
 
 	// Schedule the announcements.
 	$current_time = new DateTimeImmutable();
-	$start_time   = DateTimeImmutable::createFromFormat( DateTimeInterface::RFC850, $start_time_str );
-
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// error_log( print_r("start_time: " . json_encode($start_time), TRUE ));
-	// error_log( print_r("current_time: " . json_encode($current_time), TRUE ));
-	// .
 
 	if ( in_array( 'now', $schedule, true ) ) {
 		as_enqueue_async_action( 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
