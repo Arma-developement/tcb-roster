@@ -1,5 +1,6 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 /**
+ * DEPRECATED: Use tcb_roster_admin_post_to_discord_channel instead.
  * File: discord.php
  * Description: Handles the code associated with the messaging Discord.
  */
@@ -11,43 +12,43 @@
  * @param string $channel The Discord channel ID.
  * @param string $message The message to be sent.
  */
-function tcb_roster_admin_post_to_discord( $sender, $channel, $message ) {
+// function tcb_roster_admin_post_to_discord( $sender, $channel, $message ) {
 
-	switch ( $channel ) {
-		case 'recruitment-managers':
-			$webhook = getenv( 'DISCORD_WEBHOOK_RECRUITMENT_MANAGERS' );
-			break;
-		case 'announcements':
-			$webhook = getenv( 'DISCORD_WEBHOOK_ANNOUNCEMENTS' );
-			break;
-		default:
-			return false;
-	}
+// 	switch ( $channel ) {
+// 		case 'recruitment-managers':
+// 			$webhook = getenv( 'DISCORD_WEBHOOK_RECRUITMENT_MANAGERS' );
+// 			break;
+// 		case 'announcements':
+// 			$webhook = getenv( 'DISCORD_WEBHOOK_ANNOUNCEMENTS' );
+// 			break;
+// 		default:
+// 			return false;
+// 	}
 
-	$data = array(
-		'content'  => $message,
-		'username' => $sender,
-	);
-	$curl = curl_init( $webhook );
-	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
-	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
-	if ( $curl_errno ) {
-		error_log( 'Discord webhook post failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
-	} elseif ( $http_code >= 300 ) {
-		error_log( 'Discord webhook post to ' . $channel . ' returned HTTP ' . $http_code );
-	}
-	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-	return ! $curl_errno && $http_code < 300;
-}
+// 	$data = array(
+// 		'content'  => $message,
+// 		'username' => $sender,
+// 	);
+// 	$curl = curl_init( $webhook );
+// 	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+// 	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+// 	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+// 	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+// 	if ( $curl_errno ) {
+// 		error_log( 'Discord webhook post failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+// 	} elseif ( $http_code >= 300 ) {
+// 		error_log( 'Discord webhook post to ' . $channel . ' returned HTTP ' . $http_code );
+// 	}
+// 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+// 	return ! $curl_errno && $http_code < 300;
+// }
 
 /**
  * Sends a message to a specified Discord channel.
