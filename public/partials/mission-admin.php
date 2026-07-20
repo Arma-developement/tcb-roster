@@ -287,15 +287,12 @@ function tcbp_public_mission_send_password( $post_id ) {
 	 * @param int $threshold_time The time threshold for sending the password.
 	 */
 	function signup_early( $post_id, $user_id, $threshold_time ) {
-		$fields = get_field( 'time_stamp', $post_id );
-		if ( ! $fields ) {
-			return false;
-		}
-		foreach ( $fields as $field ) {
-			if ( $user_id === $field['user'] ) {
-				return $field['time'] < $threshold_time;
+		while ( have_rows( 'stamp', $post_id ) ) :
+			the_row();
+			if ( $user_id === get_sub_field( 'stamp_user' ) ) {
+				return get_sub_field( 'stamp_time' ) < $threshold_time;
 			}
-		}
+		endwhile;
 		return false;
 	}
 

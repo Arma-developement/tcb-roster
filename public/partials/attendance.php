@@ -128,12 +128,11 @@ function tcbp_public_attendance_update() {
 	 * Function to handle attendance roster updates.
 	 */
 	function do_work() {
-		if ( ! isset( $_POST['postId'] ) || ! isset( $_POST['userId'] ) || ! isset( $_POST['selection'] ) || ! isset( $_POST['unregister'] ) || ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_POST['postId'] ) || ! isset( $_POST['selection'] ) || ! isset( $_POST['unregister'] ) || ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return wp_send_json_error( 'Parameters missing' );
 		}
 
 		$post_id    = (int) sanitize_text_field( wp_unslash( $_POST['postId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$user_id    = (int) sanitize_text_field( wp_unslash( $_POST['userId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$selection  = (int) sanitize_text_field( wp_unslash( $_POST['selection'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$unregister = (int) sanitize_text_field( wp_unslash( $_POST['unregister'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$nounce     = sanitize_text_field( wp_unslash( $_POST['nounce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -141,6 +140,13 @@ function tcbp_public_attendance_update() {
 		// Security check.
 		if ( ! wp_verify_nonce( $nounce, 'attendance_roster_update_nounce' ) ) {
 			return wp_send_json_error( 'Nounce failed' );
+		}
+
+		// Always act on the currently authenticated user - never trust a client-submitted user ID,
+		// which would let a logged-in user change another member's attendance.
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return wp_send_json_error( 'Not logged in' );
 		}
 
 		// Check for unregister, and remove user.

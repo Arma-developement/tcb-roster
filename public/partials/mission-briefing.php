@@ -344,6 +344,13 @@ function tcbp_public_mission_briefing_edit() {
 		return;
 	}
 
+	// Only a user slotted for this mission may edit its briefing - this must match the same
+	// check that gates the "Edit Mission Briefing" link in tcbp_public_mission_briefing(),
+	// since that link is only a UI convenience, not an access control on its own.
+	if ( ! tcbp_public_slotting_find_user( $post_id_, $user->ID ) ) {
+		return;
+	}
+
 	ob_start();
 
 	echo '<div class="tcb_mission_briefing_edit">';
@@ -352,7 +359,18 @@ function tcbp_public_mission_briefing_edit() {
 		array(
 			'name'    => 'submit-plan',
 			'post_id' => $post_id_,
-			'fields'  => array( 'brief_mission', 'brief_execution', 'brief_plan', 'brief_actions_on', 'brief_rules_of_engagement', 'brief_command_and_signals' ),
+			// Field keys, not names: acf_form() otherwise resolves a name to its key via the field
+			// group's Location rules, falling back to the post's own per-field reference metadata
+			// if that fails - a fallback that doesn't exist for a field never yet saved on this
+			// post. Keys resolve directly and don't depend on either.
+			'fields'  => array(
+				'field_638ca355cf0fa', // brief_mission.
+				'field_638ca355d2ccc', // brief_execution.
+				'field_638a3691f4cde', // brief_plan.
+				'field_639b76831fd8f', // brief_actions_on.
+				'field_638ca35613222', // brief_rules_of_engagement.
+				'field_638ca35616d9d', // brief_command_and_signals.
+			),
 			'return'  => '/mission-briefing/?id=' . $post_id_,
 		)
 	);

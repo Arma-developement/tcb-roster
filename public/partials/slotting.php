@@ -29,6 +29,38 @@ function tcbp_public_slotting_find_user( $post_id, $user_id ) {
 }
 
 /**
+ * Gets the user currently occupying a specific slot position.
+ *
+ * @param int $post_id The post ID for the slotting tool.
+ * @param int $i       The slots row index.
+ * @param int $j       The unit row index.
+ * @param int $k       The slot row index.
+ * @return int|string The user ID occupying the slot, or an empty string if unoccupied/not found.
+ */
+function tcbp_public_slotting_get_slot_member( $post_id, $i, $j, $k ) {
+	while ( have_rows( 'slots', $post_id ) ) :
+		the_row();
+		if ( $i !== get_row_index() ) {
+			continue;
+		}
+		while ( have_rows( 'unit', $post_id ) ) :
+			the_row();
+			if ( $j !== get_row_index() ) {
+				continue;
+			}
+			while ( have_rows( 'slot', $post_id ) ) :
+				the_row();
+				if ( $k !== get_row_index() ) {
+					continue;
+				}
+				return get_sub_field( 'slot_member' );
+			endwhile;
+		endwhile;
+	endwhile;
+	return '';
+}
+
+/**
  * Updates the slotting tool with the provided user data.
  *
  * @param int   $post_id The post ID for the slotting tool.
@@ -73,12 +105,11 @@ function tcbp_public_slotting_update() {
 	 * Function to handle attendance roster updates.
 	 */
 	function do_work() {
-		if ( ! isset( $_POST['postId'] ) || ! isset( $_POST['userId'] ) || ! isset( $_POST['slot'] ) || ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_POST['postId'] ) || ! isset( $_POST['slot'] ) || ! isset( $_POST['nounce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return wp_send_json_error( 'Parameters missing' );
 		}
 
 		$post_id  = (int) sanitize_text_field( wp_unslash( $_POST['postId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$user_id  = (int) sanitize_text_field( wp_unslash( $_POST['userId'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$slot_str = sanitize_text_field( wp_unslash( $_POST['slot'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$nounce   = sanitize_text_field( wp_unslash( $_POST['nounce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
@@ -87,25 +118,32 @@ function tcbp_public_slotting_update() {
 			return wp_send_json_error( 'Nounce failed' );
 		}
 
-		// Convert the slot string to an array of ints.
+		// Always act on the currently authenticated user - never trust a client-submitted user ID.
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return wp_send_json_error( 'Not logged in' );
+		}
+
+		// Convert the slot string to an array of ints. The client's 4th (ownership) value is
+		// ignored - it's derived below from the slot's actual current occupant, so a request
+		// can't be forged to remove or overwrite another member's slot.
 		$slot_array = explode( ',', $slot_str );
 		$i          = (int) $slot_array[0];
 		$j          = (int) $slot_array[1];
 		$k          = (int) $slot_array[2];
-		$owner      = (bool) $slot_array[3];
 
-		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-		// error_log( print_r( 'i: ' . $i, true ) );
-		// error_log( print_r( 'j: ' . $j, true ) );
-		// error_log( print_r( 'k: ' . $k, true ) );
-		// .
+		$user                = get_user_by( 'id', $user_id );
+		$display_name        = $user->display_name;
+		$slot_index_array    = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
+		$current_slot_member = tcbp_public_slotting_get_slot_member( $post_id, $i, $j, $k );
 
-		$user             = get_user_by( 'id', $user_id );
-		$display_name     = $user->display_name;
-		$slot_index_array = array( 'slots', $i, 'unit', $j, 'slot', $k, 'slot_member' );
+		// Refuse to touch a slot already held by someone else.
+		if ( $current_slot_member && ( $current_slot_member !== $user_id ) ) {
+			return wp_send_json_error( 'Slot already occupied' );
+		}
 
 		// If the user is in the current slot, remove the user.
-		if ( $owner ) {
+		if ( $current_slot_member === $user_id ) {
 			if ( update_sub_field( $slot_index_array, '', $post_id ) ) {
 				return wp_send_json_success( 'Removed user ' . $display_name . ', ' . $i . ', ' . $j . ', ' . $k );
 			} else {

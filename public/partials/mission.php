@@ -203,7 +203,6 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 
 		echo '<form class="rsvpFormUnregister" id="rsvpFormUnregister-' . esc_attr( $i ) . '">';
 		echo '<input type="hidden" name="postId" class="rsvpPostID" value="' . esc_attr( $post_id ) . '">';
-		echo '<input type="hidden" name="userId" class="rsvpUserID" value="' . esc_attr( $current_user_id ) . '">';
 		echo '<input type="hidden" name="selection" class="rsvpSelection" value="' . esc_attr( $i ) . '">';
 		echo '<input type="hidden" name="registered" class="rsvpUnregister" value="' . esc_attr( $unregister ) . '">';
 
@@ -304,8 +303,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 				} else {
 					echo '<form class="slotForm">';
 					echo '<input type="hidden" name="postId" class="postID" value="' . esc_attr( $post_id ) . '">';
-					echo '<input type="hidden" name="userId" class="userID" value="' . esc_attr( $current_user_id ) . '">';
-					echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . ',' . esc_attr( $is_owner ) . '">';
+					echo '<input type="hidden" name="slot" class="slot" value="' . esc_attr( $i ) . ',' . esc_attr( $j ) . ',' . esc_attr( $k ) . '">';
 					echo '<input class="slotIcon" type="submit" style="background-image:url(' . esc_url( $profile_image ) . ')">';
 					echo '</form>';
 				}

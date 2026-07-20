@@ -11,30 +11,66 @@
  * @param  string $steam_api_key your Steam API key.
  * @param  string $parameter_query parameters for your request.
  *
- * @return array body contains an array of requested data and http_code contain the http code of the request
+ * @return array {
+ *     @type object|null $body      Decoded JSON response body, or null if the request failed.
+ *     @type int|null    $http_code HTTP status code, or null if the request never reached Steam.
+ *     @type string|null $error     Description of a transport or JSON-decode failure, or null on success.
+ * }
  */
 function get_steam_api( $endpoint, $steam_api_key, $parameter_query = '' ) {
 	$curl = curl_init(); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
 	curl_setopt_array( // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
 		$curl,
 		array(
-			CURLOPT_URL            => 'http://api.steampowered.com/' . $endpoint . '?key=' . $steam_api_key . $parameter_query,
+			CURLOPT_URL            => 'https://api.steampowered.com/' . $endpoint . '?key=' . $steam_api_key . $parameter_query,
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_VERBOSE        => true,
 			CURLOPT_HEADER         => true,
-			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_CONNECTTIMEOUT => 5,
+			CURLOPT_TIMEOUT        => 10,
 		)
 	);
-	$output      = curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+	$output = curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+
+	// Transport-level failure (DNS, connection refused, TLS, timeout, etc.) - the request never
+	// reached Steam, so there's no HTTP code or body to report.
+	if ( curl_errno( $curl ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+		$error = 'Steam API transport error calling ' . $endpoint . ': ' . curl_error( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+		error_log( $error );
+		curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+		return array(
+			'body'      => null,
+			'http_code' => null,
+			'error'     => $error,
+		);
+	}
+
 	$header_size = curl_getinfo( $curl, CURLINFO_HEADER_SIZE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
-	$header      = substr( $output, 0, $header_size );
-	$body        = json_decode( substr( $output, $header_size ) );
 	$httpcode    = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
 	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
-	return (array) array(
+	$body = json_decode( substr( $output, $header_size ) );
+
+	// The request reached Steam and got a response, but it wasn't valid JSON (e.g. an HTML error
+	// page from a proxy or rate limiter) - distinct from both a transport failure and a clean
+	// non-2xx response.
+	if ( JSON_ERROR_NONE !== json_last_error() ) {
+		$error = 'Steam API returned invalid JSON calling ' . $endpoint . ' (HTTP ' . $httpcode . '): ' . json_last_error_msg();
+		error_log( $error );
+		return array(
+			'body'      => null,
+			'http_code' => $httpcode,
+			'error'     => $error,
+		);
+	}
+
+	if ( $httpcode < 200 || $httpcode >= 300 ) {
+		error_log( 'Steam API returned HTTP ' . $httpcode . ' calling ' . $endpoint );
+	}
+
+	return array(
 		'body'      => $body,
 		'http_code' => $httpcode,
+		'error'     => null,
 	);
 }
 
