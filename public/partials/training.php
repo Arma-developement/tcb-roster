@@ -21,7 +21,9 @@ function tcbp_public_archive_training() {
 	echo '<div class="tcb_training">';
 
 	// Build a list of course titles and course attendance, dynamically from the service records.
-	$list_of_posts = get_posts( $args );
+	$list_of_titles     = array();
+	$list_of_attendance = array();
+	$list_of_posts      = get_posts( $args );
 	if ( $list_of_posts ) {
 		foreach ( $list_of_posts as $post ) {
 			setup_postdata( $post );
@@ -40,7 +42,10 @@ function tcbp_public_archive_training() {
 		foreach ( $list_of_titles as $key => $title ) {
 			echo '<h3>' . esc_html( $title ) . '</h3><ul>';
 			foreach ( $list_of_attendance[ $key ] as $user_id ) {
-				$user         = get_user_by( 'id', $user_id );
+				$user = get_user_by( 'id', $user_id );
+				if ( ! $user ) {
+					continue;
+				}
 				$display_name = $user->get( 'display_name' );
 				echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
 			}
@@ -48,6 +53,6 @@ function tcbp_public_archive_training() {
 		}
 	}
 	wp_reset_postdata();
-	$return .= '</div>';
+	echo '</div>';
 	return ob_get_clean();
 }
