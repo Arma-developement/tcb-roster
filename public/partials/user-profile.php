@@ -30,6 +30,13 @@ function tcbp_public_edit_profile() {
 
 	echo '<div class="tcb_edit_user_profile">';
 
+	// tcbp_public_edit_profile_submit() sets this transient once the profile update has actually
+	// completed. ACFE's own success/render state for this form isn't reliable here - same issue
+	// diagnosed for the application form - so this transient decides what's shown below, not
+	// acfe_form()'s own output.
+	$tcbp_transient_key = 'tcbp_profile_updated_' . $user_id;
+
+	ob_start();
 	acfe_form(
 		array(
 			'post_id' => $profile_id,
@@ -46,6 +53,14 @@ function tcbp_public_edit_profile() {
 			),
 		),
 	);
+	$acfe_form_output = ob_get_clean();
+
+	if ( get_transient( $tcbp_transient_key ) ) {
+		delete_transient( $tcbp_transient_key );
+		echo '<div id="message" class="updated"><p>Your profile has been updated.</p></div>';
+	} else {
+		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	echo '</div>';
 
@@ -117,6 +132,8 @@ function tcbp_public_edit_profile_submit( $form ) {
 	if ( function_exists( 'SimpleLogger' ) ) {
 		SimpleLogger()->info( 'Edited own user profile' );
 	}
+
+	set_transient( 'tcbp_profile_updated_' . $user_id, true, 60 );
 }
 
 
