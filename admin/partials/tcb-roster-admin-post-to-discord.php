@@ -66,7 +66,8 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 			$channel_id = '384647101277274112';
 			break;
 		case 'announcements':
-			$channel_id = '384647504937091072';
+			//$channel_id = '384647504937091072';
+			$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
 			break;
 		default:
 			return false;

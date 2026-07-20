@@ -126,14 +126,20 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 	$title            = get_the_title( $post_id );
 	$event_start_date = get_field( 'event_start_date', $post_id ); // Return format: Y-m-d.
 	$event_start_time = get_field( 'event_start_time', $post_id ); // Return format: g:i a.
-	$start_time       = DateTimeImmutable::createFromFormat( 'Y-m-d g:i a', $event_start_date . ' ' . $event_start_time );
+	// Submitted event times are entered as British wall-clock time (BST/GMT); attach the zone
+	// explicitly so the derived Unix timestamp is the correct UTC instant, not a naive UTC read.
+	$start_time       = DateTimeImmutable::createFromFormat( 'Y-m-d g:i a', $event_start_date . ' ' . $event_start_time, new DateTimeZone( 'Europe/London' ) );
 
 	if ( ! $start_time ) {
 		error_log( 'Could not parse event start date/time for mission ' . $post_id );
 		return;
 	}
 
-	$announcement = "{@members} {@recruits} {@candidate}\n\n" . $title . "\n" . $start_time->format( DateTimeInterface::RFC850 ) . "\n\n" . $message;
+	// Fixed UK anchor time, plus Discord's <t:...:t> tag which renders in each reader's own
+	// timezone client-side. UK readers will see the same time twice - Discord has no way to
+	// vary message content per reader, so that's an accepted, unavoidable trade-off for giving
+	// non-UK readers both a stable reference time and their own local time.
+	$announcement = "{@members} {@recruits} {@candidate}\n\n" . $title . "\n" . $start_time->format( 'l j F Y, H:i T' ) . "\n(<t:" . $start_time->getTimestamp() . ":t> your local time)\n\n" . $message;
 
 	// Schedule the announcements.
 	$current_time = new DateTimeImmutable();
