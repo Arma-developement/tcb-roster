@@ -434,11 +434,10 @@ function tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ ) {
 	$requires_officer_rights = array( 'Lance Corporal', 'Corporal', 'Sergeant', 'Colour Sergeant', 'Officer' );
 	$current_user_roles      = wp_get_current_user()->roles;
 
-	// Check if user has the required role to promote, if not then default to Marine.
+	// Check if user has the required role to promote
 	if ( ! array_intersect( $officer_roles, $current_user_roles ) ) {
 		if ( in_array( $rank_name, $requires_officer_rights, true ) ) {
-			$rank_name = 'Marine';
-			wp_set_post_terms( $post_id_, $rank_name, 'tcb-rank' );
+			return;
 		}
 	}
 
