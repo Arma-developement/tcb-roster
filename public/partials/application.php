@@ -156,8 +156,8 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	}
 
 	// DM recruitment manager's channel.
-	$message  = "@here\nA new application has been submitted by " . $user->display_name . "\n";
-	$message .= "\nPlease check the application and update the status <https://test.3commandobrigade.com/application-archive> \n";
+	$message  = "{@Recruitment Manager}\nA new application has been submitted by " . $user->display_name . "\n";
+	$message .= "\nPlease check the application and update the status <" . home_url( '/application-archive' ) . "> \n";
 	$message .= "\nThe applicant's discord ID is " . $discord_username . "\n";
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
 
@@ -200,7 +200,7 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 
 	wp_reset_postdata();
 
-	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', '@here' . $args['subject'] );
+	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', '{@Recruitment Manager}' . $args['subject'] );
 
 	// Find and replace the tag with a link to the application.
 	// $contents = explode ('XXXXX', $args['content'] );
