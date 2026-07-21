@@ -162,6 +162,91 @@ function tcbp_public_edit_sr_info() {
 }
 
 
+add_action( 'acf/validate_save_post', 'tcbp_public_sr_validate_rank_submission' );
+
+/**
+ * Rejects an SR info submission outright if a non-officer tries to set one of the leadership
+ * ranks, instead of letting ACF write the tcb-rank term and only skipping the role-sync
+ * afterwards. acf/validate_save_post runs before any save happens, so acf_add_validation_error()
+ * here stops the write entirely rather than needing to correct it after the fact.
+ */
+function tcbp_public_sr_validate_rank_submission() {
+
+	$rank_field_key = 'field_67b8e1472f7bb';
+
+	if ( empty( $_POST['acf'][ $rank_field_key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+
+	$submitted_term_id = (int) sanitize_text_field( wp_unslash( $_POST['acf'][ $rank_field_key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$term              = get_term( $submitted_term_id, 'tcb-rank' );
+	if ( ! $term || is_wp_error( $term ) ) {
+		return;
+	}
+
+	$requires_officer_rights = array( 'Lance Corporal', 'Corporal', 'Sergeant', 'Colour Sergeant', 'Officer' );
+	if ( ! in_array( $term->name, $requires_officer_rights, true ) ) {
+		return;
+	}
+
+	$officer_roles = array( 'officer', 'administrator' );
+	if ( array_intersect( $officer_roles, wp_get_current_user()->roles ) ) {
+		return;
+	}
+
+	// Only block an actual attempted change, not an unchanged resubmission of the existing
+	// rank - HTML forms resubmit every field's current value regardless of whether it was
+	// edited. If the target post can't be determined, fail safe and reject anyway.
+	$post_id = isset( $_POST['_acf_post_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['_acf_post_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( $post_id ) {
+		$current_terms = get_the_terms( $post_id, 'tcb-rank' );
+		$current_name  = ( $current_terms && ! is_wp_error( $current_terms ) && isset( $current_terms[0] ) ) ? $current_terms[0]->name : '';
+		if ( $current_name === $term->name ) {
+			return;
+		}
+	}
+
+	acf_add_validation_error( 'acf[' . $rank_field_key . ']', 'Only an officer can set this rank.' );
+}
+
+add_action( 'acf/validate_save_post', 'tcbp_public_sr_validate_duty_submission' );
+
+/**
+ * Rejects an SR info submission outright if a non-officer tries to set a duty term, instead of
+ * letting ACF write the tcb-duty term and only skipping the role-sync afterwards. Same issue and
+ * same fix as tcbp_public_sr_validate_rank_submission() above.
+ */
+function tcbp_public_sr_validate_duty_submission() {
+
+	$duty_field_key = 'field_6365a88ca963d';
+
+	if ( empty( $_POST['acf'][ $duty_field_key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+
+	$officer_roles = array( 'officer', 'administrator' );
+	if ( array_intersect( $officer_roles, wp_get_current_user()->roles ) ) {
+		return;
+	}
+
+	// Only block an actual attempted change, not an unchanged resubmission of the existing
+	// duties - HTML forms resubmit every field's current value regardless of whether it was
+	// edited. If the target post can't be determined, fail safe and reject anyway.
+	$post_id = isset( $_POST['_acf_post_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['_acf_post_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( $post_id ) {
+		$submitted_duty_ids = wp_parse_id_list( wp_unslash( $_POST['acf'][ $duty_field_key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$current_duty_terms = get_the_terms( $post_id, 'tcb-duty' );
+		$current_duty_ids   = ( $current_duty_terms && ! is_wp_error( $current_duty_terms ) ) ? wp_parse_id_list( wp_list_pluck( $current_duty_terms, 'term_id' ) ) : array();
+		sort( $submitted_duty_ids );
+		sort( $current_duty_ids );
+		if ( $submitted_duty_ids === $current_duty_ids ) {
+			return;
+		}
+	}
+
+	acf_add_validation_error( 'acf[' . $duty_field_key . ']', 'Only an officer can set duties.' );
+}
+
 add_action( 'acf/save_post', 'tcbp_public_edit_sr_info_submission_callback', 20, 1 );
 
 /**
@@ -504,6 +589,14 @@ function tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ ) {
 
 	// Early out for no user.
 	if ( ! $user ) {
+		return;
+	}
+
+	$officer_roles           = array( 'officer', 'administrator' );
+	$current_user_roles      = wp_get_current_user()->roles;
+
+	// Check if user has the required role to set duties
+	if ( ! array_intersect( $officer_roles, $current_user_roles ) ) {
 		return;
 	}
 
