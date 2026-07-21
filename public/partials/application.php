@@ -7,6 +7,55 @@
 add_shortcode( 'tcbp_public_edit_application', 'tcbp_public_edit_application' );
 
 /**
+ * Determines whether a user already has an application awaiting initial review. Candidates are
+ * allowed to re-apply, but only one open "Submission phase" application at a time - once a
+ * Recruitment Manager moves it on to interview/candidate/recruit/selection, or closes it out as
+ * archived/rejected/retired, the user is free to submit a new one.
+ *
+ * @param string $profile_id The ACF user profile ID (e.g. "user_123").
+ * @return bool True if the user has an application still in the Submission phase.
+ */
+function tcbp_public_has_pending_application( $profile_id ) {
+	$post_id = get_field( 'application', $profile_id );
+	if ( ! $post_id ) {
+		return false;
+	}
+
+	// A deleted application is moved to Trash rather than removed outright, and its terms stay
+	// attached while it sits there - without this check a trashed (or otherwise hard-deleted)
+	// application would still read as "pending" via the stale post ID left on the profile.
+	$status = get_post_status( $post_id );
+	if ( ! $status || 'trash' === $status ) {
+		return false;
+	}
+
+	return (bool) has_term( 'Submission phase', 'tcb-selection', $post_id );
+}
+
+/**
+ * Determines whether a user is permanently barred from submitting a new application - unlike
+ * the Submission-phase check, this doesn't clear on its own once the application is resolved
+ * (or even deleted): a "banned" application is a deliberate, standing decision, not a
+ * transient in-review state, so it isn't given the same trash/deleted escape hatch as
+ * tcbp_public_has_pending_application().
+ *
+ * Note this only looks at the single application currently linked from the user's profile
+ * (the "application" field), matching how tcbp_public_has_pending_application() works - if a
+ * user has re-applied since the banned application, and the profile link has moved on to the
+ * newer post, that older banned post won't be found here.
+ *
+ * @param string $profile_id The ACF user profile ID (e.g. "user_123").
+ * @return bool True if the user is banned from applying.
+ */
+function tcbp_public_user_is_banned_from_applying( $profile_id ) {
+	$post_id = get_field( 'application', $profile_id );
+	if ( ! $post_id ) {
+		return false;
+	}
+	return (bool) has_term( 'banned', 'tcb-selection', $post_id );
+}
+
+/**
  * Shortcode to allow editing of user profile.
  */
 function tcbp_public_edit_application() {
@@ -45,23 +94,7 @@ function tcbp_public_edit_application() {
 	// tcbp_public_submit_application_action() docblock) - it appears to process the submission
 	// via a separate internal request, so a $GLOBALS flag doesn't survive to this render pass.
 	// The transient does, since it's stored in the database rather than process memory.
-	$tcbp_transient_key = 'tcbp_app_submitted_' . $user_id;
-
-	ob_start();
-	acfe_form(
-		array(
-			'name'         => 'submit-application',
-			'map'          => array(
-				'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
-				'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
-				'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-				'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
-				'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
-			),
-		)
-	);
-	$acfe_form_output = ob_get_clean();
-
+	$tcbp_transient_key  = 'tcbp_app_submitted_' . $user_id;
 	$tcbp_just_submitted = (bool) get_transient( $tcbp_transient_key );
 
 	if ( $tcbp_just_submitted ) {
@@ -71,13 +104,65 @@ function tcbp_public_edit_application() {
 			<p>A Recruitment Manager will be in contact via Discord.</p>
 			<p>If you have not already done so, please join the <a href="https://discord.gg/5pCCQf9jPQ">3CB Discord</a></p>.
 		</div>';
+	} elseif ( tcbp_public_user_is_banned_from_applying( $profile_id ) ) {
+		// A display-only gate, not the real enforcement - see tcbp_public_validate_application_submission()
+		// for the server-side check that actually blocks the submission.
+		echo '<div id="message" class="error">
+			<p>You are not permitted to submit an application.</p>
+		</div>';
+	} elseif ( tcbp_public_has_pending_application( $profile_id ) ) {
+		// A display-only gate, not the real enforcement - see tcbp_public_validate_application_submission()
+		// for the server-side check that actually blocks a second Submission-phase application.
+		echo '<div id="message" class="updated">
+			<p>You already have an application awaiting initial review.</p>
+			<p>A Recruitment Manager will be in contact via Discord.</p>
+		</div>';
 	} else {
-		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		acfe_form(
+			array(
+				'name'         => 'submit-application',
+				'map'          => array(
+					'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
+					'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
+					'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
+					'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
+					'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
+				),
+			)
+		);
 	}
 
 	echo '</div>';
 
 	return ob_get_clean();
+}
+
+add_action( 'acfe/form/validation/form=submit-application', 'tcbp_public_validate_application_submission' );
+
+/**
+ * Rejects a new application submission while the user already has one awaiting initial review.
+ * acfe/form/validation fires before ACFE creates/saves the post, so this is the actual
+ * enforcement - the render-time check in tcbp_public_edit_application() only avoids showing the
+ * form to begin with, and can't stop a forged/replayed direct POST on its own.
+ */
+function tcbp_public_validate_application_submission() {
+
+	$user = wp_get_current_user();
+
+	if ( ! $user->exists() || ! is_user_logged_in() ) {
+		return;
+	}
+
+	$profile_id = 'user_' . $user->ID;
+
+	if ( tcbp_public_user_is_banned_from_applying( $profile_id ) ) {
+		acf_add_validation_error( '', 'You are not permitted to submit an application.' );
+		return;
+	}
+
+	if ( tcbp_public_has_pending_application( $profile_id ) ) {
+		acf_add_validation_error( '', 'You already have an application awaiting initial review. A Recruitment Manager will be in contact via Discord.' );
+	}
 }
 
 add_action( 'acfe/form/submit_post/form=submit-application', 'tcbp_public_submit_application_action', 20, 1 );
