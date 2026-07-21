@@ -61,6 +61,39 @@ function tcbp_public_slotting_get_slot_member( $post_id, $i, $j, $k ) {
 }
 
 /**
+ * Gets the attendance_threshold configured for a specific slot position - the minimum total
+ * attendance count required before that slot can be claimed.
+ *
+ * @param int $post_id The post ID for the slotting tool.
+ * @param int $i       The slots row index.
+ * @param int $j       The unit row index.
+ * @param int $k       The slot row index.
+ * @return int The attendance threshold, or 0 (unlocked) if the slot can't be found.
+ */
+function tcbp_public_slotting_get_attendance_threshold( $post_id, $i, $j, $k ) {
+	while ( have_rows( 'slots', $post_id ) ) :
+		the_row();
+		if ( $i !== get_row_index() ) {
+			continue;
+		}
+		while ( have_rows( 'unit', $post_id ) ) :
+			the_row();
+			if ( $j !== get_row_index() ) {
+				continue;
+			}
+			while ( have_rows( 'slot', $post_id ) ) :
+				the_row();
+				if ( $k !== get_row_index() ) {
+					continue;
+				}
+				return (int) get_sub_field( 'attendance_threshold' );
+			endwhile;
+		endwhile;
+	endwhile;
+	return 0;
+}
+
+/**
  * Updates the slotting tool with the provided user data.
  *
  * @param int   $post_id The post ID for the slotting tool.
@@ -139,6 +172,16 @@ function tcbp_public_slotting_update() {
 		$i          = (int) $slot_array[0];
 		$j          = (int) $slot_array[1];
 		$k          = (int) $slot_array[2];
+
+		// The slotting tool only renders an active claim/release control once total attendance
+		// meets the slot's own attendance_threshold - that's a display decision, not an access
+		// control, so re-check it here too. Matches the render's is_disabled logic: a locked
+		// slot can't be touched at all, even by its current owner.
+		$attendance_threshold = tcbp_public_slotting_get_attendance_threshold( $post_id, $i, $j, $k );
+		$attendance           = tcbp_public_get_attendance_count( $post_id );
+		if ( $attendance < $attendance_threshold ) {
+			return wp_send_json_error( 'Slot is locked' );
+		}
 
 		$user                = get_user_by( 'id', $user_id );
 		$display_name        = $user->display_name;

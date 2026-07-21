@@ -170,6 +170,27 @@ function tcbp_public_mission_overview() {
 
 
 /**
+ * Counts every user registered across all RSVP rows (Attending/Maybe/Not Attending) for a
+ * mission. Same count tcbp_public_attendance_roster() computes while rendering, extracted here
+ * without any of its rendering side effects so the slotting AJAX handler can independently
+ * re-verify a slot's attendance_threshold lock server-side.
+ *
+ * @param int $post_id The mission post ID.
+ * @return int The total attendance count.
+ */
+function tcbp_public_get_attendance_count( $post_id ) {
+	$attendance = 0;
+	while ( have_rows( 'rsvp', $post_id ) ) :
+		the_row();
+		$user_ids = get_sub_field( 'user' );
+		if ( $user_ids ) {
+			$attendance += count( $user_ids );
+		}
+	endwhile;
+	return $attendance;
+}
+
+/**
  * Generates the public attendance roster.
  *
  * This function is responsible for generating and displaying the public attendance roster
