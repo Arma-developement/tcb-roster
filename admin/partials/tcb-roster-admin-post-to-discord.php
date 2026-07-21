@@ -79,25 +79,33 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 		'channel_id' => $channel_id,
 	);
 
-	$curl = curl_init( 'http://10.88.0.1:8084/3cb-channel-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
-	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
-	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
-	if ( $curl_errno ) {
-		error_log( 'Discord channel-message bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
-	} elseif ( $http_code >= 300 ) {
+	$discordbot_url = getenv( 'DISCORDBOT_URL' );
+	if ( ! $discordbot_url ) {
+		error_log( 'Discord channel-message bridge call skipped: DISCORDBOT_URL is not set' );
+		return false;
+	}
+
+	// wp_remote_post(), not wp_safe_remote_post(): the bridge lives at a private LAN address
+	// that the "safe" variant's SSRF protection would block outright.
+	$response = wp_remote_post(
+		rtrim( $discordbot_url, '/' ) . '/3cb-channel-message',
+		array(
+			'timeout' => 5,
+			'headers' => array( 'Content-Type' => 'application/json' ),
+			'body'    => wp_json_encode( $data ),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( 'Discord channel-message bridge call failed: ' . $response->get_error_message() );
+		return false;
+	}
+
+	$http_code = wp_remote_retrieve_response_code( $response );
+	if ( $http_code >= 300 ) {
 		error_log( 'Discord channel-message bridge call returned HTTP ' . $http_code );
 	}
-	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-	return ! $curl_errno && $http_code < 300;
+	return $http_code < 300;
 }
 
 /**
@@ -119,26 +127,35 @@ function tcb_roster_admin_post_to_discord_dm( $receivers, $message ) {
 		'message'    => $message,
 		'player_ids' => $receivers,
 	);
-	$curl = curl_init( 'http://10.88.0.1:8084/3cb-message' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
-	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt,WordPress.WP.AlternativeFunctions.json_encode_json_encode
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-	$curl_errno = curl_errno( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
-	$http_code  = curl_getinfo( $curl, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
-	if ( $curl_errno ) {
-		error_log( 'Discord DM bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
-	} elseif ( $http_code >= 300 ) {
+
+	$discordbot_url = getenv( 'DISCORDBOT_URL' );
+	if ( ! $discordbot_url ) {
+		error_log( 'Discord DM bridge call skipped: DISCORDBOT_URL is not set' );
+		return false;
+	}
+
+	// wp_remote_post(), not wp_safe_remote_post(): the bridge lives at a private LAN address
+	// that the "safe" variant's SSRF protection would block outright.
+	$response = wp_remote_post(
+		rtrim( $discordbot_url, '/' ) . '/3cb-message',
+		array(
+			'timeout' => 5,
+			'headers' => array( 'Content-Type' => 'application/json' ),
+			'body'    => wp_json_encode( $data ),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( 'Discord DM bridge call failed: ' . $response->get_error_message() );
+		return false;
+	}
+
+	$http_code = wp_remote_retrieve_response_code( $response );
+	if ( $http_code >= 300 ) {
 		error_log( 'Discord DM bridge call returned HTTP ' . $http_code );
 	}
-	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
-	return ! $curl_errno && $http_code < 300;
+	return $http_code < 300;
 }
 
 /**
@@ -154,21 +171,30 @@ function tcb_roster_admin_query_discord_username( $username ) {
 		'api_key'  => $key,
 		'username' => $username,
 	);
-	$curl = curl_init( 'http://10.88.0.1:8084/3cb-id' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
-	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POST, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_HEADER, 0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt,WordPress.WP.AlternativeFunctions.json_encode_json_encode
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	curl_setopt( $curl, CURLOPT_TIMEOUT, 5 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-	$get_url = curl_exec( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-	if ( curl_errno( $curl ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
-		error_log( 'Discord username lookup bridge call failed: ' . curl_error( $curl ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+
+	$discordbot_url = getenv( 'DISCORDBOT_URL' );
+	if ( ! $discordbot_url ) {
+		error_log( 'Discord username lookup bridge call skipped: DISCORDBOT_URL is not set' );
+		return false;
 	}
-	$get_info = json_decode( $get_url, true );
-	curl_close( $curl ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+
+	// wp_remote_post(), not wp_safe_remote_post(): the bridge lives at a private LAN address
+	// that the "safe" variant's SSRF protection would block outright.
+	$response = wp_remote_post(
+		rtrim( $discordbot_url, '/' ) . '/3cb-id',
+		array(
+			'timeout' => 5,
+			'headers' => array( 'Content-Type' => 'application/json' ),
+			'body'    => wp_json_encode( $data ),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( 'Discord username lookup bridge call failed: ' . $response->get_error_message() );
+		return false;
+	}
+
+	$get_info = json_decode( wp_remote_retrieve_body( $response ), true );
 
 	if ( ! $get_info ) {
 		return false;
