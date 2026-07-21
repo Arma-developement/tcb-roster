@@ -383,3 +383,31 @@ function tcbp_public_mission_briefing_edit() {
 
 	return ob_get_clean();
 }
+
+add_action( 'acf/save_post', 'tcbp_public_mission_briefing_authorize_save', 5 );
+
+/**
+ * Independently re-checks briefing-edit authorization at the moment ACF is actually about to
+ * save, rather than trusting the page-render-time check in tcbp_public_mission_briefing_edit()
+ * alone. acf_form_head() is never called in this plugin, so there's no guarantee the save is
+ * processed synchronously within that function's own request - a form rendered while a user
+ * was slotted into a mission could otherwise still be captured and submitted later, after they
+ * lose access, and get saved anyway. Registered at priority 5 (default ACF save is 10) so this
+ * runs, and can wp_die() to hard-stop the request, before ACF writes anything.
+ *
+ * @param int $post_id The post ACF is about to save.
+ */
+function tcbp_public_mission_briefing_authorize_save( $post_id ) {
+
+	// Only relevant to a front-end submission of this specific form - identified by one of its
+	// own field keys being present in the submitted data. wp-admin saves (by staff with normal
+	// edit_post capabilities) are unaffected.
+	if ( is_admin() || empty( $_POST['acf']['field_638a3691f4cde'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+
+	$user_id = get_current_user_id();
+	if ( ! $user_id || ! tcbp_public_slotting_find_user( $post_id, $user_id ) ) {
+		wp_die( esc_html__( 'You are no longer authorized to edit this mission briefing.', 'roster' ) );
+	}
+}

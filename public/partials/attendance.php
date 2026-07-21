@@ -149,6 +149,14 @@ function tcbp_public_attendance_update() {
 			return wp_send_json_error( 'Not logged in' );
 		}
 
+		// The mission page only shows the RSVP form to subscribers when the mission isn't
+		// private/miniop/patrolop, but that's a display gate, not an access control - re-check
+		// it here so a direct POST can't bypass it.
+		$current_user_roles = wp_get_current_user()->roles;
+		if ( tcbp_public_mission_is_restricted_for_user( $post_id, $current_user_roles ) ) {
+			return wp_send_json_error( 'Not authorized for this mission' );
+		}
+
 		// Check for unregister, and remove user.
 		if ( $unregister ) {
 			tcbp_public_attendance_remove_user( $post_id, $user_id, true );

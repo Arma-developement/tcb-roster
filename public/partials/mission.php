@@ -1,5 +1,25 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
+/**
+ * Determines whether a subscriber is blocked from a mission based on its visibility type.
+ * Private, mini-op and patrol-op missions are members only - subscribers can't view, attend,
+ * or slot into them. Used both to gate the mission page display and independently re-checked
+ * by the RSVP/slotting AJAX endpoints, since the display check alone isn't an access control -
+ * a direct POST to those endpoints would otherwise bypass it entirely.
+ *
+ * @param int   $post_id    The mission post ID.
+ * @param array $user_roles The current user's roles, e.g. wp_get_current_user()->roles.
+ * @return bool True if this user is blocked from this mission.
+ */
+function tcbp_public_mission_is_restricted_for_user( $post_id, $user_roles ) {
+	if ( ! in_array( 'subscriber', $user_roles, true ) ) {
+		return false;
+	}
+	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
+	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
+	return in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true );
+}
+
 add_action( 'tribe_events_single_event_after_the_meta', 'tcbp_public_mission_overview' );
 
 /**
@@ -57,8 +77,8 @@ function tcbp_public_mission_overview() {
 	// Early out for subscribers on private missions.
 	$current_user_roles       = $current_user->roles;
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
-	$brief_mission_type       = $brief_mission_type_array['value'];
-	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
+	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
+	if ( tcbp_public_mission_is_restricted_for_user( $post_id, $current_user_roles ) ) {
 		echo '<p class="info">This is a 3CB members only mission</p>';
 		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
 		echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';

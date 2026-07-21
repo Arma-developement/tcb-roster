@@ -124,6 +124,14 @@ function tcbp_public_slotting_update() {
 			return wp_send_json_error( 'Not logged in' );
 		}
 
+		// The mission page only shows the slotting tool to subscribers when the mission isn't
+		// private/miniop/patrolop, but that's a display gate, not an access control - re-check
+		// it here so a direct POST can't bypass it.
+		$current_user_roles = wp_get_current_user()->roles;
+		if ( tcbp_public_mission_is_restricted_for_user( $post_id, $current_user_roles ) ) {
+			return wp_send_json_error( 'Not authorized for this mission' );
+		}
+
 		// Convert the slot string to an array of ints. The client's 4th (ownership) value is
 		// ignored - it's derived below from the slot's actual current occupant, so a request
 		// can't be forged to remove or overwrite another member's slot.
