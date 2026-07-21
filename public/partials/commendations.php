@@ -11,6 +11,12 @@ add_shortcode( 'tcbp_public_archive_commendations', 'tcbp_public_archive_commend
  */
 function tcbp_public_archive_commendations() {
 
+	// Members only - don't rely solely on the page-level restriction, since this shortcode's
+	// output could be reached some other way (a different page, a widget, etc.).
+	if ( ! is_user_logged_in() || in_array( 'subscriber', wp_get_current_user()->roles, true ) ) {
+		return;
+	}
+
 	$args = array(
 		'numberposts' => -1,
 		'post_type'   => 'service-record',
