@@ -3,9 +3,10 @@
 /**
  * Determines whether a subscriber is blocked from a mission based on its visibility type.
  * Private, mini-op and patrol-op missions are members only - subscribers can't view, attend,
- * or slot into them. Used both to gate the mission page display and independently re-checked
- * by the RSVP/slotting AJAX endpoints, since the display check alone isn't an access control -
- * a direct POST to those endpoints would otherwise bypass it entirely.
+ * or slot into them. Joint-op missions additionally require the subscriber to hold the
+ * mission's own per-user slotting password. Used both to gate the mission page display and
+ * independently re-checked by the RSVP/slotting AJAX endpoints, since the display check alone
+ * isn't an access control - a direct POST to those endpoints would otherwise bypass it entirely.
  *
  * @param int   $post_id    The mission post ID.
  * @param array $user_roles The current user's roles, e.g. wp_get_current_user()->roles.
@@ -17,7 +18,16 @@ function tcbp_public_mission_is_restricted_for_user( $post_id, $user_roles ) {
 	}
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
 	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
-	return in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true );
+
+	if ( in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
+		return true;
+	}
+
+	if ( 'jo' === $brief_mission_type ) {
+		return get_field( 'slotting_password', $post_id ) !== wp_get_current_user()->slotting_password;
+	}
+
+	return false;
 }
 
 add_action( 'tribe_events_single_event_after_the_meta', 'tcbp_public_mission_overview' );
@@ -74,22 +84,13 @@ function tcbp_public_mission_overview() {
 	echo '<h3>Mission</h3>';
 	echo get_field( 'brief_mission' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	// Early out for subscribers on private missions.
+	// Early out for subscribers blocked from this mission - private/miniop/patrolop missions
+	// entirely, or a joint-op mission without the correct per-user slotting password.
 	$current_user_roles       = $current_user->roles;
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
 	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
 	if ( tcbp_public_mission_is_restricted_for_user( $post_id, $current_user_roles ) ) {
-		echo '<p class="info">This is a 3CB members only mission</p>';
-		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
-		echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';
-		echo '</div>';
-		return;
-	}
-
-	// Password protection for subscribers on joint-op missions.
-	if ( ( in_array( 'subscriber', $current_user_roles, true ) ) && ( 'jo' === $brief_mission_type ) ) {
-		if ( get_field( 'slotting_password' ) !== $current_user->slotting_password ) {
-
+		if ( 'jo' === $brief_mission_type ) {
 			echo '<div class="tcb_submit_slotting_password">';
 
 			acfe_form(
@@ -105,11 +106,13 @@ function tcbp_public_mission_overview() {
 			echo '</div>';
 
 			echo '<br><br><p>This is a joint operations, open to 3CB guests only</p>';
-			echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
-			echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';
-			echo '</div>';
-			return;
+		} else {
+			echo '<p class="info">This is a 3CB members only mission</p>';
 		}
+		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
+		echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';
+		echo '</div>';
+		return;
 	}
 
 	echo '<h3>Execution</h3>';
