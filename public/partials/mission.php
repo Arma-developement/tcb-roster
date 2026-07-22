@@ -50,7 +50,7 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
-	// Output the briefing.
+	// Output the briefing.  Need to review
 	echo '<div class="tcb_briefing" >';
 
 	echo '<h2>Mission Details</h2>';
