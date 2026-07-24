@@ -76,13 +76,9 @@ function tcbp_public_edit_application() {
 	$profile_id = 'user_' . $user_id;
 
 	// Check Steam ID.
-	$steam_id       = false;
-	$saved_steam_id = get_field( 'steam_id', $profile_id );
-	if ( $saved_steam_id ) {
-		$steam_info = tcb_roster_get_steam_user_info( $saved_steam_id );
-		if ( $steam_info ) {
-			$steam_id = $steam_info['SteamId'];
-		}
+	$steam_id = get_field( 'steam_id', $profile_id );
+	if ( ! $steam_id ) {
+		return;
 	}
 
 	ob_start();
@@ -125,7 +121,6 @@ function tcbp_public_edit_application() {
 					'field_6365c195143e6' => array( 'value' => get_the_author_meta( 'first_name', $user_id ) ),
 					'field_6365c23b143e9' => array( 'value' => get_field( 'discord_username', $profile_id ) ),
 					'field_67bb543da97fc' => array( 'value' => get_the_author_meta( 'user_email', $user_id ) ),
-					'field_67e82b57d2cd7' => array( 'value' => $steam_id ),
 					'field_6365c24d143ea' => array( 'value' => get_field( 'user-location', $profile_id ) ),
 				),
 			)
@@ -221,9 +216,6 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	if ( ! get_field( 'fe_user_location', $profile_id ) ) {
 		update_field( 'user-location', get_field( 'app_country', $post_id_ ), $profile_id );
 	}
-
-	// Check Steam ID in the profile.
-	update_field( 'steam_id', get_field( 'app_steam_id', $post_id_ ), $profile_id );
 
 	wp_set_post_terms( $post_id_, 'Submission phase', 'tcb-selection' );
 
