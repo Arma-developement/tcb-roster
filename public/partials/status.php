@@ -21,8 +21,24 @@ function tcbp_public_edit_status() {
 		return;
 	}
 
-	$allowed_roles = array( 'training_admin', 'recruit_admin', 'mission_admin', 'snco', 'officer', 'administrator' );
+	// Matches the "Edit Status" button's own visibility on both single-report.php and
+	// single-loa.php (role_edit => officer, administrator) - previously this list was broader
+	// than what the UI ever exposed a button for, so training_admin/recruit_admin/mission_admin/
+	// snco could reach this endpoint directly even though they'd never see a way to get here.
+	$allowed_roles = array( 'officer', 'administrator' );
 	if ( ! array_intersect( $allowed_roles, wp_get_current_user()->roles ) ) {
+		return;
+	}
+
+	// The Status field is now a dedicated field group per post type - LOA_Status and
+	// Report_Status - rather than the single shared "Status" group (group_678bea513af25) this
+	// used before. Bail for any other post type, since there's no group configured for it.
+	$status_field_groups = array(
+		'loa'    => 'group_6a63834d79fbe', // LOA_Status.
+		'report' => 'group_6a6383594c9f0', // Report_Status.
+	);
+	$post_type = get_post_type( $post_id );
+	if ( ! isset( $status_field_groups[ $post_type ] ) ) {
 		return;
 	}
 
@@ -33,7 +49,7 @@ function tcbp_public_edit_status() {
 	acf_form(
 		array(
 			'post_id'         => $post_id,
-			'field_groups'    => array( 'group_678bea513af25' ),
+			'field_groups'    => array( $status_field_groups[ $post_type ] ),
 			'submit_value'    => 'Update Status',
 			'return'          => wp_get_referer(),
 			'updated_message' => false,
