@@ -46,6 +46,26 @@ function tcbp_public_sr_form() {
 	// Create a new page if one does not exist.
 	if ( ! $post_id ) {
 
+		// Only create a new service record (and promote the user's role) on an explicit,
+		// nonce-verified confirmation - never as a side effect of simply rendering this page.
+		// This used to run unconditionally on a bare GET, so just loading this URL (including a
+		// forged link clicked by a privileged staff member) silently created the record and
+		// promoted the target user's WP role from subscriber to limited_member, with no
+		// confirmation step at all.
+		$create_nonce_action = 'tcbp_create_sr_' . $user_id;
+		$confirmed            = isset( $_GET['tcbp_create_sr'], $_GET['_wpnonce'] )
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), $create_nonce_action );
+
+		if ( ! $confirmed ) {
+			$confirm_url = wp_nonce_url(
+				add_query_arg( array( 'id' => $user_id, 'tcbp_create_sr' => 1 ) ),
+				$create_nonce_action
+			);
+			echo '<p>No service record exists yet for ' . esc_html( $display_name ) . '.</p>';
+			echo '<p><a href="' . esc_url( $confirm_url ) . '" class="button button-secondary">Create Service Record</a></p>';
+			return ob_get_clean();
+		}
+
 		$page_slug = 'service-record-' . $user_id; // Slug of the Post.
 		$new_page  = array(
 			'post_type'    => 'service-record',
