@@ -214,16 +214,20 @@ function tcbp_public_mission_send_news( $post_id ) {
 	}
 
 	$new_post    = array(
-		'post_title'    => 'After Action Report: ' . $title,
-		'post_content'  => $content,
-		'post_status'   => 'publish',
-		'post_author'   => $user_id,
-		'post_type'     => 'post',
-		'post_category' => array( get_cat_ID( 'After Action Report' ) ),
+		'post_title'   => 'After Action Report: ' . $title,
+		'post_content' => $content,
+		'post_status'  => 'publish',
+		'post_author'  => $user_id,
+		'post_type'    => 'tcb_news',
 	);
 	$new_post_id = wp_insert_post( $new_post );
 
 	if ( $new_post_id ) {
+		// 'post_category' in the wp_insert_post() args above only works for the core "category"
+		// taxonomy - tcb_news uses its own dedicated tcb-news-category taxonomy instead, so the
+		// term has to be assigned separately here.
+		wp_set_post_terms( $new_post_id, 'After Action Report', 'tcb-news-category' );
+
 		// Add post thumbnail.
 		if ( '' !== $post_op_image ) {
 			$image_id = $post_op_image['ID'];
