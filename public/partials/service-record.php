@@ -4,6 +4,26 @@
  * Description: Handles the code associated with the service-record form in the tcb plugin.
  */
 
+// tcb-rank / tcb-duty term IDs. Role derivation below matches against these fixed IDs rather
+// than a term's name or slug, because both are editable by anyone with the manage_categories
+// capability (WordPress's default Editor role included) - matching by name/slug would let a
+// renamed term retroactively change what WP role it grants, without the post/term relationship
+// ever changing. A term's ID can't be altered this way, only its display text.
+define( 'TCBP_RANK_RESERVE', 56 );
+define( 'TCBP_RANK_RECRUIT', 55 );
+define( 'TCBP_RANK_MARINE', 53 );
+define( 'TCBP_RANK_LANCE_CORPORAL', 52 );
+define( 'TCBP_RANK_CORPORAL', 51 );
+define( 'TCBP_RANK_SERGEANT', 57 );
+define( 'TCBP_RANK_COLOUR_SERGEANT', 50 );
+define( 'TCBP_RANK_OFFICER', 54 );
+
+define( 'TCBP_DUTY_RM', 59 );
+define( 'TCBP_DUTY_RTI', 60 );
+define( 'TCBP_DUTY_ATI', 61 );
+define( 'TCBP_DUTY_OM', 58 );
+define( 'TCBP_DUTY_CM', 62 );
+
 add_shortcode( 'tcbp_public_sr_form', 'tcbp_public_sr_form' );
 
 /**
@@ -199,13 +219,14 @@ function tcbp_public_sr_validate_rank_submission() {
 	}
 
 	$submitted_term_id = (int) sanitize_text_field( wp_unslash( $_POST['acf'][ $rank_field_key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-	$term              = get_term( $submitted_term_id, 'tcb-rank' );
-	if ( ! $term || is_wp_error( $term ) ) {
-		return;
-	}
 
-	$requires_officer_rights = array( 'Lance Corporal', 'Corporal', 'Sergeant', 'Colour Sergeant', 'Officer' );
-	if ( ! in_array( $term->name, $requires_officer_rights, true ) ) {
+	// Matched by term_id, not name - a term's name/slug can be renamed by anyone with
+	// manage_categories (WordPress's default Editor role included), which would otherwise let a
+	// renamed low-rank term retroactively read as "Officer" and slip through both this check and
+	// tcbp_public_sr_assign_role_by_rank()'s role grant, without the post/term relationship ever
+	// actually changing.
+	$requires_officer_rights = array( TCBP_RANK_LANCE_CORPORAL, TCBP_RANK_CORPORAL, TCBP_RANK_SERGEANT, TCBP_RANK_COLOUR_SERGEANT, TCBP_RANK_OFFICER );
+	if ( ! in_array( $submitted_term_id, $requires_officer_rights, true ) ) {
 		return;
 	}
 
@@ -216,12 +237,13 @@ function tcbp_public_sr_validate_rank_submission() {
 
 	// Only block an actual attempted change, not an unchanged resubmission of the existing
 	// rank - HTML forms resubmit every field's current value regardless of whether it was
-	// edited. If the target post can't be determined, fail safe and reject anyway.
+	// edited. Compared by term_id, not name, for the same reason as above. If the target post
+	// can't be determined, fail safe and reject anyway.
 	$post_id = isset( $_POST['_acf_post_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['_acf_post_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	if ( $post_id ) {
-		$current_terms = get_the_terms( $post_id, 'tcb-rank' );
-		$current_name  = ( $current_terms && ! is_wp_error( $current_terms ) && isset( $current_terms[0] ) ) ? $current_terms[0]->name : '';
-		if ( $current_name === $term->name ) {
+		$current_terms   = get_the_terms( $post_id, 'tcb-rank' );
+		$current_term_id = ( $current_terms && ! is_wp_error( $current_terms ) && isset( $current_terms[0] ) ) ? (int) $current_terms[0]->term_id : 0;
+		if ( $current_term_id === $submitted_term_id ) {
 			return;
 		}
 	}
@@ -557,44 +579,48 @@ function tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ ) {
 	if ( ! $terms || ! $terms[0] ) {
 		return;
 	}
-	$rank_name = $terms[0]->name;
+	// Matched by term_id, not name - see tcbp_public_sr_validate_rank_submission() for why: a
+	// term's name/slug can be renamed by anyone with manage_categories (WordPress's default
+	// Editor role included), which would otherwise let a renamed term grant whatever role its
+	// new name happens to match.
+	$rank_term_id = (int) $terms[0]->term_id;
 
 	$officer_roles           = array( 'officer', 'administrator' );
-	$requires_officer_rights = array( 'Lance Corporal', 'Corporal', 'Sergeant', 'Colour Sergeant', 'Officer' );
+	$requires_officer_rights = array( TCBP_RANK_LANCE_CORPORAL, TCBP_RANK_CORPORAL, TCBP_RANK_SERGEANT, TCBP_RANK_COLOUR_SERGEANT, TCBP_RANK_OFFICER );
 	$current_user_roles      = wp_get_current_user()->roles;
 
 	// Check if user has the required role to promote
 	if ( ! array_intersect( $officer_roles, $current_user_roles ) ) {
-		if ( in_array( $rank_name, $requires_officer_rights, true ) ) {
+		if ( in_array( $rank_term_id, $requires_officer_rights, true ) ) {
 			return;
 		}
 	}
 
 	$all_roles = array( 'subscriber', 'limited_member', 'member', 'nco', 'snco', 'officer' );
 
-	switch ( $rank_name ) {
-		case 'Reserve':
+	switch ( $rank_term_id ) {
+		case TCBP_RANK_RESERVE:
 			$allowed_roles = array( 'member' );
 			array_push( $all_roles, 'editor' );
 			break;
-		case 'Recruit':
+		case TCBP_RANK_RECRUIT:
 			$allowed_roles = array( 'limited_member' );
 			array_push( $all_roles, 'editor' );
 			break;
-		case 'Marine':
+		case TCBP_RANK_MARINE:
 			$allowed_roles = array( 'member' );
 			array_push( $all_roles, 'editor' );
 			break;
-		case 'Lance Corporal':
-		case 'Corporal':
+		case TCBP_RANK_LANCE_CORPORAL:
+		case TCBP_RANK_CORPORAL:
 			$allowed_roles = array( 'nco', 'member' );
 			array_push( $all_roles, 'editor' );
 			break;
-		case 'Sergeant':
-		case 'Colour Sergeant':
+		case TCBP_RANK_SERGEANT:
+		case TCBP_RANK_COLOUR_SERGEANT:
 			$allowed_roles = array( 'snco', 'member' );
 			break;
-		case 'Officer':
+		case TCBP_RANK_OFFICER:
 			$allowed_roles = array( 'officer', 'member' );
 			break;
 		default:
@@ -648,18 +674,22 @@ function tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ ) {
 	$terms         = get_the_terms( $post_id_, 'tcb-duty' );
 	if ( $terms ) {
 		foreach ( $terms as $term ) {
-			switch ( $term->slug ) {
-				case 'rm':
+			// Matched by term_id, not slug - a term's slug is editable by anyone with
+			// manage_categories (WordPress's default Editor role included), which would
+			// otherwise let a renamed duty term grant whatever role its new slug happens to
+			// match.
+			switch ( (int) $term->term_id ) {
+				case TCBP_DUTY_RM:
 					array_push( $allowed_roles, 'recruit_admin' );
 					break;
-				case 'rti':
-				case 'ati':
+				case TCBP_DUTY_RTI:
+				case TCBP_DUTY_ATI:
 					array_push( $allowed_roles, 'training_admin' );
 					break;
-				case 'om':
+				case TCBP_DUTY_OM:
 					array_push( $allowed_roles, 'mission_admin' );
 					break;
-				case 'cm':
+				case TCBP_DUTY_CM:
 					array_push( $allowed_roles, 'commendation_admin' );
 					break;
 				default:
