@@ -462,6 +462,14 @@ function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
 		return;
 	}
 
+	// Re-verify the user's application has actually reached "archived" status, rather than
+	// trusting the caller - this changes the user's WP role, so it shouldn't rely solely on
+	// whatever gate happens to sit in front of it today.
+	$application_id = get_field( 'application', 'user_' . $user_id );
+	if ( ! $application_id || ! has_term( 'archived', 'tcb-selection', $application_id ) ) {
+		return;
+	}
+
 	if ( in_array( 'limited_member', $user->roles, true ) ) {
 		$user->remove_role( 'limited_member' );
 		$user->add_role( 'member' );
@@ -487,6 +495,14 @@ function tcbp_public_sr_check_demotion_to_subscriber( $user_id, $post_id_ ) {
 
 	// Early out for no user.
 	if ( ! $user ) {
+		return;
+	}
+
+	// Re-verify the user's application has actually been rejected, rather than trusting the
+	// caller - this strips the user's WP roles down to subscriber, so it shouldn't rely solely
+	// on whatever gate happens to sit in front of it today.
+	$application_id = get_field( 'application', 'user_' . $user_id );
+	if ( ! $application_id || ! has_term( 'rejected', 'tcb-selection', $application_id ) ) {
 		return;
 	}
 
