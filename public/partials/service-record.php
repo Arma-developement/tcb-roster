@@ -498,10 +498,18 @@ function tcbp_public_sr_check_demotion_to_subscriber( $user_id, $post_id_ ) {
 		return;
 	}
 
+	// Filter out any users who are actually banned
+	$application_id = get_field( 'application', 'user_' . $user_id );
+	if ( in_array( 'banned', $user->roles, true ) ) {
+		if ( $application_id ) {
+			wp_set_post_terms( $application_id, 'banned', 'tcb-selection' );
+		}
+		return;
+	} 
+
 	// Re-verify the user's application has actually been rejected, rather than trusting the
 	// caller - this strips the user's WP roles down to subscriber, so it shouldn't rely solely
 	// on whatever gate happens to sit in front of it today.
-	$application_id = get_field( 'application', 'user_' . $user_id );
 	if ( ! $application_id || ! has_term( 'rejected', 'tcb-selection', $application_id ) ) {
 		return;
 	}
