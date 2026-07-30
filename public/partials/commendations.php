@@ -66,6 +66,9 @@ function tcbp_public_archive_commendations() {
 				$year     = $interval->y;
 				if ( $year > 0 ) {
 					$index                                        = 'service-' . $year;
+					if ( $year < 10 ) {
+						$index = 'service-0' . $year;
+					}
 					$list_of_service_award_recipients[ $index ][] = $user_id;
 					$list_of_service_award_titles[ $index ]       = 'Service award, year ' . $year;
 				}
