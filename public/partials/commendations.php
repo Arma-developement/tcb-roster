@@ -65,12 +65,9 @@ function tcbp_public_archive_commendations() {
 				$interval = $date->diff( $now );
 				$year     = $interval->y;
 				if ( $year > 0 ) {
-					$index                                        = 'service-' . $year;
-					if ( $year < 10 ) {
-						$index = 'service-0' . $year;
-					}
-					$list_of_service_award_recipients[ $index ][] = $user_id;
-					$list_of_service_award_titles[ $index ]       = 'Service award, year ' . $year;
+					$list_of_service_award_recipients[ $year ][] = $user_id;
+					$list_of_service_award_titles[ $year ]       = 'Service award, year ' . $year;
+					$list_of_service_award_image[ $year ]	     = 'service-' . $year;
 				}
 			}
 
@@ -153,11 +150,11 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_service_award_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Long Service Medals</h4>';
-			ksort( $list_of_service_award_titles );
+			krsort( $list_of_service_award_titles );
 			$column = 0;
 			foreach ( $list_of_service_award_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				echo '<img src="' . esc_url( $path . $list_of_service_award_image[ $key ] . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
 				foreach ( $list_of_service_award_recipients[ $key ] as $user_id ) {
 					$user = get_user_by( 'id', $user_id );
 					if ( ! $user ) {
