@@ -209,7 +209,10 @@ function tcbp_public_mission_send_news( $post_id ) {
 		$content .= '<h2>AAR</h2><div>' . $post_op_summary . '</div>';
 	}
 
-	if ( '' !== $post_op_secondary_image ) {
+	// post_op_secondary_image is an ACF Image field - it returns an array (or false/null when
+	// empty), never an empty string, so comparing it to '' was always true regardless of whether
+	// an image was actually set, producing a broken <img src=""> when it wasn't.
+	if ( $post_op_secondary_image ) {
 		$content .= '<p><img src="' . esc_url( $post_op_secondary_image['url'] ) . '" ></p>';
 	}
 
@@ -224,8 +227,11 @@ function tcbp_public_mission_send_news( $post_id ) {
 	$new_post_id = wp_insert_post( $new_post );
 
 	if ( $new_post_id ) {
-		// Add post thumbnail.
-		if ( '' !== $post_op_image ) {
+		// Add post thumbnail. Same issue as post_op_secondary_image above: post_op_image is an
+		// ACF Image field, so '' !== $post_op_image was always true - meaning the fallback to
+		// the mission's own banner image (brief_image) below was unreachable whenever
+		// post_op_image wasn't set, leaving the article with no featured image at all.
+		if ( $post_op_image ) {
 			$image_id = $post_op_image['ID'];
 			if ( $image_id ) {
 				set_post_thumbnail( $new_post_id, $image_id );
