@@ -62,12 +62,16 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 	$key = getenv( 'WP_3CB_KEY' );
 
 	switch ( $channel ) {
+		case 'news':
+			//$channel_id = '1530631516219117651';
+			$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
+			break;
 		case 'recruitment-managers':
 			$channel_id = '384647101277274112';
 			break;
 		case 'announcements':
-			//$channel_id = '384647504937091072';
-			$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
+			$channel_id = '384647504937091072';
+			//$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
 			break;
 		default:
 			return false;
@@ -106,6 +110,37 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 		error_log( 'Discord channel-message bridge call returned HTTP ' . $http_code );
 	}
 	return $http_code < 300;
+}
+
+add_action( 'transition_post_status', 'tcbp_public_news_notify_discord_on_publish', 10, 3 );
+
+/**
+ * Posts a Discord notification to the news channel the first time a news article is published -
+ * covers both tcbp_public_mission_send_news()'s automated AAR posts and a manually created and
+ * published article in wp-admin, since both ultimately go through the same publish transition.
+ *
+ * Hooked to transition_post_status rather than the publish_post action deliberately:
+ * publish_post fires on every subsequent save of an already-published post, not just the first
+ * time it's published, which would spam the channel on every minor edit. transition_post_status
+ * lets us check the previous status too, so this only fires on the actual move into "publish".
+ *
+ * @param string  $new_status The new post status.
+ * @param string  $old_status The previous post status.
+ * @param WP_Post $post       The post being transitioned.
+ */
+function tcbp_public_news_notify_discord_on_publish( $new_status, $old_status, $post ) {
+
+	// News articles are plain "post" post_type posts on this site - see tcbp_public_mission_send_news().
+	if ( 'post' !== $post->post_type ) {
+		return;
+	}
+
+	if ( 'publish' !== $new_status || 'publish' === $old_status ) {
+		return;
+	}
+
+	$message = 'A new article has been published: "' . $post->post_title . '"' . "\n" . get_permalink( $post );
+	tcb_roster_admin_post_to_discord_channel( 'news', $message );
 }
 
 /**
