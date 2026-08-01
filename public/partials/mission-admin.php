@@ -194,8 +194,12 @@ function tcbp_public_mission_send_news( $post_id ) {
 	$user_id = $user->ID;
 
 	// Retrieve data.
-	$title                   = get_field( 'title', $post_id );
-	$brief_image             = get_the_post_thumbnail_url( $post_id, 'large' );
+	$title = get_field( 'title', $post_id );
+
+	// set_post_thumbnail() needs an attachment ID, not a URL - get_the_post_thumbnail_url() was
+	// being used here, which meant the fallback thumbnail could never actually resolve to a
+	// real attachment.
+	$brief_image             = get_post_thumbnail_id( $post_id );
 	$brief_situation         = get_field( 'brief_situation', $post_id );
 	$brief_mission           = get_field( 'brief_mission', $post_id );
 	$post_op_summary         = get_field( 'post_op_summary', $post_id );
