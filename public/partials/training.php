@@ -4,6 +4,38 @@
  * Description: Handles the code associated with training, a group within the service record, in the tcb plugin.
  */
 
+/**
+ * Resolves a list of WP user IDs to their current display names, sorted alphabetically
+ * (case-insensitive). Used by roster-style listings (training, commendations) to order members
+ * consistently - display name lives on the WP user, not on anything queryable directly via
+ * get_posts()'s own order, so this has to happen as a separate pass after fetching the data.
+ *
+ * @param int[] $user_ids Array of WP user IDs.
+ * @return array<int, array{user_id: int, display_name: string}> Sorted entries, one per valid user.
+ */
+function tcbp_public_sort_user_ids_by_display_name( $user_ids ) {
+	$entries = array();
+	foreach ( $user_ids as $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			continue;
+		}
+		$entries[] = array(
+			'user_id'      => $user_id,
+			'display_name' => $user->get( 'display_name' ),
+		);
+	}
+
+	usort(
+		$entries,
+		function ( $a, $b ) {
+			return strcasecmp( $a['display_name'], $b['display_name'] );
+		}
+	);
+
+	return $entries;
+}
+
 add_shortcode( 'tcbp_public_archive_training', 'tcbp_public_archive_training' );
 
 /**
@@ -47,13 +79,8 @@ function tcbp_public_archive_training() {
 
 		foreach ( $list_of_titles as $key => $title ) {
 			echo '<h3>' . esc_html( $title ) . '</h3><ul>';
-			foreach ( $list_of_attendance[ $key ] as $user_id ) {
-				$user = get_user_by( 'id', $user_id );
-				if ( ! $user ) {
-					continue;
-				}
-				$display_name = $user->get( 'display_name' );
-				echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+			foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_attendance[ $key ] ) as $entry ) {
+				echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 			}
 			echo '</ul>';
 		}

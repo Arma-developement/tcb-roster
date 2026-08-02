@@ -155,13 +155,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_service_award_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $list_of_service_award_image[ $key ] . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_service_award_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_service_award_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -178,13 +173,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_campaign_medal_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_campaign_medal_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_campaign_medal_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -201,13 +191,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_leadership_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_leadership_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -224,13 +209,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_mention_in_despatches_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_mention_in_despatches_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -247,13 +227,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_mission_creation_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_mission_creation_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -270,13 +245,8 @@ function tcbp_public_archive_commendations() {
 			foreach ( $list_of_community_award_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
 				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
-				foreach ( $list_of_community_award_recipients[ $key ] as $user_id ) {
-					$user = get_user_by( 'id', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					$display_name = $user->get( 'display_name' );
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $user_id ) . '">' . esc_html( $display_name ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_community_award_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
