@@ -163,16 +163,18 @@ function tcbp_public_news_notify_discord_on_publish( $new_status, $old_status, $
  * the bridge) - adjust the key below once the actual 3cb-thread bridge response is finalised, if
  * it turns out to differ.
  *
- * @param string $channel_id The Discord parent channel ID to create the thread under.
+ * @param string $channel_id  The Discord parent channel ID to create the thread under.
+ * @param string $thread_name The name to give the new thread.
  * @return string|false The new thread's ID, or false on failure.
  */
-function tcb_roster_admin_create_discord_thread( $channel_id ) {
+function tcb_roster_admin_create_discord_thread( $channel_id, $thread_name ) {
 
 	$key = getenv( 'WP_3CB_KEY' );
 
 	$data = array(
-		'api_key'    => $key,
-		'channel_id' => $channel_id,
+		'api_key'     => $key,
+		'channel_id'  => $channel_id,
+		'name' => $thread_name,
 	);
 
 	$discordbot_url = getenv( 'DISCORDBOT_URL' );
@@ -204,12 +206,12 @@ function tcb_roster_admin_create_discord_thread( $channel_id ) {
 	}
 
 	$get_info = json_decode( wp_remote_retrieve_body( $response ), true );
-	if ( ! $get_info || ! isset( $get_info['id'] ) ) {
+	if ( ! $get_info || ! isset( $get_info['thread_id'] ) ) {
 		error_log( 'Discord thread creation bridge call returned an unexpected response: ' . wp_remote_retrieve_body( $response ) );
 		return false;
 	}
 
-	return $get_info['id'];
+	return $get_info['thread_id'];
 }
 
 /**

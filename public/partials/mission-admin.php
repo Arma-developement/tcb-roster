@@ -330,6 +330,7 @@ function tcbp_public_mission_send_password( $post_id ) {
 	}
 
 	// Retrieve data.
+	$title    = get_field( 'title', $post_id );
 	$password = get_field( 'password', $post_id );
 	$delay    = get_field( 'delay', $post_id );
 
@@ -368,7 +369,7 @@ function tcbp_public_mission_send_password( $post_id ) {
 
 	// One shared thread for this mission's password notifications - both the immediate (early)
 	// and delayed (late) waves post into it, rather than each getting its own thread.
-	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794' );  // Test channel for announcements, to avoid spamming the real channel during development.
+	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
 
 	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id ) );
 	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
