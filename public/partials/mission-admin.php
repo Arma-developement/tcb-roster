@@ -295,6 +295,7 @@ function tcbp_public_mission_send_password_notifications( $args ) {
 		// Mention every recipient directly in the shared thread, rather than DMing each one
 		// individually. Discord's own mention syntax (<@id>) is required to actually notify
 		// them - a plain "@id" is just literal text and won't ping anyone.
+		$msg      = "\nThe password for today's 3CB Operation is: '" . $password . "'\n";
 		$mentions = '';
 		foreach ( $discord_id_list as $discord_id ) {
 			$mentions .= '<@' . $discord_id . '> ';
@@ -373,4 +374,8 @@ function tcbp_public_mission_send_password( $post_id ) {
 
 	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id ) );
 	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
+
+	// TEST CODE ONLY: Schedule a second delayed wave of password notifications, to test that multiple scheduled actions for the same mission work correctly. This is not part of the normal flow and should be removed before production use.
+	$evenLater = $now->add( new DateInterval( 'PT' . ($delay*2) . 'S' ) );
+	as_schedule_single_action( DateTime::createFromImmutable( $evenLater ), 'tcb_roster_admin_delete_discord_thread', array( array( $thread_id ) ) );
 }

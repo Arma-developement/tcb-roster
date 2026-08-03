@@ -215,6 +215,52 @@ function tcb_roster_admin_create_discord_thread( $channel_id, $thread_name ) {
 }
 
 /**
+ * Requests a previously-created Discord thread be deleted.
+ *
+ * @param string $thread_id The Discord thread ID to delete.
+ * @return bool True on success, false on failure.
+ */
+function tcb_roster_admin_delete_discord_thread( $thread_id ) {
+
+	$key = getenv( 'WP_3CB_KEY' );
+
+	$data = array(
+		'api_key'    => $key,
+		'thread_id' => $thread_id,
+	);
+
+	$discordbot_url = getenv( 'DISCORDBOT_URL' );
+	if ( ! $discordbot_url ) {
+		error_log( 'Discord thread deletion bridge call skipped: DISCORDBOT_URL is not set' );
+		return false;
+	}
+
+	// wp_remote_post(), not wp_safe_remote_post(): the bridge lives at a private LAN address
+	// that the "safe" variant's SSRF protection would block outright.
+	$response = wp_remote_post(
+		rtrim( $discordbot_url, '/' ) . '/3cb-thread-delete',
+		array(
+			'timeout' => 5,
+			'headers' => array( 'Content-Type' => 'application/json' ),
+			'body'    => wp_json_encode( $data ),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( 'Discord thread deletion bridge call failed: ' . $response->get_error_message() );
+		return false;
+	}
+
+	$http_code = wp_remote_retrieve_response_code( $response );
+	if ( $http_code >= 300 ) {
+		error_log( 'Discord thread deletion bridge call returned HTTP ' . $http_code );
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Sends a message to a specified Discord user.
  *
  * @param string $receivers The Discord user ID.
