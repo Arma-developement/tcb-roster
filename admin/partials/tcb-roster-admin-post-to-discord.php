@@ -73,8 +73,20 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 			$channel_id = '384647504937091072';
 			//$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
 			break;
+		case 'password':
+			$channel_id = '1533937561804869632';
+			//$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
+			break;
 		default:
-			return false;
+			// Anything else is treated as a raw Discord channel/thread ID (e.g. a thread ID
+			// returned by tcb_roster_admin_create_discord_thread()) rather than one of the named
+			// channels above. Discord IDs are numeric snowflakes, so reject anything that
+			// clearly isn't one rather than silently posting to a bogus channel_id.
+			if ( ! ctype_digit( (string) $channel ) ) {
+				return false;
+			}
+			$channel_id = (string) $channel;
+			break;
 	}
 
 	$data = array(
@@ -141,6 +153,63 @@ function tcbp_public_news_notify_discord_on_publish( $new_status, $old_status, $
 
 	$message = 'A new article has been published: "' . $post->post_title . '"' . "\n" . get_permalink( $post );
 	tcb_roster_admin_post_to_discord_channel( 'news', $message );
+}
+
+/**
+ * Requests a new private thread be created under a given parent channel.
+ *
+ * Note: this assumes the bridge's response body is JSON containing the new thread's ID under an
+ * "id" key (matching the shape tcb_roster_admin_query_discord_username() already expects from
+ * the bridge) - adjust the key below once the actual 3cb-thread bridge response is finalised, if
+ * it turns out to differ.
+ *
+ * @param string $channel_id The Discord parent channel ID to create the thread under.
+ * @return string|false The new thread's ID, or false on failure.
+ */
+function tcb_roster_admin_create_discord_thread( $channel_id ) {
+
+	$key = getenv( 'WP_3CB_KEY' );
+
+	$data = array(
+		'api_key'    => $key,
+		'channel_id' => $channel_id,
+	);
+
+	$discordbot_url = getenv( 'DISCORDBOT_URL' );
+	if ( ! $discordbot_url ) {
+		error_log( 'Discord thread creation bridge call skipped: DISCORDBOT_URL is not set' );
+		return false;
+	}
+
+	// wp_remote_post(), not wp_safe_remote_post(): the bridge lives at a private LAN address
+	// that the "safe" variant's SSRF protection would block outright.
+	$response = wp_remote_post(
+		rtrim( $discordbot_url, '/' ) . '/3cb-thread',
+		array(
+			'timeout' => 5,
+			'headers' => array( 'Content-Type' => 'application/json' ),
+			'body'    => wp_json_encode( $data ),
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		error_log( 'Discord thread creation bridge call failed: ' . $response->get_error_message() );
+		return false;
+	}
+
+	$http_code = wp_remote_retrieve_response_code( $response );
+	if ( $http_code >= 300 ) {
+		error_log( 'Discord thread creation bridge call returned HTTP ' . $http_code );
+		return false;
+	}
+
+	$get_info = json_decode( wp_remote_retrieve_body( $response ), true );
+	if ( ! $get_info || ! isset( $get_info['id'] ) ) {
+		error_log( 'Discord thread creation bridge call returned an unexpected response: ' . wp_remote_retrieve_body( $response ) );
+		return false;
+	}
+
+	return $get_info['id'];
 }
 
 /**

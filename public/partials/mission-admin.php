@@ -246,16 +246,26 @@ function tcbp_public_mission_send_news( $post_id ) {
 	}
 }
 
-add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcbp_public_mission_send_password_email' );
+// Hook name kept as-is (despite the rename below) so any password-send already scheduled via
+// as_schedule_single_action() under this hook, from before this change, still fires correctly.
+add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcbp_public_mission_send_password_notifications' );
 
 /**
- * This file is part of the TCB Roster plugin.
+ * Sends the mission password to each user via their preferred communication method(s) - email,
+ * and/or a shared Discord thread mentioning each Discord-preferring recipient directly. This
+ * replaces individually DMing each user, which was hitting Discord's rate limits when messaging
+ * many different users in a short window; see tcb_roster_admin_create_discord_thread().
  *
- * @param array $args An array of arguments for sending the password.
+ * @param array $args {
+ *     @type int[]  0 List of user IDs to notify.
+ *     @type string 1 The mission password.
+ *     @type string 2 The Discord thread ID to post the Discord notification into.
+ * }
  */
-function tcbp_public_mission_send_password_email( $args ) {
+function tcbp_public_mission_send_password_notifications( $args ) {
 	$list_of_user_ids = $args[0];
 	$password         = $args[1];
+	$thread_id        = $args[2];
 
 	$msg             = "\nThe password for today's 3CB Operation is: " . $password . "\n";
 	$discord_id_list = array();
@@ -282,7 +292,14 @@ function tcbp_public_mission_send_password_email( $args ) {
 	}
 
 	if ( $discord_id_list ) {
-		tcb_roster_admin_post_to_discord_dm( $discord_id_list, $msg );
+		// Mention every recipient directly in the shared thread, rather than DMing each one
+		// individually. Discord's own mention syntax (<@id>) is required to actually notify
+		// them - a plain "@id" is just literal text and won't ping anyone.
+		$mentions = '';
+		foreach ( $discord_id_list as $discord_id ) {
+			$mentions .= '<@' . $discord_id . '> ';
+		}
+		tcb_roster_admin_post_to_discord_channel( $thread_id, $mentions . $msg );
 	}
 }
 
@@ -349,6 +366,10 @@ function tcbp_public_mission_send_password( $post_id ) {
 	// error_log( print_r( 'late_email: ' . json_encode( $late_email ), true ) );
 	// .
 
-	tcbp_public_mission_send_password_email( array( $early_email, $password ) );
-	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password ) ) );
+	// One shared thread for this mission's password notifications - both the immediate (early)
+	// and delayed (late) waves post into it, rather than each getting its own thread.
+	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794' );  // Test channel for announcements, to avoid spamming the real channel during development.
+
+	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id ) );
+	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
 }
