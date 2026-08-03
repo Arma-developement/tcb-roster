@@ -304,6 +304,23 @@ function tcbp_public_mission_send_password_notifications( $args ) {
 	}
 }
 
+add_action( 'tcb_roster_delete_discord_thread_action', 'tcbp_public_mission_delete_password_thread' );
+
+/**
+ * Scheduled-callback wrapper for deleting a mission's password Discord thread once it's no
+ * longer needed. Needed because as_schedule_single_action() only invokes whatever's registered
+ * against its hook name via add_action() - scheduling straight against
+ * 'tcb_roster_admin_delete_discord_thread' (the delete function's own name) never actually
+ * called anything, since nothing had registered that as a hook.
+ *
+ * @param array $args {
+ *     @type string 0 The Discord thread ID to delete.
+ * }
+ */
+function tcbp_public_mission_delete_password_thread( $args ) {
+	tcb_roster_admin_delete_discord_thread( $args[0] );
+}
+
 add_action( 'acfe/form/submit/post/form=send-password', 'tcbp_public_mission_send_password', 10, 5 );
 
 /**
@@ -377,5 +394,5 @@ function tcbp_public_mission_send_password( $post_id ) {
 
 	// TEST CODE ONLY: Schedule a second delayed wave of password notifications, to test that multiple scheduled actions for the same mission work correctly. This is not part of the normal flow and should be removed before production use.
 	$evenLater = $now->add( new DateInterval( 'PT' . ($delay*2) . 'S' ) );
-	as_schedule_single_action( DateTime::createFromImmutable( $evenLater ), 'tcb_roster_admin_delete_discord_thread', array( array( $thread_id ) ) );
+	as_schedule_single_action( DateTime::createFromImmutable( $evenLater ), 'tcb_roster_delete_discord_thread_action', array( array( $thread_id ) ) );
 }
