@@ -48,7 +48,7 @@ function tcbp_public_supporters_and_donors() {
 
 	echo '<div class="tcb_supporters_donors">';
 
-	echo '<div class="tcb_award">';
+	echo '<div class="tcb_supporter_group">';
 	echo '<h3>Supporter</h3>';
 	echo '<p class="tcb_award_note">Currently active subscribers.</p>';
 	echo '<ul>';
@@ -58,7 +58,7 @@ function tcbp_public_supporters_and_donors() {
 	echo '</ul>';
 	echo '</div>';
 
-	echo '<div class="tcb_award">';
+	echo '<div class="tcb_supporter_group">';
 	echo '<h3>Donor</h3>';
 	echo '<p class="tcb_award_note">Donated within the past 3 months.</p>';
 	echo '<ul>';
