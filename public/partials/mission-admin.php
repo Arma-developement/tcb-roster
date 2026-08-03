@@ -390,7 +390,8 @@ function tcbp_public_mission_send_password( $post_id ) {
 	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
 
 	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id ) );
-	as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
+	tcbp_public_mission_send_password_notifications( array( $late_email, $password, $thread_id ) );
+	//as_schedule_single_action( DateTime::createFromImmutable( $later ), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
 
 	// TEST CODE ONLY: Schedule a second delayed wave of password notifications, to test that multiple scheduled actions for the same mission work correctly. This is not part of the normal flow and should be removed before production use.
 	$evenLater = $now->add( new DateInterval( 'PT' . ($delay*2) . 'S' ) );
