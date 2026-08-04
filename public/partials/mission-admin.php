@@ -392,6 +392,8 @@ function tcbp_public_mission_send_password( $post_id ) {
 		}
 
 		foreach ( $users as $user_id ) {
+			error_log( 'signup debug: user=' . $user_id . ' slot=' . $i . ' early=' . ( signup_early( $post_id, $user_id, $threshold_time ) ? 'true' : 'false' ) );
+
 			// Add to early list if signed up as attending and early.
 			if ( ( 1 === $i ) && signup_early( $post_id, $user_id, $threshold_time ) ) {
 				$early_email[] = $user_id;
