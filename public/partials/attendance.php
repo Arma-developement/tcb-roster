@@ -102,13 +102,15 @@ function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $
 		return wp_send_json_success( 'Existing user added' );
 	}
 
-	// New user, so add to a new time stamp.
+	// New user, so add to a new time stamp. stamp_date/stamp_time are separate ACF fields
+	// (Return Format d/m/Y and H:i:s respectively) - write them in those same formats so they
+	// stay consistent with what mission-admin.php's signup_early() parses them back as.
 	add_row(
 		'stamp',
 		array(
 			'stamp_user' => $user_id,
-			'stamp_date' => gmdate( 'd-m-Y' ),
-			'stamp_time' => time(),
+			'stamp_date' => gmdate( 'd/m/Y' ),
+			'stamp_time' => gmdate( 'H:i:s' ),
 		),
 		$post_id
 	);

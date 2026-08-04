@@ -346,7 +346,20 @@ function tcbp_public_mission_send_password( $post_id ) {
 		while ( have_rows( 'stamp', $post_id ) ) :
 			the_row();
 			if ( $user_id === get_sub_field( 'stamp_user' ) ) {
-				return get_sub_field( 'stamp_time' ) < $threshold_time;
+				// stamp_date (d/m/Y) and stamp_time (H:i:s) are two separate ACF fields -
+				// combine them into one timestamp for comparison, rather than comparing
+				// stamp_time alone (a time-of-day-only value) against a full Unix timestamp
+				// threshold, which silently ignored which day the user actually signed up on.
+				$stamp_date = get_sub_field( 'stamp_date' );
+				$stamp_time = get_sub_field( 'stamp_time' );
+
+				$stamp_datetime = DateTimeImmutable::createFromFormat( 'd/m/Y H:i:s', $stamp_date . ' ' . $stamp_time, new DateTimeZone( 'UTC' ) );
+				if ( ! $stamp_datetime ) {
+					// Can't determine when they signed up - fail safe by not treating them as early.
+					return false;
+				}
+
+				return $stamp_datetime->getTimestamp() < $threshold_time;
 			}
 		endwhile;
 		return false;
