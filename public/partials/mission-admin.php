@@ -244,28 +244,43 @@ function tcbp_public_mission_send_news( $post_id ) {
 			set_post_thumbnail( $new_post_id, $brief_image );
 		}
 	}
+
+	// The password Discord thread (group_6a71d24f69be1, field thread_id - see
+	// tcbp_public_mission_send_password()) has served its purpose once the mission's news
+	// write-up is submitted - clean it up rather than leaving it around indefinitely.
+	$thread_id = get_field( 'thread_id', $post_id );
+	if ( $thread_id ) {
+		tcb_roster_admin_delete_discord_thread( $thread_id );
+	}
 }
 
 // Hook name kept as-is (despite the rename below) so any password-send already scheduled via
 // as_schedule_single_action() under this hook, from before this change, still fires correctly.
-add_action( 'tcb_roster_public_mission_send_password_email_action', 'tcbp_public_mission_send_password_notifications' );
+add_action( 'tcb_roster_public_mission_send_password_notifications_action', 'tcbp_public_mission_send_password_notifications' );
 
 /**
  * Sends the mission password to each user via their preferred communication method(s) - email,
- * and/or a shared Discord thread mentioning each Discord-preferring recipient directly. This
- * replaces individually DMing each user, which was hitting Discord's rate limits when messaging
- * many different users in a short window; see tcb_roster_admin_create_discord_thread().
+ * and/or a shared Discord thread. This replaces individually DMing each user, which was hitting
+ * Discord's rate limits when messaging many different users in a short window; see
+ * tcb_roster_admin_create_discord_thread().
+ *
+ * Email is identical on both calls. The Discord message differs: the first (early) call mentions
+ * each Discord-preferring recipient individually (<@id>), since this is most people's only
+ * notification; the second (late) call - for the smaller group who signed up after the early
+ * cutoff - just uses a single {@members} role mention instead, rather than re-enumerating names.
  *
  * @param array $args {
  *     @type int[]  0 List of user IDs to notify.
  *     @type string 1 The mission password.
  *     @type string 2 The Discord thread ID to post the Discord notification into.
+ *     @type bool   3 True if this is the first (early) call, false for the second (late) call.
  * }
  */
 function tcbp_public_mission_send_password_notifications( $args ) {
 	$list_of_user_ids = $args[0];
 	$password         = $args[1];
 	$thread_id        = $args[2];
+	$is_first_call    = $args[3];
 
 	$msg             = "\nThe password for today's 3CB Operation is: " . $password . "\n";
 	$discord_id_list = array();
@@ -292,33 +307,23 @@ function tcbp_public_mission_send_password_notifications( $args ) {
 	}
 
 	if ( $discord_id_list ) {
-		// Mention every recipient directly in the shared thread, rather than DMing each one
-		// individually. Discord's own mention syntax (<@id>) is required to actually notify
-		// them - a plain "@id" is just literal text and won't ping anyone.
-		$msg      = "\nThe password for today's 3CB Operation is: `" . $password . "`\n";
-		$mentions = '';
-		foreach ( $discord_id_list as $discord_id ) {
-			$mentions .= '<@' . $discord_id . '> ';
+		$msg = "\nThe password is: `" . $password . "`\n";
+
+		if ( $is_first_call ) {
+			// Mention every recipient directly in the shared thread, rather than DMing each one
+			// individually. Discord's own mention syntax (<@id>) is required to actually notify
+			// them - a plain "@id" is just literal text and won't ping anyone.
+			$mentions = '';
+			foreach ( $discord_id_list as $discord_id ) {
+				$mentions .= '<@' . $discord_id . '> ';
+			}
+			tcb_roster_admin_post_to_discord_channel( $thread_id, $mentions . $msg );
+		} else {
+			// Second wave - a single role mention rather than individually naming this smaller,
+			// later group.
+			tcb_roster_admin_post_to_discord_channel( $thread_id, '{@members} ' . $msg );
 		}
-		tcb_roster_admin_post_to_discord_channel( $thread_id, $mentions . $msg );
 	}
-}
-
-add_action( 'tcb_roster_delete_discord_thread_action', 'tcbp_public_mission_delete_password_thread' );
-
-/**
- * Scheduled-callback wrapper for deleting a mission's password Discord thread once it's no
- * longer needed. Needed because as_schedule_single_action() only invokes whatever's registered
- * against its hook name via add_action() - scheduling straight against
- * 'tcb_roster_admin_delete_discord_thread' (the delete function's own name) never actually
- * called anything, since nothing had registered that as a hook.
- *
- * @param array $args {
- *     @type string 0 The Discord thread ID to delete.
- * }
- */
-function tcbp_public_mission_delete_password_thread( $args ) {
-	tcb_roster_admin_delete_discord_thread( $args[0] );
 }
 
 add_action( 'acfe/form/submit/post/form=send-password', 'tcbp_public_mission_send_password', 10, 5 );
@@ -386,17 +391,16 @@ function tcbp_public_mission_send_password( $post_id ) {
 	// .
 
 	// One shared thread for this mission's password notifications - both the immediate (early)
-	// and delayed (late) waves post into it, rather than each getting its own thread.
+	// and delayed (late) waves post into it, rather than each getting its own thread. Stored on
+	// the event post (group_6a71d24f69be1, field thread_id) so it can be cleaned up later once
+	// the mission's news write-up is submitted - see tcbp_public_mission_send_news().
 	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
+	update_field( 'thread_id', $thread_id, $post_id );
 
-	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id ) );
+	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id, true ) );
 	// as_schedule_single_action()'s first parameter must be a Unix timestamp (int), not a
 	// DateTime object - DateTime::createFromImmutable( $later ) passed an object, which PHP has
 	// no defined conversion to int for, so this never scheduled correctly. getTimestamp() gives
 	// the plain integer the function actually expects.
-	as_schedule_single_action( $later->getTimestamp(), 'tcb_roster_public_mission_send_password_email_action', array( array( $late_email, $password, $thread_id ) ) );
-
-	// TEST CODE ONLY: Schedule a second delayed wave of password notifications, to test that multiple scheduled actions for the same mission work correctly. This is not part of the normal flow and should be removed before production use.
-	$evenLater = $now->add( new DateInterval( 'PT' . ($delay*2) . 'S' ) );
-	as_schedule_single_action( $evenLater->getTimestamp(), 'tcb_roster_delete_discord_thread_action', array( array( $thread_id ) ) );
+	as_schedule_single_action( $later->getTimestamp(), 'tcb_roster_public_mission_send_password_notifications_action', array( array( $late_email, $password, $thread_id, false ) ) );
 }
