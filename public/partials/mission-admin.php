@@ -343,6 +343,15 @@ function tcbp_public_mission_send_password( $post_id ) {
 	 * @param int $threshold_time The time threshold for sending the password.
 	 */
 	function signup_early( $post_id, $user_id, $threshold_time ) {
+		// have_rows()/the_row() track their position via a shared internal pointer per
+		// field+post - returning out of the loop early (as soon as a match is found, below)
+		// leaves that pointer stuck mid-way instead of letting it naturally exhaust and reset.
+		// Without reset_rows() here, every call to this function after the first would resume
+		// scanning from wherever the PREVIOUS call left off, silently skipping any stamp rows
+		// that come before that point - looking exactly like a user's stamp doesn't exist, even
+		// though it does.
+		reset_rows();
+
 		while ( have_rows( 'stamp', $post_id ) ) :
 			the_row();
 			if ( $user_id === get_sub_field( 'stamp_user' ) ) {
