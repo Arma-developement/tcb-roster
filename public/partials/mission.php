@@ -141,7 +141,7 @@ function tcbp_public_mission_overview() {
 	}
 
 	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	error_log( print_r( 'dynamicContent', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	//error_log( print_r( 'dynamicContent', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	// .
 
 	echo '<div id="dynamicContent">';
@@ -338,7 +338,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 				}
 				$user_found |= $is_owner;
 
-				error_log( print_r( 'k: ' . $k . ' is_owner: ' . ( $is_owner ? 'true' : 'false' ) . ' is_disabled: ' . ( $is_disabled ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+				//error_log( print_r( 'k: ' . $k . ' is_owner: ' . ( $is_owner ? 'true' : 'false' ) . ' is_disabled: ' . ( $is_disabled ? 'true' : 'false' ), true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 				echo '<div class=' . ( $is_owner ? '"slotToolSlot slotIconCanDelete"' : '"slotToolSlot"' ) . ' id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
 
@@ -370,7 +370,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 	endwhile;
 	echo '</div></div>';
 
-	error_log( print_r( 'user_found: ' . $user_found, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	//error_log( print_r( 'user_found: ' . $user_found, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 	return $user_found;
 }

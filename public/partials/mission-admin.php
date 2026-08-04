@@ -353,11 +353,17 @@ function tcbp_public_mission_send_password( $post_id ) {
 				$stamp_date = get_sub_field( 'stamp_date' );
 				$stamp_time = get_sub_field( 'stamp_time' );
 
-				$stamp_datetime = DateTimeImmutable::createFromFormat( 'd/m/Y H:i:s', $stamp_date . ' ' . $stamp_time, new DateTimeZone( 'UTC' ) );
+				// TEMPORARY DEBUG - remove once the parsing issue is confirmed/fixed.
+				error_log( 'signup_early debug: user=' . $user_id . ' stamp_date=[' . $stamp_date . '] stamp_time=[' . $stamp_time . ']' );
+
+				$stamp_datetime = DateTimeImmutable::createFromFormat( 'd/m/Y H:i:s', $stamp_date . ' ' . $stamp_time );
 				if ( ! $stamp_datetime ) {
 					// Can't determine when they signed up - fail safe by not treating them as early.
+					error_log( 'signup_early debug: parse FAILED for user=' . $user_id );
 					return false;
 				}
+
+				error_log( 'signup_early debug: user=' . $user_id . ' stamp_datetime=' . $stamp_datetime->getTimestamp() . ' threshold_time=' . $threshold_time );
 
 				return $stamp_datetime->getTimestamp() < $threshold_time;
 			}
@@ -408,8 +414,8 @@ function tcbp_public_mission_send_password( $post_id ) {
 	// the event post (group_6a71d24f69be1, field thread_id) so it can be cleaned up later once
 	// the mission's news write-up is submitted - see tcbp_public_mission_send_news().
 	
-	$thread_id = tcb_roster_admin_create_discord_thread( '384646672874995712', $title . ' - Password' );  // Sends to Arma 3 channel.
-	//$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
+	//$thread_id = tcb_roster_admin_create_discord_thread( '384646672874995712', $title . ' - Password' );  // Sends to Arma 3 channel.
+	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
 	update_field( 'thread_id', $thread_id, $post_id );
 
 	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id, true ) );
