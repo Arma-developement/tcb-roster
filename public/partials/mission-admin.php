@@ -343,40 +343,45 @@ function tcbp_public_mission_send_password( $post_id ) {
 	 * @param int $threshold_time The time threshold for sending the password.
 	 */
 	function signup_early( $post_id, $user_id, $threshold_time ) {
-		// have_rows()/the_row() track their position via a shared internal pointer per
-		// field+post - returning out of the loop early (as soon as a match is found, below)
-		// leaves that pointer stuck mid-way instead of letting it naturally exhaust and reset.
-		// Without reset_rows() here, every call to this function after the first would resume
-		// scanning from wherever the PREVIOUS call left off, silently skipping any stamp rows
-		// that come before that point - looking exactly like a user's stamp doesn't exist, even
-		// though it does.
-		reset_rows();
+		// get_field() (not have_rows()/the_row()) deliberately - the Loop-style ACF API shares
+		// a single global position pointer per field+post, which breaks the moment you return
+		// out of the loop early (as this function does, as soon as it finds a match) and then
+		// get called again for the next user: it resumes from wherever the previous call left
+		// off instead of starting over, silently skipping rows. get_field() returns the whole
+		// repeater as a plain array with no shared state to corrupt, same as attendance.php
+		// already does for this exact field.
+		$rows = get_field( 'stamp', $post_id );
+		if ( ! $rows ) {
+			return false;
+		}
 
-		while ( have_rows( 'stamp', $post_id ) ) :
-			the_row();
-			if ( $user_id === get_sub_field( 'stamp_user' ) ) {
-				// stamp_date (d/m/Y) and stamp_time (H:i:s) are two separate ACF fields -
-				// combine them into one timestamp for comparison, rather than comparing
-				// stamp_time alone (a time-of-day-only value) against a full Unix timestamp
-				// threshold, which silently ignored which day the user actually signed up on.
-				$stamp_date = get_sub_field( 'stamp_date' );
-				$stamp_time = get_sub_field( 'stamp_time' );
-
-				// TEMPORARY DEBUG - remove once the parsing issue is confirmed/fixed.
-				error_log( 'signup_early debug: user=' . $user_id . ' stamp_date=[' . $stamp_date . '] stamp_time=[' . $stamp_time . ']' );
-
-				$stamp_datetime = DateTimeImmutable::createFromFormat( 'd/m/Y H:i:s', $stamp_date . ' ' . $stamp_time );
-				if ( ! $stamp_datetime ) {
-					// Can't determine when they signed up - fail safe by not treating them as early.
-					error_log( 'signup_early debug: parse FAILED for user=' . $user_id );
-					return false;
-				}
-
-				error_log( 'signup_early debug: user=' . $user_id . ' stamp_datetime=' . $stamp_datetime->getTimestamp() . ' threshold_time=' . $threshold_time );
-
-				return $stamp_datetime->getTimestamp() < $threshold_time;
+		foreach ( $rows as $row ) {
+			if ( $user_id !== $row['stamp_user'] ) {
+				continue;
 			}
-		endwhile;
+
+			// stamp_date (d/m/Y) and stamp_time (H:i:s) are two separate ACF fields - combine
+			// them into one timestamp for comparison, rather than comparing stamp_time alone (a
+			// time-of-day-only value) against a full Unix timestamp threshold, which silently
+			// ignored which day the user actually signed up on.
+			$stamp_date = $row['stamp_date'];
+			$stamp_time = $row['stamp_time'];
+
+			// TEMPORARY DEBUG - remove once the parsing issue is confirmed/fixed.
+			error_log( 'signup_early debug: user=' . $user_id . ' stamp_date=[' . $stamp_date . '] stamp_time=[' . $stamp_time . ']' );
+
+			$stamp_datetime = DateTimeImmutable::createFromFormat( 'd/m/Y H:i:s', $stamp_date . ' ' . $stamp_time );
+			if ( ! $stamp_datetime ) {
+				// Can't determine when they signed up - fail safe by not treating them as early.
+				error_log( 'signup_early debug: parse FAILED for user=' . $user_id );
+				return false;
+			}
+
+			error_log( 'signup_early debug: user=' . $user_id . ' stamp_datetime=' . $stamp_datetime->getTimestamp() . ' threshold_time=' . $threshold_time );
+
+			return $stamp_datetime->getTimestamp() < $threshold_time;
+		}
+
 		return false;
 	}
 
