@@ -307,7 +307,7 @@ function tcbp_public_mission_send_password_notifications( $args ) {
 	}
 
 	if ( $discord_id_list ) {
-		$msg = "\nThe password is: `" . $password . "`\n";
+		$msg = "\nThe password is:\n`" . $password . "`\n";
 
 		if ( $is_first_call ) {
 			// Mention every recipient directly in the shared thread, rather than DMing each one
@@ -394,13 +394,12 @@ function tcbp_public_mission_send_password( $post_id ) {
 	// and delayed (late) waves post into it, rather than each getting its own thread. Stored on
 	// the event post (group_6a71d24f69be1, field thread_id) so it can be cleaned up later once
 	// the mission's news write-up is submitted - see tcbp_public_mission_send_news().
-	$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
+	
+	$thread_id = tcb_roster_admin_create_discord_thread( '384646672874995712', $title . ' - Password' );  // Sends to Arma 3 channel.
+	//$thread_id = tcb_roster_admin_create_discord_thread( '494511486715297794', $title . ' - Password' );  // Test channel for announcements, to avoid spamming the real channel during development.
 	update_field( 'thread_id', $thread_id, $post_id );
 
 	tcbp_public_mission_send_password_notifications( array( $early_email, $password, $thread_id, true ) );
-	// as_schedule_single_action()'s first parameter must be a Unix timestamp (int), not a
-	// DateTime object - DateTime::createFromImmutable( $later ) passed an object, which PHP has
-	// no defined conversion to int for, so this never scheduled correctly. getTimestamp() gives
-	// the plain integer the function actually expects.
+
 	as_schedule_single_action( $later->getTimestamp(), 'tcb_roster_public_mission_send_password_notifications_action', array( array( $late_email, $password, $thread_id, false ) ) );
 }
