@@ -376,10 +376,21 @@ function tcbp_public_mission_send_password( $post_id ) {
 	$password = get_field( 'password', $post_id );
 	$delay    = get_field( 'delay', $post_id );
 
-	// Set the threshold 24 hours previous.
-	$date_time      = new DateTimeImmutable();
-	$date_time      = $date_time->sub( new DateInterval( 'P1D' ) );
-	$threshold_time = $date_time->getTimestamp();
+	// Set the threshold 24 hours before the mission's own start time, not 24 hours before
+	// whenever this function happens to run - matches how tcbp_public_mission_send_announcement()
+	// parses these same event_start_date/event_start_time fields.
+	$event_start_date = get_field( 'event_start_date', $post_id ); // Return format: Y-m-d.
+	$event_start_time = get_field( 'event_start_time', $post_id ); // Return format: g:i a.
+	// Submitted event times are entered as British wall-clock time (BST/GMT); attach the zone
+	// explicitly so the derived Unix timestamp is the correct UTC instant, not a naive UTC read.
+	$mission_start = DateTimeImmutable::createFromFormat( 'Y-m-d g:i a', $event_start_date . ' ' . $event_start_time, new DateTimeZone( 'Europe/London' ) );
+
+	if ( ! $mission_start ) {
+		error_log( 'Could not parse event start date/time for mission ' . $post_id );
+		return;
+	}
+
+	$threshold_time = $mission_start->sub( new DateInterval( 'P1D' ) )->getTimestamp();
 
 	$early_email = array();
 	$late_email  = array();
@@ -392,7 +403,7 @@ function tcbp_public_mission_send_password( $post_id ) {
 		}
 
 		foreach ( $users as $user_id ) {
-			error_log( 'signup debug: user=' . $user_id . ' slot=' . $i . ' early=' . ( signup_early( $post_id, $user_id, $threshold_time ) ? 'true' : 'false' ) );
+			//error_log( 'signup debug: user=' . $user_id . ' slot=' . $i . ' early=' . ( signup_early( $post_id, $user_id, $threshold_time ) ? 'true' : 'false' ) );
 
 			// Add to early list if signed up as attending and early.
 			if ( ( 1 === $i ) && signup_early( $post_id, $user_id, $threshold_time ) ) {
