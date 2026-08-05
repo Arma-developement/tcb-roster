@@ -224,7 +224,7 @@ function tcbp_public_mission_send_news( $post_id ) {
 	}
 
 	if ( '' !== $post_op_ocap ) {
-		$content .= '<h2>OCAP AAR</h2><p><a href="' . esc_url( $post_op_ocap ) . '">' . esc_html( $post_op_ocap ) . '</a></p>';
+		$content .= '<p><a href="' . esc_url( $post_op_ocap ) . '">View OCAP AAR</a></p>';
 	}
 
 	// post_op_secondary_image is an ACF Image field - it returns an array (or false/null when
