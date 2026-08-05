@@ -220,11 +220,11 @@ function tcbp_public_mission_send_news( $post_id ) {
 	$content = '<h2>Situation</h2>' . $post_op_situation . '<h2>Mission</h2>' . $post_op_mission;
 
 	if ( '' !== $post_op_summary ) {
-		$content .= '<h2>AAR</h2><div>' . $post_op_summary . '</div>';
+		$content .= '<h2>AAR</h2><p>' . $post_op_summary . '</p>';
 	}
 
 	if ( '' !== $post_op_ocap ) {
-		$content .= '<h2>OCAP AAR</h2><div>' . $post_op_ocap . '</div>';
+		$content .= '<h2>OCAP AAR</h2><p><a href="' . esc_url( $post_op_ocap ) . '">' . esc_html( $post_op_ocap ) . '</a></p>';
 	}
 
 	// post_op_secondary_image is an ACF Image field - it returns an array (or false/null when
