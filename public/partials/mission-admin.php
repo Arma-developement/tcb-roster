@@ -81,6 +81,13 @@ function tcb_roster_public_mission_news() {
 			'post_id'         => $post_id_,
 			'return'          => wp_get_referer(),
 			'updated_message' => false,
+			// Preload the news form's situation/mission fields with the briefing's own text, so
+			// the mission admin isn't retyping it from scratch - they can still edit it before
+			// submitting.
+			'map'             => array(
+				'field_6a7386af8528e' => array( 'value' => get_field( 'brief_situation', $post_id_ ) ), // post_op_situation.
+				'field_6a7387088528f' => array( 'value' => get_field( 'brief_mission', $post_id_ ) ), // post_op_mission.
+			),
 		)
 	);
 
@@ -200,17 +207,24 @@ function tcbp_public_mission_send_news( $post_id ) {
 	// being used here, which meant the fallback thumbnail could never actually resolve to a
 	// real attachment.
 	$brief_image             = get_post_thumbnail_id( $post_id );
-	$brief_situation         = get_field( 'brief_situation', $post_id );
-	$brief_mission           = get_field( 'brief_mission', $post_id );
+	//$brief_situation         = get_field( 'brief_situation', $post_id );
+	//$brief_mission           = get_field( 'brief_mission', $post_id );
+	$post_op_situation       = get_field( 'post_op_situation', $post_id );
+	$post_op_mission         = get_field( 'post_op_mission', $post_id );
 	$post_op_summary         = get_field( 'post_op_summary', $post_id );
 	$post_op_image           = get_field( 'post_op_image', $post_id );
 	$post_op_secondary_image = get_field( 'post_op_secondary_image', $post_id );
+	$post_op_ocap 			 = get_field( 'post_op_ocap', $post_id );
 
 	// Build content.
-	$content = '<h2>Situation</h2>' . $brief_situation . '<h2>Mission</h2>' . $brief_mission;
+	$content = '<h2>Situation</h2>' . $post_op_situation . '<h2>Mission</h2>' . $post_op_mission;
 
 	if ( '' !== $post_op_summary ) {
 		$content .= '<h2>AAR</h2><div>' . $post_op_summary . '</div>';
+	}
+
+	if ( '' !== $post_op_ocap ) {
+		$content .= '<h2>OCAP AAR</h2><div>' . $post_op_ocap . '</div>';
 	}
 
 	// post_op_secondary_image is an ACF Image field - it returns an array (or false/null when
