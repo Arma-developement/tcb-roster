@@ -112,23 +112,28 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
-	echo '<h3>Execution</h3>';
-	echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	// The "dyn_osod" event_category is a trimmed-down version of this same briefing - same
+	// access control as above, just without these five sections. No category (or any category
+	// other than dyn_osod, e.g. "default") shows them as before.
+	if ( ! has_term( 'dyn_osod', 'event_category', $post_id ) ) {
+		echo '<h3>Execution</h3>';
+		echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Intel</h3>';
-	echo get_field( 'brief_intel' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<h3>Intel</h3>';
+		echo get_field( 'brief_intel' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<div class="container briefing-meta"><div class="one-half column"><h3>Enemy Forces</h3>';
-	echo get_field( 'brief_enemy_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '</div>';
+		echo '<div class="container briefing-meta"><div class="one-half column"><h3>Enemy Forces</h3>';
+		echo get_field( 'brief_enemy_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</div>';
 
-	echo '<div class="one-half column"><h3>Friendly Forces</h3>';
-	echo get_field( 'brief_friendly_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '</div>';
-	echo '</div>';
+		echo '<div class="one-half column"><h3>Friendly Forces</h3>';
+		echo get_field( 'brief_friendly_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</div>';
+		echo '</div>';
 
-	echo '<h3>Section Composition</h3>';
-	echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<h3>Section Composition</h3>';
+		echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	echo '</div>';
 
