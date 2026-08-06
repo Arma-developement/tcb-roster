@@ -24,13 +24,13 @@ function tcbp_public_mission_briefing() {
 
 	echo '<div class="tcb_mission_briefing">';
 
-	echo '<h3>Situation</h3>';
+	echo '<h3>1.Situation</h3>';
 
-	echo '<h4>General</h4>';
+	echo '<h4>1.1 General</h4>';
 	echo get_field( 'brief_situation', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	
-	echo '<h4>Environment</h4>';
+	echo '<h4>1.2 Environment</h4>';
 
 	echo '<h5>Map</h5>';
 	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -45,7 +45,7 @@ function tcbp_public_mission_briefing() {
 	echo get_field( 'brief_weather', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
-	echo '<h4>Threats / Other factors</h4>';
+	echo '<h4>1.3 Threats / Other factors</h4>';
 
 	echo '<h5>Enemy Forces</h5>';
 	echo get_field( 'brief_enemy_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -57,11 +57,11 @@ function tcbp_public_mission_briefing() {
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
-	echo '<h4>Friendly Forces</h4>';
+	echo '<h4>1.4 Friendly Forces</h4>';
 	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
-	echo '<h3>Mission</h3>';
+	echo '<h3>2.Mission</h3>';
 	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	// Early out for subscribers on private missions.
@@ -72,16 +72,16 @@ function tcbp_public_mission_briefing() {
 		return ob_get_clean();
 	}
 
-	echo '<h3>Execution</h3>';
+	echo '<h3>2.1 Execution</h3>';
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Troop Order</h3>';
+	echo '<h3>2.2 Troop Order</h3>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Section Composition</h3>';
+	echo '<h3>2.3 Section Composition</h3>';
 	echo get_field( 'brief_section_composition', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Service Support</h3>';
+	echo '<h3>2.4 Service Support</h3>';
 
 	echo '<h4>Vehicles</h4>';
 	echo get_field( 'brief_vehicles', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -95,15 +95,15 @@ function tcbp_public_mission_briefing() {
 	echo '<h4>Reinforcements</h4>';
 	echo get_field( 'brief_reinforcements', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Actions On</h3>';
+	echo '<h3>2.5 Actions On</h3>';
 	echo get_field( 'brief_actions_on', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
 
-	echo '<h3>Rules of Engagement</h3>';
+	echo '<h3>2.6 Rules of Engagement</h3>';
 	echo get_field( 'brief_rules_of_engagement', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
 
-	echo '<h3>Command and Signals</h3>';
+	echo '<h3>2.7 Command and Signals</h3>';
 	echo get_field( 'brief_command_and_signals', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/command-and-signals-tfar/">SOP: C&S<br></a></p>';
 
