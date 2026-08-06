@@ -155,24 +155,28 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 		tcbp_public_mission_send_announcement_discord( $announcement );
 	}
 
+	// as_schedule_single_action()'s first parameter must be a Unix timestamp (int), not a
+	// DateTime object - DateTime::createFromImmutable() passed an object, which PHP has no
+	// defined conversion to int for, so these never scheduled correctly. getTimestamp() gives
+	// the plain integer the function actually expects (same fix as the password notifications).
 	if ( in_array( 'hour', $schedule, true ) ) {
 		$schedule_time = $start_time->sub( new DateInterval( 'PT1H' ) );
 		if ( $current_time < $schedule_time ) {
-			as_schedule_single_action( DateTime::createFromImmutable( $schedule_time ), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
+			as_schedule_single_action( $schedule_time->getTimestamp(), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
 		}
 	}
 
 	if ( in_array( 'day', $schedule, true ) ) {
 		$schedule_time = $start_time->sub( new DateInterval( 'P1D' ) );
 		if ( $current_time < $schedule_time ) {
-			as_schedule_single_action( DateTime::createFromImmutable( $schedule_time ), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
+			as_schedule_single_action( $schedule_time->getTimestamp(), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
 		}
 	}
 
 	if ( in_array( 'week', $schedule, true ) ) {
-		$schedule_time = $start_time->sub( new DateInterval( 'P7D' ) );
+		$schedule_time = $start_time->sub( new DateInterval( 'P6D' ) );
 		if ( $current_time < $schedule_time ) {
-			as_schedule_single_action( DateTime::createFromImmutable( $schedule_time ), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
+			as_schedule_single_action( $schedule_time->getTimestamp(), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
 		}
 	}
 }
