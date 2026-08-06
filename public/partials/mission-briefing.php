@@ -23,10 +23,43 @@ function tcbp_public_mission_briefing() {
 	ob_start();
 
 	echo '<div class="tcb_mission_briefing">';
-	echo '<h2>Mission Statement</h2>';
 
 	echo '<h3>Situation</h3>';
+
+	echo '<h4>General</h4>';
 	echo get_field( 'brief_situation', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	
+	echo '<h4>Environment</h4>';
+
+	echo '<h5>Map</h5>';
+	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>Terrain</h5>';
+	echo get_field( 'brief_terrain', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>Time</h5>';
+	echo get_field( 'brief_start_time', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>Weather</h5>';
+	echo get_field( 'brief_weather', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+
+	echo '<h4>Threats / Other factors</h4>';
+
+	echo '<h5>Enemy Forces</h5>';
+	echo get_field( 'brief_enemy_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>IED/Mine Threat</h5>';
+	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>Civilians</h5>';
+	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+
+	echo '<h4>Friendly Forces</h4>';
+	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
 
 	echo '<h3>Mission</h3>';
 	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -39,38 +72,10 @@ function tcbp_public_mission_briefing() {
 		return ob_get_clean();
 	}
 
-	echo '<h3>Environment</h3>';
-
-	echo '<h4>Map</h4>';
-	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h4>Terrain</h4>';
-	echo get_field( 'brief_terrain', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h4>Time</h4>';
-	echo get_field( 'brief_start_time', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h4>Weather</h4>';
-	echo get_field( 'brief_weather', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h4>IED/Mine Threat</h4>';
-	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h3>Enemy Forces</h3>';
-	echo get_field( 'brief_enemy_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h3>Friendly Forces</h3>';
-	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h3>Civilians</h3>';
-	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h2>Scheme of Manoeuvre</h2>';
-
-	echo '<h3>Command Intent</h3>';
+	echo '<h3>Execution</h3>';
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h3>Plan</h3>';
+	echo '<h3>Troop Order</h3>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<h3>Section Composition</h3>';
