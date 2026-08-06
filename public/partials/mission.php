@@ -56,11 +56,11 @@ function tcbp_public_mission_overview() {
 	echo '<h2>Mission Details</h2>';
 
 	echo '<div class="container briefing-meta">';
-	echo '<div class="one-quarter column"><h3>Author</h3>';
+	echo '<div class="one-third column"><h3>Author</h3>';
 	$author_id = get_the_author_meta( 'ID' );
 	echo '<a href="/service-record/service-record-' . esc_attr( $author_id ) . '">' . esc_html( get_the_author_meta( 'display_name' ) ) . '</a>';
 	echo '</div>';
-	echo '<div class="one-quarter column"><h3>Modset</h3>';
+	echo '<div class="one-third column"><h3>Modset</h3>';
 	$modset = get_field( 'brief_modset' );
 	if ( is_array( $modset ) && ! empty( $modset ) ) {
 		foreach ( $modset as $mod ) {
@@ -70,11 +70,8 @@ function tcbp_public_mission_overview() {
 		echo 'TBA';
 	}
 	echo '</div>';
-	echo '<div class="one-quarter column"><h3>Map</h3>';
+	echo '<div class="one-third column"><h3>Map</h3>';
 	echo get_field( 'brief_map' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '</div>';
-	echo '<div class="one-quarter column"><h3>Time</h3>';
-	echo get_field( 'brief_start_time' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 	echo '</div>';
 
@@ -121,17 +118,17 @@ function tcbp_public_mission_overview() {
 	echo '<h3>Intel</h3>';
 	echo get_field( 'brief_intel' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<div class="container briefing-meta"><div class="one-third column"><h3>Enemy Forces</h3>';
+	echo '<div class="container briefing-meta"><div class="one-half column"><h3>Enemy Forces</h3>';
 	echo get_field( 'brief_enemy_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 
-	echo '<div class="one-third column"><h3>Friendly Forces</h3>';
+	echo '<div class="one-half column"><h3>Friendly Forces</h3>';
 	echo get_field( 'brief_friendly_forces' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
+	echo '</div>';
 
-	echo '<div class="one-third column"><h3>Section Composition</h3>';
+	echo '<h3>Section Composition</h3>';
 	echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '</div></div>';
 
 	echo '</div>';
 
