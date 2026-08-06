@@ -173,7 +173,7 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 		}
 	}
 
-	if ( in_array( 'week', $schedule, true ) ) {
+	if ( in_array( '6day', $schedule, true ) ) {
 		$schedule_time = $start_time->sub( new DateInterval( 'P6D' ) );
 		if ( $current_time < $schedule_time ) {
 			as_schedule_single_action( $schedule_time->getTimestamp(), 'tcb_roster_public_mission_send_announcement_discord_action', array( $announcement ) );
