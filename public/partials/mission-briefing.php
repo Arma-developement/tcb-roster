@@ -322,6 +322,20 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
 	}
+
+	// Copy the briefing's announcement text into the event's own Announcement message field
+	// (read by tcbp_public_mission_send_announcement()), and set the briefing's chosen image as
+	// the event's featured image, so the mission admin doesn't have to duplicate either manually
+	// when preparing the announcement.
+	$announcement_text = get_field( 'announcement_text', $post_id_ );
+	if ( $announcement_text ) {
+		update_field( 'message', $announcement_text, $post_id_ );
+	}
+
+	$featured_image = get_field( 'featured_image', $post_id_ );
+	if ( $featured_image && ! empty( $featured_image['ID'] ) ) {
+		set_post_thumbnail( $post_id_, $featured_image['ID'] );
+	}
 }
 
 
