@@ -231,7 +231,12 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 			// Display list.
 			echo '<ul>';
 			foreach ( $user_ids as $user_id ) {
-				++$attendance;
+				// Only the "Attending" row (index 1) counts toward a slot's attendance_threshold -
+				// Maybe/Not Attending shouldn't count toward unlocking a slot that requires
+				// genuine attendance. Matches tcbp_public_get_attendance_count().
+				if ( 1 === $i ) {
+					++$attendance;
+				}
 				$user   = get_user_by( 'id', $user_id );
 				$avatar = get_avatar_url( $user_id );
 				// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
