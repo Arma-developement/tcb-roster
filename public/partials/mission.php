@@ -33,7 +33,8 @@ function tcbp_public_mission_is_restricted_for_user( $post_id, $user_roles ) {
 add_action( 'tribe_events_single_event_after_the_meta', 'tcbp_public_mission_overview' );
 
 /**
- * Display the mission overview for the events page
+ * Display the mission overview for the events page - branches into either the standard mission
+ * layout, or a shorter dedicated layout for "training" event_category events.
  */
 function tcbp_public_mission_overview() {
 
@@ -42,7 +43,6 @@ function tcbp_public_mission_overview() {
 	if ( ! $current_user ) {
 		return;
 	}
-	$current_user_id = $current_user->ID;
 
 	// Early out if no post.
 	$post_id = get_queried_object_id();
@@ -50,10 +50,21 @@ function tcbp_public_mission_overview() {
 		return;
 	}
 
-	// Output the briefing.  Need to review
-	echo '<div class="tcb_briefing" >';
+	if ( has_term( 'training', 'event_category', $post_id ) ) {
+		tcbp_public_training_overview( $post_id, $current_user );
+	} else {
+		tcbp_public_standard_mission_overview( $post_id, $current_user );
+	}
+}
 
-	echo '<h2>Mission Details</h2>';
+/**
+ * Outputs the "Author / Modset / Map" header block shared by both the standard mission and
+ * training overviews.
+ *
+ * @param string $heading The section heading to show above it, e.g. "Mission Details".
+ */
+function tcbp_public_mission_overview_header( $heading ) {
+	echo '<h2>' . esc_html( $heading ) . '</h2>';
 
 	echo '<div class="container briefing-meta">';
 	echo '<div class="one-third column"><h3>Author</h3>';
@@ -74,6 +85,67 @@ function tcbp_public_mission_overview() {
 	echo get_field( 'brief_map' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '</div>';
 	echo '</div>';
+}
+
+/**
+ * Outputs the attendance/slotting tool and action buttons shared by both the standard mission
+ * and training overviews.
+ *
+ * @param int    $post_id               The event post ID.
+ * @param object $current_user          The current user object.
+ * @param array  $admin_buttons         Ordered list of admin-only buttons to show, each
+ *                                      array( 'href' => ..., 'label' => ... ) - only shown to
+ *                                      mission_admin/snco/officer/administrator.
+ * @param bool   $show_briefing_button  Whether to show the "Mission Briefing" button for a
+ *                                      slotted user.
+ */
+function tcbp_public_mission_overview_dynamic_content( $post_id, $current_user, $admin_buttons, $show_briefing_button ) {
+
+	// Early out if no entries in rsvp field.
+	if ( ! have_rows( 'rsvp' ) ) {
+		return;
+	}
+
+	echo '<div id="dynamicContent">';
+
+	list( $attendance, $user_attending ) = tcbp_public_attendance_roster( $post_id, $current_user );
+	if ( $user_attending ) {
+		$user_slotted = tcbp_public_slotting_tool( $post_id, $current_user, $attendance );
+	} else {
+		$user_slotted = tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendance );
+	}
+
+	echo '<div class="slotToolButtons" id="slotToolButtons" >';
+
+	$allowed_roles = array( 'mission_admin', 'snco', 'officer', 'administrator' );
+	if ( array_intersect( $allowed_roles, $current_user->roles ) ) {
+		foreach ( $admin_buttons as $button ) {
+			echo '<a href="' . esc_url( $button['href'] ) . '" class="button button-secondary">' . esc_html( $button['label'] ) . '</a>';
+		}
+	}
+
+	if ( $show_briefing_button && $user_slotted ) {
+		echo '<a href="/mission-briefing/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Briefing</a>';
+	}
+
+	echo '</div></div>';
+}
+
+/**
+ * The standard mission overview layout - Situation/Mission preview, the subscriber access
+ * gate, then (unless this is a "dyn_osod" event_category mission) the full Execution/Intel/
+ * Enemy Forces/Friendly Forces/Section Composition briefing, followed by attendance/slotting.
+ *
+ * @param int    $post_id      The event post ID.
+ * @param object $current_user The current user object.
+ */
+function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
+
+	$current_user_id = $current_user->ID;
+
+	echo '<div class="tcb_briefing" >';
+
+	tcbp_public_mission_overview_header( 'Mission Details' );
 
 	echo '<h3>Situation</h3>';
 	echo get_field( 'brief_situation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -137,37 +209,90 @@ function tcbp_public_mission_overview() {
 
 	echo '</div>';
 
-	// Early out if no entries in rsvp field.
-	if ( ! have_rows( 'rsvp' ) ) {
+	tcbp_public_mission_overview_dynamic_content(
+		$post_id,
+		$current_user,
+		array(
+			array(
+				'href'  => '/mission-admin-panel/?id=' . $post_id,
+				'label' => 'Mission Admin Panel',
+			),
+			array(
+				'href'  => '/mission-news-panel/?id=' . $post_id,
+				'label' => 'Mission News Panel',
+			),
+		),
+		true
+	);
+}
+
+/**
+ * The "training" event_category overview layout - a trimmed-down version of the standard
+ * mission overview: Author/Modset/Map, then "Aim" (brief_mission) and "Description"
+ * (brief_execution) in place of Situation/Mission/Execution/Intel/etc., the same subscriber
+ * access gate, then attendance/slotting with only a single (renamed) admin button.
+ *
+ * @param int    $post_id      The event post ID.
+ * @param object $current_user The current user object.
+ */
+function tcbp_public_training_overview( $post_id, $current_user ) {
+
+	$current_user_id = $current_user->ID;
+
+	echo '<div class="tcb_briefing" >';
+
+	tcbp_public_mission_overview_header( 'Training Details' );
+
+	echo '<h3>Aim</h3>';
+	echo get_field( 'brief_mission' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	// Same access gate as the standard mission overview - see
+	// tcbp_public_standard_mission_overview() for the full rationale.
+	$current_user_roles       = $current_user->roles;
+	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
+	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
+	if ( tcbp_public_mission_is_restricted_for_user( $post_id, $current_user_roles ) ) {
+		if ( 'jo' === $brief_mission_type ) {
+			echo '<div class="tcb_submit_slotting_password">';
+
+			acfe_form(
+				array(
+					'post_id'         => 'user_' . $current_user_id,
+					'name'            => 'submit-slotting-password',
+					'submit_value'    => 'Submit',
+					'return'          => add_query_arg( 'updated', 'true', get_permalink() ),
+					'updated_message' => false,
+				)
+			);
+
+			echo '</div>';
+
+			echo '<br><br><p>This is a joint operations, open to 3CB guests only</p>';
+		} else {
+			echo '<p class="info">This is a 3CB members only mission</p>';
+		}
+		echo '<p>For information about 3CB, click <a href="/information-centre/about-3cb">here</a></p>';
+		echo '<p>Interested in joining 3CB, click <a href="/information-centre/the-recruitment-process">here</a></p>';
+		echo '</div>';
 		return;
 	}
 
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	//error_log( print_r( 'dynamicContent', true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
-	// .
+	echo '<h3>Description</h3>';
+	echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<div id="dynamicContent">';
+	echo '</div>';
 
-	list( $attendance, $user_attending ) = tcbp_public_attendance_roster( $post_id, $current_user );
-	if ( $user_attending ) {
-		$user_slotted = tcbp_public_slotting_tool( $post_id, $current_user, $attendance );
-	} else {
-		$user_slotted = tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendance );
-	}
-
-	echo '<div class="slotToolButtons" id="slotToolButtons" >';
-
-	$allowed_roles = array( 'mission_admin', 'snco', 'officer', 'administrator' );
-	if ( array_intersect( $allowed_roles, $current_user_roles ) ) {
-		echo '<a href="/mission-admin-panel/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Admin Panel</a>';
-		echo '<a href="/mission-news-panel/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission News Panel</a>';
-	}
-
-	if ( $user_slotted ) {
-		echo '<a href="/mission-briefing/?id=' . esc_attr( $post_id ) . '" class="button button-secondary">Mission Briefing</a>';
-	}
-
-	echo '</div></div>';
+	tcbp_public_mission_overview_dynamic_content(
+		$post_id,
+		$current_user,
+		array(
+			array(
+				'href'  => '/mission-admin-panel/?id=' . $post_id,
+				'label' => 'Admin panel',
+			),
+		),
+		false
+	);
 }
 
 
