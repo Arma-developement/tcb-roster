@@ -124,6 +124,68 @@ function tcbp_public_mission_briefing() {
 	return ob_get_clean();
 }
 
+add_shortcode( 'tcbp_public_mission_briefing_submit', 'tcbp_public_mission_briefing_submit' );
+
+/**
+ * Renders the "submit a new mission briefing" form, with an optional dropdown letting the user
+ * pick an existing mission to copy its Event Briefing (group_638ca355bf287) field values from,
+ * so a new briefing doesn't always have to start blank. Copying is a one-off prefill, not a
+ * live link - the new mission is still a completely separate post once submitted.
+ */
+function tcbp_public_mission_briefing_submit() {
+
+	ob_start();
+
+	echo '<div class="tcb_mission_briefing_submit">';
+
+	$copy_from = isset( $_GET['copy_from'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['copy_from'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+	$past_missions = get_posts(
+		array(
+			'post_type'      => 'tribe_events',
+			'posts_per_page' => 50,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'post_status'    => 'publish',
+		)
+	);
+
+	echo '<form method="get" class="tcb_copy_briefing_form">';
+	echo '<label for="copy_from">Copy briefing details from an existing mission:</label> ';
+	echo '<select name="copy_from" id="copy_from" onchange="this.form.submit()">';
+	echo '<option value="">-- Start blank --</option>';
+	foreach ( $past_missions as $mission ) {
+		echo '<option value="' . esc_attr( $mission->ID ) . '" ' . selected( $copy_from, $mission->ID, false ) . '>' . esc_html( $mission->post_title ) . '</option>';
+	}
+	echo '</select>';
+	echo '<noscript><input type="submit" value="Load"></noscript>';
+	echo '</form>';
+
+	// Build the prefill map dynamically from the field group's own field list, rather than
+	// hardcoding each of its 20+ field keys individually - any field added to the group later
+	// is automatically picked up too.
+	$map = array();
+	if ( $copy_from && get_post( $copy_from ) ) {
+		$fields = acf_get_fields( 'group_638ca355bf287' );
+		if ( $fields ) {
+			foreach ( $fields as $field ) {
+				$map[ $field['key'] ] = array( 'value' => get_field( $field['name'], $copy_from ) );
+			}
+		}
+	}
+
+	acfe_form(
+		array(
+			'name' => 'submit-briefing',
+			'map'  => $map,
+		)
+	);
+
+	echo '</div>';
+
+	return ob_get_clean();
+}
+
 add_action( 'acfe/form/submit/post/form=submit-briefing', 'tcbp_public_mission_briefing_submission_callback', 10, 1 );
 
 /**
