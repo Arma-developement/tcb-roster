@@ -172,24 +172,24 @@ function tcbp_public_mission_overview() {
 
 
 /**
- * Counts every user registered across all RSVP rows (Attending/Maybe/Not Attending) for a
- * mission. Same count tcbp_public_attendance_roster() computes while rendering, extracted here
- * without any of its rendering side effects so the slotting AJAX handler can independently
- * re-verify a slot's attendance_threshold lock server-side.
+ * Counts every user signed up as "Attending" for a mission - just the first rsvp repeater row
+ * (see tcbp_public_mission_briefing_submission_callback(), which adds Attending/Maybe/Not
+ * Attending in that order), not Maybe/Not Attending as well. Used by the slotting AJAX handler
+ * to independently re-verify a slot's attendance_threshold lock server-side.
+ *
+ * Uses get_field() rather than have_rows()/the_row() deliberately - the latter shares a single
+ * global position pointer per field+post, which is fragile across multiple/nested calls (see
+ * mission-admin.php's signup_early() for a concrete case where that caused a real bug).
  *
  * @param int $post_id The mission post ID.
- * @return int The total attendance count.
+ * @return int The number of users signed up as attending.
  */
 function tcbp_public_get_attendance_count( $post_id ) {
-	$attendance = 0;
-	while ( have_rows( 'rsvp', $post_id ) ) :
-		the_row();
-		$user_ids = get_sub_field( 'user' );
-		if ( $user_ids ) {
-			$attendance += count( $user_ids );
-		}
-	endwhile;
-	return $attendance;
+	$rows = get_field( 'rsvp', $post_id );
+	if ( ! $rows || empty( $rows[0]['user'] ) ) {
+		return 0;
+	}
+	return count( $rows[0]['user'] );
 }
 
 /**
