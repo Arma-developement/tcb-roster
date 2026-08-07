@@ -169,7 +169,14 @@ function tcbp_public_mission_briefing_submit() {
 		$fields = acf_get_fields( 'group_638ca355bf287' );
 		if ( $fields ) {
 			foreach ( $fields as $field ) {
-				$map[ $field['key'] ] = array( 'value' => get_field( $field['name'], $copy_from ) );
+				// Textarea fields with a "New Lines" setting (e.g. Automatically add paragraphs)
+				// wrap the raw stored text in HTML at get_field() read time - fine when copying
+				// into a WYSIWYG field, which renders it, but a plain Text/Textarea destination
+				// field just shows those tags as literal visible characters. Read the raw,
+				// unformatted value for those two field types specifically; everything else
+				// (WYSIWYG included) keeps the normal formatted read.
+				$format_value          = ! in_array( $field['type'], array( 'text', 'textarea' ), true );
+				$map[ $field['key'] ] = array( 'value' => get_field( $field['name'], $copy_from, $format_value ) );
 			}
 		}
 	}
