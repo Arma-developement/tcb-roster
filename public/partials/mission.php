@@ -271,6 +271,34 @@ function tcbp_public_attendance_roster( $post_id, $current_user ) {
 }
 
 /**
+ * Builds the reason text shown for a locked slot, based on its attendance_threshold. Below 999
+ * it's treated as a genuine minimum-attendance number; 999+ are sentinel values that convey a
+ * fixed reason instead, with specific ones (1001-1004) spelling out exactly who the slot is
+ * reserved for rather than falling back to the generic "Coy's decision".
+ *
+ * @param int $attendance_threshold The slot's configured attendance_threshold.
+ * @return string The reason text to show in parentheses next to the slot name.
+ */
+function tcbp_public_slotting_get_locked_reason( $attendance_threshold ) {
+	$reasons = array(
+		1001 => 'Locked for Candidate',
+		1002 => 'Locked for Recruit',
+		1003 => 'Locked for Buddy',
+		1004 => 'Locked for Mentor',
+	);
+
+	if ( isset( $reasons[ $attendance_threshold ] ) ) {
+		return $reasons[ $attendance_threshold ];
+	}
+
+	if ( $attendance_threshold < 999 ) {
+		return $attendance_threshold . ' attending';
+	}
+
+	return "Coy's decision";
+}
+
+/**
  * Generates the public slotting tool.
  *
  * This function is responsible for generating and displaying the public slotting tool
@@ -355,11 +383,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 				}
 
 				if ( $is_locked ) {
-					if ( $attendance_threshold < 999 ) {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( $attendance_threshold ) . ' attending)<br>';
-					} else {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  (Coy's decision)<br>";
-					}
+					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( tcbp_public_slotting_get_locked_reason( $attendance_threshold ) ) . ')<br>';
 				} elseif ( $slotted_user_id ) {
 					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';
 				} else {
@@ -443,11 +467,7 @@ function tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendan
 				echo '<div class="slotToolSlot" id="slotToolSlot-' . esc_attr( $j ) . '-' . esc_attr( $k ) . '">';
 				echo '<div class="slotToolSlotDummyImage" style="background-image:url(' . esc_url( $profile_image ) . ')"></div>';
 				if ( $is_locked ) {
-					if ( $attendance_threshold < 999 ) {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( $attendance_threshold ) . ' attending)<br>';
-					} else {
-						echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . "</strong>  -  (Coy's decision)<br>";
-					}
+					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  (' . esc_html( tcbp_public_slotting_get_locked_reason( $attendance_threshold ) ) . ')<br>';
 				} elseif ( $slotted_user_id ) {
 					echo '<strong>' . esc_html( get_sub_field( 'slot_name' ) ) . '</strong>  -  <span class="slotMember"><a href="/service-record/service-record-' . esc_attr( $slotted_user_id ) . '">' . esc_attr( $slotted_display_name ) . '</a></span><br>';
 				} else {
