@@ -133,7 +133,7 @@ function tcbp_public_mission_overview_dynamic_content( $post_id, $current_user, 
 
 /**
  * The standard mission overview layout - Situation/Mission preview, the subscriber access
- * gate, then (unless this is a "dyn_osod" event_category mission) the full Execution/Intel/
+ * gate, then (unless this is an "actions" event_category mission) the full Execution/Intel/
  * Enemy Forces/Friendly Forces/Section Composition briefing, followed by attendance/slotting.
  *
  * @param int    $post_id      The event post ID.
@@ -184,10 +184,10 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 		return;
 	}
 
-	// The "dyn_osod" event_category is a trimmed-down version of this same briefing - same
+	// The "actions" event_category is a trimmed-down version of this same briefing - same
 	// access control as above, just without these five sections. No category (or any category
-	// other than dyn_osod, e.g. "default") shows them as before.
-	if ( ! has_term( 'dyn_osod', 'event_category', $post_id ) ) {
+	// other than actions, e.g. "default") shows them as before.
+	if ( ! has_term( 'actions', 'event_category', $post_id ) ) {
 		echo '<h3>Execution</h3>';
 		echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
