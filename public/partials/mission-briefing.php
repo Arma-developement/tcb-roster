@@ -148,6 +148,12 @@ function tcbp_public_mission_briefing() {
 	echo get_field( 'brief_command_and_signals', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/command-and-signals-tfar/">SOP: C&S<br></a></p>';
 
+	echo '</div>';
+
+	////////////////////////////
+
+	echo '<div class="tcb_mission_briefing">';
+
 	if ( tcbp_public_slotting_find_user( $post_id_, $user_id ) ) {
 		echo '<br><br><a href="/mission-briefing-edit/?id=' . esc_attr( $post_id_ ) . '" class="button button-secondary">Edit Mission Briefing</a><br>';
 	}
