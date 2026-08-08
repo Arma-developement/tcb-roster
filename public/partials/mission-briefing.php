@@ -409,6 +409,24 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 			break;
 	}
 
+	// Set the event's category from the briefing's mission type, so the correct overview layout
+	// (tcbp_public_mission_overview()) and badge colour are picked up automatically.
+	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
+	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
+	switch ( $brief_mission_type ) {
+		case 'publicaction':
+		case 'privateaction':
+			$event_category = 'actions';
+			break;
+		case 'training':
+			$event_category = 'training';
+			break;
+		default:
+			$event_category = 'operations';
+			break;
+	}
+	wp_set_object_terms( $post_id_, $event_category, 'event_category' );
+
 	// Copy the briefing's announcement text into the event's own Announcement message field
 	// (read by tcbp_public_mission_send_announcement()), and set the briefing's chosen image as
 	// the event's featured image, so the mission admin doesn't have to duplicate either manually
