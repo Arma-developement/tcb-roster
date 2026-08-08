@@ -22,6 +22,8 @@ function tcbp_public_mission_briefing() {
 
 	ob_start();
 
+	echo '<div class="tcb_mission_briefing_page">';
+
 	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>1.Situation</h3>';
@@ -78,7 +80,7 @@ function tcbp_public_mission_briefing() {
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
 	$brief_mission_type       = $brief_mission_type_array['value'];
 	if ( in_array( 'subscriber', $user->roles, true ) && in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
-		echo '</div>';
+		echo '</div></div>';
 		return ob_get_clean();
 	}
 
@@ -152,7 +154,7 @@ function tcbp_public_mission_briefing() {
 
 	echo '<br><a href="javascript:history.back()" class="button button-secondary">Back</a>';
 
-	echo '</div>';
+	echo '</div></div>';
 	return ob_get_clean();
 }
 
