@@ -524,6 +524,7 @@ function tcbp_public_slotting_tool( $post_id, $current_user, $attendance ) {
 			echo '</div>';
 		endwhile;
 	endwhile;
+	echo '<p class="info">Note: Placements are not guaranteed and are subject to change by the CO to meet mission requirements.</p>';
 	echo '</div></div>';
 
 	//error_log( print_r( 'user_found: ' . $user_found, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -608,6 +609,7 @@ function tcbp_public_slotting_tool_read_only( $post_id, $current_user, $attendan
 			echo '</div>';
 		endwhile;
 	endwhile;
+	echo '<p class="info">Note: Placements are not guaranteed and are subject to change by the CO to meet mission requirements.</p>';
 	echo '</div></div>';
 
 	return false;
