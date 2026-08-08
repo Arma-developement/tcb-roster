@@ -138,45 +138,50 @@ function tcbp_public_mission_briefing_submit() {
 
 	echo '<div class="tcb_mission_briefing_submit">';
 
-	$copy_from = isset( $_GET['copy_from'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['copy_from'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-	$past_missions = get_posts(
-		array(
-			'post_type'      => 'tribe_events',
-			'posts_per_page' => 50,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-			'post_status'    => 'publish',
-		)
-	);
-
-	echo '<form method="get" class="tcb_copy_briefing_form">';
-	echo '<label for="copy_from">Copy briefing details from an existing mission:</label> ';
-	echo '<select name="copy_from" id="copy_from" onchange="this.form.submit()">';
-	echo '<option value="">-- Start blank --</option>';
-	foreach ( $past_missions as $mission ) {
-		echo '<option value="' . esc_attr( $mission->ID ) . '" ' . selected( $copy_from, $mission->ID, false ) . '>' . esc_html( $mission->post_title ) . '</option>';
-	}
-	echo '</select>';
-	echo '<noscript><input type="submit" value="Load"></noscript>';
-	echo '</form>';
-
-	// Build the prefill map dynamically from the field group's own field list, rather than
-	// hardcoding each of its 20+ field keys individually - any field added to the group later
-	// is automatically picked up too.
+	// Skip the "copy from" dropdown entirely on the post-submission success page - it's only
+	// relevant when the user is about to fill in a blank/prefilled form, not after they've
+	// already submitted one.
 	$map = array();
-	if ( $copy_from && get_post( $copy_from ) ) {
-		$fields = acf_get_fields( 'group_638ca355bf287' );
-		if ( $fields ) {
-			foreach ( $fields as $field ) {
-				// Textarea fields with a "New Lines" setting (e.g. Automatically add paragraphs)
-				// wrap the raw stored text in HTML at get_field() read time - fine when copying
-				// into a WYSIWYG field, which renders it, but a plain Text/Textarea destination
-				// field just shows those tags as literal visible characters. Read the raw,
-				// unformatted value for those two field types specifically; everything else
-				// (WYSIWYG included) keeps the normal formatted read.
-				$format_value          = ! in_array( $field['type'], array( 'text', 'textarea' ), true );
-				$map[ $field['key'] ] = array( 'value' => get_field( $field['name'], $copy_from, $format_value ) );
+	if ( ! acfe_is_form_success( 'submit-briefing' ) ) {
+		$copy_from = isset( $_GET['copy_from'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['copy_from'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$past_missions = get_posts(
+			array(
+				'post_type'      => 'tribe_events',
+				'posts_per_page' => 50,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'post_status'    => 'publish',
+			)
+		);
+
+		echo '<form method="get" class="tcb_copy_briefing_form">';
+		echo '<label for="copy_from">Copy briefing details from an existing mission:</label> ';
+		echo '<select name="copy_from" id="copy_from" onchange="this.form.submit()">';
+		echo '<option value="">-- Start blank --</option>';
+		foreach ( $past_missions as $mission ) {
+			echo '<option value="' . esc_attr( $mission->ID ) . '" ' . selected( $copy_from, $mission->ID, false ) . '>' . esc_html( $mission->post_title ) . '</option>';
+		}
+		echo '</select>';
+		echo '<noscript><input type="submit" value="Load"></noscript>';
+		echo '</form>';
+
+		// Build the prefill map dynamically from the field group's own field list, rather than
+		// hardcoding each of its 20+ field keys individually - any field added to the group later
+		// is automatically picked up too.
+		if ( $copy_from && get_post( $copy_from ) ) {
+			$fields = acf_get_fields( 'group_638ca355bf287' );
+			if ( $fields ) {
+				foreach ( $fields as $field ) {
+					// Textarea fields with a "New Lines" setting (e.g. Automatically add paragraphs)
+					// wrap the raw stored text in HTML at get_field() read time - fine when copying
+					// into a WYSIWYG field, which renders it, but a plain Text/Textarea destination
+					// field just shows those tags as literal visible characters. Read the raw,
+					// unformatted value for those two field types specifically; everything else
+					// (WYSIWYG included) keeps the normal formatted read.
+					$format_value          = ! in_array( $field['type'], array( 'text', 'textarea' ), true );
+					$map[ $field['key'] ] = array( 'value' => get_field( $field['name'], $copy_from, $format_value ) );
+				}
 			}
 		}
 	}
