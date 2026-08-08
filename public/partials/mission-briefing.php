@@ -29,39 +29,47 @@ function tcbp_public_mission_briefing() {
 	echo '<h4>1.1 General</h4>';
 	echo get_field( 'brief_situation', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	
+
 	echo '<h4>1.2 Environment</h4>';
 
-	echo '<h5>Map</h5>';
-	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h5>Terrain</h5>';
-	echo get_field( 'brief_terrain', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h5>Time</h5>';
+	echo '<h5>1.2.1 Time</h5>';
 	echo get_field( 'brief_start_time', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Weather</h5>';
+	echo '<h5>1.2.2 Weather</h5>';
 	echo get_field( 'brief_weather', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
+	echo '<h5>1.2.3 Terrain</h5>';
+	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo get_field( 'brief_terrain', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h4>1.3 Threats / Other factors</h4>';
 
-	echo '<h5>Enemy Forces</h5>';
+	echo '<h4>1.3 Threats</h4>';
+
+	echo '<h5>1.3.1 Enemy Forces</h5>';
 	echo get_field( 'brief_enemy_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>IED/Mine Threat</h5>';
+	echo '<h5>1.3.2 IED/Mine Threat</h5>';
 	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Civilians</h5>';
 
+	echo '<h4>1.4 Other factors</h4>';
+
+	echo '<h5>Civilians</h5>';
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h4>1.4 Friendly Forces</h4>';
+
+	echo '<h4>1.5 Friendly Forces</h4>';
 	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Support Assets</h5>';
+
+	echo '<h4>1.6 Attachments</h4>';
 	echo get_field( 'brief_support', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '</div>';
+
+	////////////////////////////
+
+	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>2.Mission</h3>';
 	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -74,41 +82,65 @@ function tcbp_public_mission_briefing() {
 		return ob_get_clean();
 	}
 
+	echo '</div>';
+
+	////////////////////////////
+
+	echo '<div class="tcb_mission_briefing">';
+
+
 	echo '<h3>3 Execution</h3>';
+	
+
+	echo "<h4>3.1 Commander's intent</h4>";
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h4>3.1 Troop Order</h4>';
+
+	echo '<h4>3.1 Concept of Operation</h4>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
 
 	echo '<h4>3.2 Coordinatoring Actions</h4>';
 
-	echo '<h5>Actions On</h3>';
+	echo '<h5>3.2.1 Actions On</h5>';
 	echo get_field( 'brief_actions_on', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
 
-	echo '<h5>Rules of Engagement</h3>';
+	echo '<h5>3.2.2 Rules of Engagement</h5>';
 	echo get_field( 'brief_rules_of_engagement', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
 
+	echo '</div>';
+
+	////////////////////////////
+
+	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>4 Logistics</h3>';
 	
 	echo '<h4>4.1 Material Logistics</h4>';
 
-	echo '<h5>Vehicles</h5>';
+	echo '<h5>4.1.1 Vehicles</h5>';
 	echo get_field( 'brief_vehicles', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Supplies</h5>';
+	echo '<h5>4.1.2 Supplies</h5>';
 	echo get_field( 'brief_supplies', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h4>4.2 Personal Logistics</h4>';
+	echo '<h5>4.1.3 Section Composition</h5>';
+	echo get_field( 'brief_section_composition', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Reinforcements</h5>';
+
+	echo '<h4>4.2 Personnel Logistics</h4>';
+
+	echo '<h5>4.2.1 Reinforcements</h5>';
 	echo get_field( 'brief_reinforcements', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>Section Composition</h5>';
-	echo get_field( 'brief_section_composition', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	
+	echo '</div>';
+
+	////////////////////////////
+
+	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>5 Command and Signals</h3>';
 	echo get_field( 'brief_command_and_signals', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
