@@ -407,6 +407,30 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Pilot' ), $post_id_ );
 			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Co-pilot' ), $post_id_ );
 			break;
+		case 'training':
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Staff' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainer' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainer' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Trainees' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 4' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 5' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 6' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 7' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Trainee 8' ), $post_id_ );
+
+			$troop = add_row( 'slots', array(), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit' ), array( 'name' => 'Reserves' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Reserve 1' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Reserve 2' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Reserve 3' ), $post_id_ );
+			add_sub_row( array( 'slots', $troop, 'unit', 1, 'slot' ), array( 'slot_name' => 'Reserve 4' ), $post_id_ );
+			break;
 	}
 
 	// Set the event's category from the briefing's mission type, so the correct overview layout
