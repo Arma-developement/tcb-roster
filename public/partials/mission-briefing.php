@@ -54,7 +54,7 @@ function tcbp_public_mission_briefing() {
 
 	echo '<h4>1.4 Other factors</h4>';
 
-	echo '<h5>Civilians</h5>';
+	echo '<h5>1.4.1 Civilians</h5>';
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
