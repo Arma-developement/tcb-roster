@@ -146,7 +146,8 @@ function tcbp_public_mission_send_announcement( $post_id ) {
 	// timezone client-side. UK readers will see the same time twice - Discord has no way to
 	// vary message content per reader, so that's an accepted, unavoidable trade-off for giving
 	// non-UK readers both a stable reference time and their own local time.
-	$announcement = "{@members} {@recruits} {@candidate}\n\n" . $title . "\n" . $start_time->format( 'l j F Y, H:i T' ) . "\n(<t:" . $start_time->getTimestamp() . ":t> your local time)\n\n" . $message;
+	$event_url    = get_permalink( $post_id );
+	$announcement = "{@members} {@recruits} {@candidate}\n\n" . $title . "\n" . $start_time->format( 'l j F Y, H:i T' ) . "\n(<t:" . $start_time->getTimestamp() . ":t> your local time)\n\n" . $message . "\n\n" . $event_url;
 
 	// Schedule the announcements.
 	$current_time = new DateTimeImmutable();
