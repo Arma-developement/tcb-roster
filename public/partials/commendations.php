@@ -7,6 +7,23 @@
 add_shortcode( 'tcbp_public_archive_commendations', 'tcbp_public_archive_commendations' );
 
 /**
+ * Builds a commendation's image tooltip text: its title, plus (if a matching term exists in
+ * the "tcb-commendation" taxonomy) that term's description appended on a new line. The term is
+ * looked up by slug, which matches the value already stored in the relevant ACF field/sub-field.
+ *
+ * @param string $title The commendation's display title.
+ * @param string $slug  The commendation's slug.
+ * @return string The tooltip text.
+ */
+function tcbp_public_commendation_tooltip( $title, $slug ) {
+	$term = get_term_by( 'slug', $slug, 'tcb-commendation' );
+	if ( ! $term || is_wp_error( $term ) || ! $term->description ) {
+		return $title;
+	}
+	return $title . "\n\n" . $term->description;
+}
+
+/**
  * Shortcode to generate an archive for all commendations.
  */
 function tcbp_public_archive_commendations() {
@@ -76,7 +93,7 @@ function tcbp_public_archive_commendations() {
 				foreach ( $list_of_awards as $award ) {
 					$index = $award['value'];
 					$list_of_campaign_medal_recipients[ $index ][] = $user_id;
-					$list_of_campaign_medal_titles[ $index ]       = $award['label'];
+					$list_of_campaign_medal_titles[ $index ]       = tcbp_public_commendation_tooltip( $award['label'], $index );
 				}
 			}
 
@@ -93,7 +110,7 @@ function tcbp_public_archive_commendations() {
 							}
 							$index                                     = $name . '-' . $idx;
 							$list_of_leadership_recipients[ $index ][] = $user_id;
-							$list_of_leadership_titles[ $index ]       = $title_ . ' x ' . $image_translation[ $idx - 1 ];
+							$list_of_leadership_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
 						}
 					}
 				}
@@ -112,7 +129,7 @@ function tcbp_public_archive_commendations() {
 							}
 							$index = $name . '-' . $idx;
 							$list_of_mention_in_despatches_recipients[ $index ][] = $user_id;
-							$list_of_mention_in_despatches_titles[ $index ]       = $title_ . ' x ' . $image_translation[ $idx - 1 ];
+							$list_of_mention_in_despatches_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
 						}
 					}
 				}
@@ -131,7 +148,7 @@ function tcbp_public_archive_commendations() {
 							}
 							$index = $name . '-' . $idx;
 							$list_of_mission_creation_recipients[ $index ][] = $user_id;
-							$list_of_mission_creation_titles[ $index ]       = $title_ . ' x ' . $image_translation[ $idx - 1 ];
+							$list_of_mission_creation_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
 						}
 					}
 				}
@@ -142,7 +159,7 @@ function tcbp_public_archive_commendations() {
 				foreach ( $list_of_awards as $award ) {
 					$index = $award['value'];
 					$list_of_community_award_recipients[ $index ][] = $user_id;
-					$list_of_community_award_titles[ $index ]       = $award['label'];
+					$list_of_community_award_titles[ $index ]       = tcbp_public_commendation_tooltip( $award['label'], $index );
 				}
 			}
 		}
