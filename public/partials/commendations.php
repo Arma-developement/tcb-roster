@@ -42,7 +42,7 @@ function tcbp_public_archive_commendations() {
 	ob_start();
 
 	echo '<div class="tcb_commendations">';
-	echo '<p><a href="/information-centre/commendations/">Description of Commendations</a></p><br>';
+	echo '<p><a href="/commendation-descriptions/">Description of Commendations</a></p><br>';
 
 	$path   = plugins_url() . '/tcb-roster/images/ribbons/';
 	$width  = 350 / 2;
