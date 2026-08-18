@@ -280,11 +280,11 @@ function tcbp_public_archive_commendations() {
 add_shortcode( 'tcbp_public_commendation_descriptions', 'tcbp_public_commendation_descriptions' );
 
 /**
- * Shortcode: lists every commendation - name, description (from the tcb-commendation taxonomy),
- * and ribbon image - grouped the same way as the commendations archive above. Campaign Medals
- * and Community Awards are enumerated from the campaign_medals/community_awards ACF field's own
- * configured choices (not from individual service records), so every possible award is listed
- * even if nobody's actually earned it yet.
+ * Shortcode: lists every commendation - name, description, and ribbon image - grouped by the
+ * commendation's own parent term in the tcb-commendation taxonomy, which is now the single
+ * source of truth for group membership (rather than hardcoded per-commendation lists or ACF
+ * field choices). Long Service Medals has no taxonomy entries - it's generated dynamically per
+ * year of service, not a fixed list of commendations - so it stays a fixed paragraph.
  */
 function tcbp_public_commendation_descriptions() {
 
@@ -298,130 +298,68 @@ function tcbp_public_commendation_descriptions() {
 	echo '<p>Awarded automatically for every full year of service, based on a member&rsquo;s passing-out date. There is a distinct ribbon design for each year of service.</p>';
 	echo '</div>';
 
-	tcbp_public_commendation_descriptions_group( 'Campaign Medals', tcbp_public_commendation_descriptions_field_items( 'campaign_medals', $path ) );
+	// Leadership/Mention in Despatches/Mission Creation commendations have one ribbon image per
+	// level (e.g. troop-1.png through troop-6.png) rather than one per commendation - the
+	// level-1 image represents the commendation here, since this page lists each once. There's
+	// nothing in the taxonomy itself marking a group as "leveled", so this stays a fixed list.
+	$leveled_groups = array( 'leadership_commendations', 'mention_in_despatches', 'mission_creation' );
 
-	tcbp_public_commendation_descriptions_group(
-		'Leadership Commendations',
-		tcbp_public_commendation_descriptions_level_items(
-			array(
-				'troop'    => 'Troop Leadership',
-				'section'  => 'Section Leadership',
-				'fireteam' => 'Fireteam Leadership',
-				'asset'    => 'Asset Leadership',
-			),
-			$path
-		)
-	);
-
-	tcbp_public_commendation_descriptions_group(
-		'Mention in Despatches',
-		tcbp_public_commendation_descriptions_level_items(
-			array(
-				'combat_medic'     => 'Combat Medic',
-				'weapons_operator' => 'Weapons Operator',
-				'armour_asset'     => 'Armour Asset',
-				'air_asset'        => 'Air Asset',
-				'man_of_the_match' => 'Man of the Match',
-			),
-			$path
-		)
-	);
-
-	tcbp_public_commendation_descriptions_group(
-		'Mission Creation',
-		tcbp_public_commendation_descriptions_level_items(
-			array(
-				'mission_author' => 'Mission Author',
-				'zeus'           => 'Zeus',
-			),
-			$path
-		)
-	);
-
-	tcbp_public_commendation_descriptions_group( 'Community Awards', tcbp_public_commendation_descriptions_field_items( 'community_awards', $path ) );
+	$groups = array( 'campaign_medals', 'leadership_commendations', 'mention_in_despatches', 'mission_creation', 'community_awards' );
+	foreach ( $groups as $group_slug ) {
+		tcbp_public_commendation_descriptions_group( $group_slug, in_array( $group_slug, $leveled_groups, true ), $path );
+	}
 
 	echo '</div>';
 	return ob_get_clean();
 }
 
 /**
- * Builds slug => array( 'label' => ..., 'image' => ... ) entries from an ACF field's own
- * configured choices (campaign_medals/community_awards), so every possible value is listed
- * regardless of whether anyone's actually earned it yet. These fields have one ribbon image per
- * commendation (no per-level variants), named after the choice's value.
+ * Renders one grouped section of the commendation descriptions page, sourced entirely from the
+ * tcb-commendation taxonomy: the group's own parent term supplies the heading, and its child
+ * terms each supply a commendation's name, description, and (if set) wiki link.
  *
- * @param string $field_name The ACF field's name.
+ * @param string $group_slug The parent term's slug.
+ * @param bool   $leveled    Whether this group's commendations use a level-1 suffixed image
+ *                           (e.g. troop-1.png) rather than a plain one (e.g. afghan17.png).
  * @param string $path       Base URL for ribbon images.
- * @return array
  */
-function tcbp_public_commendation_descriptions_field_items( $field_name, $path ) {
-	$field = acf_get_field( $field_name );
-	if ( ! $field || empty( $field['choices'] ) ) {
-		return array();
+function tcbp_public_commendation_descriptions_group( $group_slug, $leveled, $path ) {
+	$parent = get_term_by( 'slug', $group_slug, 'tcb-commendation' );
+	if ( ! $parent || is_wp_error( $parent ) ) {
+		return;
 	}
 
-	$items = array();
-	foreach ( $field['choices'] as $slug => $label ) {
-		$items[ $slug ] = array(
-			'label' => $label,
-			'image' => $path . $slug . '.png',
-		);
-	}
-	return $items;
-}
-
-/**
- * Builds slug => array( 'label' => ..., 'image' => ... ) entries for the leveled commendations
- * (Leadership/Mention in Despatches/Mission Creation), which have one ribbon image per level
- * (e.g. troop-1.png through troop-6.png) rather than one per commendation. The level-1 image
- * represents the commendation here, since this page lists each commendation once.
- *
- * @param array  $names_to_labels slug => label pairs.
- * @param string $path            Base URL for ribbon images.
- * @return array
- */
-function tcbp_public_commendation_descriptions_level_items( $names_to_labels, $path ) {
-	$items = array();
-	foreach ( $names_to_labels as $slug => $label ) {
-		$items[ $slug ] = array(
-			'label' => $label,
-			'image' => $path . $slug . '-1.png',
-		);
-	}
-	return $items;
-}
-
-/**
- * Renders one grouped section of the commendation descriptions page: a heading, then one entry
- * per commendation with its ribbon image, name (linked to the taxonomy term's "wiki_url" field,
- * if one has been added and set), and description (from the term's own description, if set).
- *
- * @param string $heading The section heading.
- * @param array  $items   slug => array( 'label' => ..., 'image' => ... ) pairs.
- */
-function tcbp_public_commendation_descriptions_group( $heading, $items ) {
-	if ( ! $items ) {
+	$children = get_terms(
+		array(
+			'taxonomy'   => 'tcb-commendation',
+			'parent'     => $parent->term_id,
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		)
+	);
+	if ( ! $children || is_wp_error( $children ) ) {
 		return;
 	}
 
 	echo '<div class="tcb_award">';
-	echo '<h4>' . esc_html( $heading ) . '</h4>';
+	echo '<h4>' . esc_html( $parent->name ) . '</h4>';
 
-	foreach ( $items as $slug => $item ) {
-		$term     = get_term_by( 'slug', $slug, 'tcb-commendation' );
-		$wiki_url = $term ? get_field( 'wiki_url', 'tcb-commendation_' . $term->term_id ) : '';
+	foreach ( $children as $term ) {
+		$image    = $path . $term->slug . ( $leveled ? '-1' : '' ) . '.png';
+		$wiki_url = get_field( 'wiki_url', 'tcb-commendation_' . $term->term_id );
 
 		echo '<div class="tcb_commendation_entry">';
-		echo '<img src="' . esc_url( $item['image'] ) . '" alt="' . esc_attr( $item['label'] ) . '">';
+		echo '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $term->name ) . '">';
 		echo '<div class="tcb_commendation_entry_text">';
 
 		if ( $wiki_url ) {
-			echo '<h5><a href="' . esc_url( $wiki_url ) . '">' . esc_html( $item['label'] ) . '</a></h5>';
+			echo '<h5><a href="' . esc_url( $wiki_url ) . '">' . esc_html( $term->name ) . '</a></h5>';
 		} else {
-			echo '<h5>' . esc_html( $item['label'] ) . '</h5>';
+			echo '<h5>' . esc_html( $term->name ) . '</h5>';
 		}
 
-		if ( $term && $term->description ) {
+		if ( $term->description ) {
 			echo '<p>' . esc_html( $term->description ) . '</p>';
 		}
 
