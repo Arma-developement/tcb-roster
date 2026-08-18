@@ -24,6 +24,67 @@ function tcbp_public_commendation_tooltip( $title, $slug ) {
 }
 
 /**
+ * Returns the ordered child terms of a tcb-commendation taxonomy group, identified by its
+ * parent term's slug. If $order is given, children are sorted to match it, with any child not
+ * listed sorted after the listed ones - so a newly added commendation still shows (rather than
+ * being silently dropped) while it's waiting to be placed in the manual order. Otherwise,
+ * children are sorted alphabetically by name.
+ *
+ * @param string $group_slug The parent term's slug.
+ * @param array  $order      Optional list of child slugs giving a manual display order.
+ * @return WP_Term[] The group's child terms, or an empty array if the group doesn't exist.
+ */
+function tcbp_public_commendation_group_terms( $group_slug, $order = array() ) {
+	$parent = get_term_by( 'slug', $group_slug, 'tcb-commendation' );
+	if ( ! $parent || is_wp_error( $parent ) ) {
+		return array();
+	}
+
+	$children = get_terms(
+		array(
+			'taxonomy'   => 'tcb-commendation',
+			'parent'     => $parent->term_id,
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		)
+	);
+	if ( ! $children || is_wp_error( $children ) ) {
+		return array();
+	}
+
+	if ( $order ) {
+		usort(
+			$children,
+			function ( $a, $b ) use ( $order ) {
+				$pos_a = array_search( $a->slug, $order, true );
+				$pos_b = array_search( $b->slug, $order, true );
+				$pos_a = false === $pos_a ? PHP_INT_MAX : $pos_a;
+				$pos_b = false === $pos_b ? PHP_INT_MAX : $pos_b;
+				return $pos_a <=> $pos_b;
+			}
+		);
+	}
+
+	return $children;
+}
+
+/**
+ * Converts a list of taxonomy terms into a slug => name array, the shape the archive page's
+ * per-commendation loops expect (previously hardcoded per group).
+ *
+ * @param WP_Term[] $terms Terms to convert.
+ * @return array
+ */
+function tcbp_public_commendation_names_from_terms( $terms ) {
+	$names = array();
+	foreach ( $terms as $term ) {
+		$names[ $term->slug ] = $term->name;
+	}
+	return $names;
+}
+
+/**
  * Shortcode to generate an archive for all commendations.
  */
 function tcbp_public_archive_commendations() {
@@ -51,23 +112,12 @@ function tcbp_public_archive_commendations() {
 
 	$image_translation = array( 1, 4, 16, 64, 256, 1024 );
 
-	$mention_in_despatches = array(
-		'combat_medic'     => 'Combat Medic',
-		'weapons_operator' => 'Weapons Operator',
-		'armour_asset'     => 'Armour Asset',
-		'air_asset'        => 'Air Asset',
-		'man_of_the_match' => 'Man of the Match',
-	);
-	$leadership            = array(
-		'troop'    => 'Troop Leadership',
-		'section'  => 'Section Leadership',
-		'fireteam' => 'Fireteam Leadership',
-		'asset'    => 'Asset Leadership',
-	);
-	$mission_creation      = array(
-		'mission_author' => 'Mission Author',
-		'zeus'           => 'Zeus',
-	);
+	// Names now come from the tcb-commendation taxonomy's group child terms, so a newly added
+	// sub-field (e.g. "patrol") is picked up automatically once a matching term exists - no code
+	// change needed here, unlike the previous hardcoded per-group lists.
+	$mention_in_despatches = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'mention_in_despatches' ) );
+	$leadership            = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'leadership_commendations', array( 'troop', 'section', 'fireteam', 'patrol', 'asset' ) ) );
+	$mission_creation      = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'mission_creation' ) );
 
 	// Build a list of awards titles and recipients, dynamically from the service records.
 	$list_of_posts = get_posts( $args );
@@ -344,30 +394,9 @@ function tcbp_public_commendation_descriptions_group( $group_slug, $leveled, $pa
 		return;
 	}
 
-	$children = get_terms(
-		array(
-			'taxonomy'   => 'tcb-commendation',
-			'parent'     => $parent->term_id,
-			'hide_empty' => false,
-			'orderby'    => 'name',
-			'order'      => 'ASC',
-		)
-	);
-	if ( ! $children || is_wp_error( $children ) ) {
+	$children = tcbp_public_commendation_group_terms( $group_slug, $order );
+	if ( ! $children ) {
 		return;
-	}
-
-	if ( $order ) {
-		usort(
-			$children,
-			function ( $a, $b ) use ( $order ) {
-				$pos_a = array_search( $a->slug, $order, true );
-				$pos_b = array_search( $b->slug, $order, true );
-				$pos_a = false === $pos_a ? PHP_INT_MAX : $pos_a;
-				$pos_b = false === $pos_b ? PHP_INT_MAX : $pos_b;
-				return $pos_a <=> $pos_b;
-			}
-		);
 	}
 
 	echo '<div class="tcb_award">';
