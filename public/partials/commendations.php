@@ -304,9 +304,22 @@ function tcbp_public_commendation_descriptions() {
 	// nothing in the taxonomy itself marking a group as "leveled", so this stays a fixed list.
 	$leveled_groups = array( 'leadership_commendations', 'mention_in_despatches', 'mission_creation' );
 
+	// A manual display order for groups that need one - anything not listed here falls back to
+	// alphabetical (by term name). Terms found in the taxonomy but missing from a group's list
+	// still show, just sorted after the listed ones, so a newly added commendation isn't
+	// silently dropped while waiting to be placed.
+	$manual_order = array(
+		'leadership_commendations' => array( 'troop', 'section', 'fireteam', 'patrol', 'asset' ),
+	);
+
 	$groups = array( 'campaign_medals', 'leadership_commendations', 'mention_in_despatches', 'mission_creation', 'community_awards' );
 	foreach ( $groups as $group_slug ) {
-		tcbp_public_commendation_descriptions_group( $group_slug, in_array( $group_slug, $leveled_groups, true ), $path );
+		tcbp_public_commendation_descriptions_group(
+			$group_slug,
+			in_array( $group_slug, $leveled_groups, true ),
+			$path,
+			isset( $manual_order[ $group_slug ] ) ? $manual_order[ $group_slug ] : array()
+		);
 	}
 
 	echo '</div>';
@@ -322,8 +335,10 @@ function tcbp_public_commendation_descriptions() {
  * @param bool   $leveled    Whether this group's commendations use a level-1 suffixed image
  *                           (e.g. troop-1.png) rather than a plain one (e.g. afghan17.png).
  * @param string $path       Base URL for ribbon images.
+ * @param array  $order      Optional list of child slugs giving a manual display order. Any
+ *                            child not listed here is sorted after the listed ones.
  */
-function tcbp_public_commendation_descriptions_group( $group_slug, $leveled, $path ) {
+function tcbp_public_commendation_descriptions_group( $group_slug, $leveled, $path, $order = array() ) {
 	$parent = get_term_by( 'slug', $group_slug, 'tcb-commendation' );
 	if ( ! $parent || is_wp_error( $parent ) ) {
 		return;
@@ -340,6 +355,19 @@ function tcbp_public_commendation_descriptions_group( $group_slug, $leveled, $pa
 	);
 	if ( ! $children || is_wp_error( $children ) ) {
 		return;
+	}
+
+	if ( $order ) {
+		usort(
+			$children,
+			function ( $a, $b ) use ( $order ) {
+				$pos_a = array_search( $a->slug, $order, true );
+				$pos_b = array_search( $b->slug, $order, true );
+				$pos_a = false === $pos_a ? PHP_INT_MAX : $pos_a;
+				$pos_b = false === $pos_b ? PHP_INT_MAX : $pos_b;
+				return $pos_a <=> $pos_b;
+			}
+		);
 	}
 
 	echo '<div class="tcb_award">';
