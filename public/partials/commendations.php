@@ -32,10 +32,10 @@ function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $hei
 	}
 
 	echo '<span class="tcb_commendation_tooltip">';
-	echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;">';
+	echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $title ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '">';
 	echo '<span class="tcb_commendation_tooltip_text"><strong>' . esc_html( $title ) . '</strong>';
 	if ( $description ) {
-		echo '<br>' . esc_html( $description );
+		echo esc_html( $description );
 	}
 	echo '</span>';
 	echo '</span>';
