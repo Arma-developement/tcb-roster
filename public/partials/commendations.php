@@ -7,20 +7,38 @@
 add_shortcode( 'tcbp_public_archive_commendations', 'tcbp_public_archive_commendations' );
 
 /**
- * Builds a commendation's image tooltip text: its title, plus (if a matching term exists in
- * the "tcb-commendation" taxonomy) that term's description appended on a new line. The term is
- * looked up by slug, which matches the value already stored in the relevant ACF field/sub-field.
+ * Renders a ribbon image with a custom-styled tooltip (bold title, description directly below
+ * with no gap, matching the site's own font/colours) rather than the native browser tooltip a
+ * plain title attribute would give - which can't be restyled at all, since the browser renders
+ * it outside the page's CSS entirely. If $slug is given and matches a term in the
+ * "tcb-commendation" taxonomy with a description set, that description is shown; otherwise the
+ * tooltip is just the title on its own.
  *
- * @param string $title The commendation's display title.
- * @param string $slug  The commendation's slug.
- * @return string The tooltip text.
+ * @param string $image_url The ribbon image URL.
+ * @param string $title     The commendation's display title.
+ * @param string $slug      The commendation's slug, for looking up its taxonomy description -
+ *                          pass '' to skip the lookup (e.g. Long Service Medals, which aren't in
+ *                          the taxonomy).
+ * @param int    $width     Image width in pixels.
+ * @param int    $height    Image height in pixels.
  */
-function tcbp_public_commendation_tooltip( $title, $slug ) {
-	$term = get_term_by( 'slug', $slug, 'tcb-commendation' );
-	if ( ! $term || is_wp_error( $term ) || ! $term->description ) {
-		return $title;
+function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $height ) {
+	$description = '';
+	if ( $slug ) {
+		$term = get_term_by( 'slug', $slug, 'tcb-commendation' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$description = $term->description;
+		}
 	}
-	return $title . "\n\n" . $term->description;
+
+	echo '<span class="tcb_commendation_tooltip">';
+	echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;">';
+	echo '<span class="tcb_commendation_tooltip_text"><strong>' . esc_html( $title ) . '</strong>';
+	if ( $description ) {
+		echo '<br>' . esc_html( $description );
+	}
+	echo '</span>';
+	echo '</span>';
 }
 
 /**
@@ -143,7 +161,10 @@ function tcbp_public_archive_commendations() {
 				foreach ( $list_of_awards as $award ) {
 					$index = $award['value'];
 					$list_of_campaign_medal_recipients[ $index ][] = $user_id;
-					$list_of_campaign_medal_titles[ $index ]       = tcbp_public_commendation_tooltip( $award['label'], $index );
+					$list_of_campaign_medal_titles[ $index ]       = array(
+						'title' => $award['label'],
+						'slug'  => $index,
+					);
 				}
 			}
 
@@ -160,7 +181,10 @@ function tcbp_public_archive_commendations() {
 							}
 							$index                                     = $name . '-' . $idx;
 							$list_of_leadership_recipients[ $index ][] = $user_id;
-							$list_of_leadership_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
+							$list_of_leadership_titles[ $index ]       = array(
+								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
+								'slug'  => $name,
+							);
 						}
 					}
 				}
@@ -179,7 +203,10 @@ function tcbp_public_archive_commendations() {
 							}
 							$index = $name . '-' . $idx;
 							$list_of_mention_in_despatches_recipients[ $index ][] = $user_id;
-							$list_of_mention_in_despatches_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
+							$list_of_mention_in_despatches_titles[ $index ]       = array(
+								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
+								'slug'  => $name,
+							);
 						}
 					}
 				}
@@ -198,7 +225,10 @@ function tcbp_public_archive_commendations() {
 							}
 							$index = $name . '-' . $idx;
 							$list_of_mission_creation_recipients[ $index ][] = $user_id;
-							$list_of_mission_creation_titles[ $index ]       = tcbp_public_commendation_tooltip( $title_ . ' x ' . $image_translation[ $idx - 1 ], $name );
+							$list_of_mission_creation_titles[ $index ]       = array(
+								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
+								'slug'  => $name,
+							);
 						}
 					}
 				}
@@ -209,7 +239,10 @@ function tcbp_public_archive_commendations() {
 				foreach ( $list_of_awards as $award ) {
 					$index = $award['value'];
 					$list_of_community_award_recipients[ $index ][] = $user_id;
-					$list_of_community_award_titles[ $index ]       = tcbp_public_commendation_tooltip( $award['label'], $index );
+					$list_of_community_award_titles[ $index ]       = array(
+						'title' => $award['label'],
+						'slug'  => $index,
+					);
 				}
 			}
 		}
@@ -221,7 +254,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_service_award_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $list_of_service_award_image[ $key ] . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $list_of_service_award_image[ $key ] . '.png', $title, '', $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_service_award_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
@@ -239,7 +273,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_campaign_medal_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_campaign_medal_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
@@ -257,7 +292,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_leadership_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
@@ -275,7 +311,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_mention_in_despatches_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
@@ -293,7 +330,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_mission_creation_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
@@ -311,7 +349,8 @@ function tcbp_public_archive_commendations() {
 			$column = 0;
 			foreach ( $list_of_community_award_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				echo '<img src="' . esc_url( $path . $key . '.png' ) . '" title="' . esc_attr( $title ) . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"><ul>';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_community_award_recipients[ $key ] ) as $entry ) {
 					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
