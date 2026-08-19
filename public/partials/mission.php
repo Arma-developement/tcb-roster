@@ -2,11 +2,13 @@
 
 /**
  * Determines whether a subscriber is blocked from a mission based on its visibility type.
- * Private, mini-op and patrol-op missions are members only - subscribers can't view, attend,
- * or slot into them. Joint-op missions additionally require the subscriber to hold the
- * mission's own per-user slotting password. Used both to gate the mission page display and
- * independently re-checked by the RSVP/slotting AJAX endpoints, since the display check alone
- * isn't an access control - a direct POST to those endpoints would otherwise bypass it entirely.
+ * Private, private-action, mini-op and patrol-op missions are members only - subscribers can't
+ * view, attend, or slot into them, and neither can they view training events (identified by the
+ * "training" event_category term, rather than brief_mission_type). Joint-op missions
+ * additionally require the subscriber to hold the mission's own per-user slotting password. Used
+ * both to gate the mission page display and independently re-checked by the RSVP/slotting AJAX
+ * endpoints, since the display check alone isn't an access control - a direct POST to those
+ * endpoints would otherwise bypass it entirely.
  *
  * @param int   $post_id    The mission post ID.
  * @param array $user_roles The current user's roles, e.g. wp_get_current_user()->roles.
@@ -16,10 +18,15 @@ function tcbp_public_mission_is_restricted_for_user( $post_id, $user_roles ) {
 	if ( ! in_array( 'subscriber', $user_roles, true ) ) {
 		return false;
 	}
+
+	if ( has_term( 'training', 'event_category', $post_id ) ) {
+		return true;
+	}
+
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id );
 	$brief_mission_type       = $brief_mission_type_array ? $brief_mission_type_array['value'] : '';
 
-	if ( in_array( $brief_mission_type, array( 'private', 'miniop', 'patrolop' ), true ) ) {
+	if ( in_array( $brief_mission_type, array( 'private', 'privateaction', 'miniop', 'patrolop' ), true ) ) {
 		return true;
 	}
 
