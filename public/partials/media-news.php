@@ -56,9 +56,11 @@ function tcbp_public_media_news_submission_callback( $post_id ) {
 
 	$content = '';
 
+	// The featured image (sideloaded below, from this same thumbnail) already gives the article
+	// a large visual - a second copy of it in the content is redundant, so this is just a small
+	// icon/button linking through to the video instead.
 	if ( $video_id ) {
-		$thumbnail_url = 'https://img.youtube.com/vi/' . $video_id . '/hqdefault.jpg';
-		$content      .= '<p><a href="' . esc_url( $youtube_url ) . '"><img src="' . esc_url( $thumbnail_url ) . '" alt="' . esc_attr( $title ) . '"></a></p>';
+		$content .= '<p><a class="tcb_youtube_link" href="' . esc_url( $youtube_url ) . '">' . tcbp_public_youtube_icon_svg() . ' Watch on YouTube</a></p>';
 	}
 
 	if ( $description ) {
@@ -66,7 +68,7 @@ function tcbp_public_media_news_submission_callback( $post_id ) {
 	}
 
 	if ( $event_id ) {
-		$content .= '<p><a href="' . esc_url( get_permalink( $event_id ) ) . '">' . esc_html( get_the_title( $event_id ) ) . '</a></p>';
+		$content .= '<p>Captured during <a href="' . esc_url( get_permalink( $event_id ) ) . '">' . esc_html( get_the_title( $event_id ) ) . '</a></p>';
 	}
 
 	wp_update_post(
@@ -111,4 +113,14 @@ function tcbp_public_extract_youtube_video_id( $url ) {
 		return $matches[1];
 	}
 	return false;
+}
+
+/**
+ * A small, self-contained inline SVG of the YouTube play icon, for use next to a "Watch on
+ * YouTube" link - avoids depending on an external icon URL/CDN.
+ *
+ * @return string SVG markup.
+ */
+function tcbp_public_youtube_icon_svg() {
+	return '<svg width="24" height="17" viewBox="0 0 24 17" style="vertical-align:middle;margin-right:6px;" xmlns="http://www.w3.org/2000/svg"><path d="M23.5 2.5a3 3 0 0 0-2.1-2.1C19.5 0 12 0 12 0S4.5 0 2.6.4A3 3 0 0 0 .5 2.5 31 31 0 0 0 0 8.5a31 31 0 0 0 .5 6 3 3 0 0 0 2.1 2.1C4.5 17 12 17 12 17s7.5 0 9.4-.4a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-6 31 31 0 0 0-.5-6z" fill="#FF0000"/><path d="M9.6 12.1 15.8 8.5 9.6 4.9z" fill="#FFFFFF"/></svg>';
 }
