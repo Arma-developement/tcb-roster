@@ -514,7 +514,7 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 	$edit_link     = admin_url( 'post.php?post=' . $post_id_ . '&action=edit' );
 
 	$discord_message = "{@Operations Coordinator}\nA new mission briefing \"" . $mission_title . '" has been submitted by ' . $author_name .
-		"\n\nPlease check the briefing, update the roster, and publish " . $edit_link;
+		"\n\nPlease check the briefing, complete, and publish " . $edit_link;
 
 	tcb_roster_admin_post_to_discord_channel( 'operation_coordinators', $discord_message );
 }
