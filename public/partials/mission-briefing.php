@@ -599,18 +599,21 @@ add_filter( 'acf/fields/wysiwyg/toolbars', 'tcbp_public_brief_plan_wysiwyg_toolb
 /**
  * Registers a custom WYSIWYG toolbar preset for the brief_plan field (Event Plan group),
  * displayed as an h4 subsection within the mission briefing (see line ~102 above) - so only
- * smaller headings make sense within it. Neither of ACF's built-in presets fit: "Full" includes
- * the whole Heading 1-6 range, "Basic" drops the Format dropdown (and headings) entirely. This
- * preset keeps the Format dropdown but pairs with tcbp_public_brief_plan_wysiwyg_block_formats()
- * below to limit its contents to Paragraph/Heading 5/Heading 6. Select "Plan (H5/H6 only)" on
- * the field's own "Toolbar" setting in the Event Plan field group to use it.
+ * smaller headings make sense within it. Neither of ACF's built-in presets fit as-is: "Full"
+ * includes the whole Heading 1-6 range, "Basic" drops the Format dropdown (and headings)
+ * entirely. This preset is an exact copy of ACF's own "Full" preset (same two rows, same
+ * buttons - nothing removed), so no toolbar functionality is lost; the header restriction is
+ * handled separately by tcbp_public_brief_plan_wysiwyg_block_formats() below, which limits the
+ * Format dropdown's own contents rather than removing any buttons. Select "Plan (H5/H6 only)"
+ * on the field's own "Toolbar" setting in the Event Plan field group to use it.
  *
  * @param array $toolbars Existing toolbar presets, keyed by name.
  * @return array
  */
 function tcbp_public_brief_plan_wysiwyg_toolbars( $toolbars ) {
 	$toolbars['Plan (H5/H6 only)'] = array(
-		1 => array( 'formatselect', 'bold', 'italic', 'bullist', 'numlist', 'link', 'unlink', 'undo', 'redo' ),
+		1 => array( 'formatselect', 'bold', 'italic', 'bullist', 'numlist', 'blockquote', 'alignleft', 'aligncenter', 'alignright', 'link', 'unlink', 'wp_more', 'spellchecker', 'fullscreen', 'wp_adv' ),
+		2 => array( 'strikethrough', 'hr', 'forecolor', 'pastetext', 'removeformat', 'charmap', 'outdent', 'indent', 'undo', 'redo', 'wp_help' ),
 	);
 	return $toolbars;
 }
@@ -635,7 +638,7 @@ add_filter( 'tiny_mce_before_init', 'tcbp_public_brief_plan_wysiwyg_block_format
  * @return array
  */
 function tcbp_public_brief_plan_wysiwyg_block_formats( $init ) {
-	if ( isset( $init['toolbar1'] ) && 'formatselect,bold,italic,bullist,numlist,link,unlink,undo,redo' === $init['toolbar1'] ) {
+	if ( isset( $init['toolbar1'] ) && false !== strpos( $init['toolbar1'], 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft' ) ) {
 		$init['block_formats'] = 'Paragraph=p;Heading 5=h5;Heading 6=h6';
 	}
 	return $init;
