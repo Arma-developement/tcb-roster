@@ -77,6 +77,9 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 			$channel_id = '1533937561804869632';
 			//$channel_id = '494511486715297794';  // test channel for announcements, to avoid spamming the real channel during development.
 			break;
+		case 'operation_coordinators':
+			$channel_id = '384646925837795328';
+			break;
 		default:
 			// Anything else is treated as a raw Discord channel/thread ID (e.g. a thread ID
 			// returned by tcb_roster_admin_create_discord_thread()) rather than one of the named

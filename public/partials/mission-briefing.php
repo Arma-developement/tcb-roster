@@ -504,6 +504,19 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 	if ( $featured_image && ! empty( $featured_image['ID'] ) ) {
 		set_post_thumbnail( $post_id_, $featured_image['ID'] );
 	}
+
+	// Notify the Operations Coordinators that a new briefing needs reviewing. The edit link is
+	// built directly rather than via get_edit_post_link(), since that checks the *current*
+	// user's (the submitter's) capabilities and would return nothing for a member without
+	// edit_post rights on this post type - the link is for admins, not the submitter.
+	$mission_title = get_the_title( $post_id_ );
+	$author_name   = wp_get_current_user()->display_name;
+	$edit_link     = admin_url( 'post.php?post=' . $post_id_ . '&action=edit' );
+
+	$discord_message = "{@Operations Coordinator}\nA new mission briefing \"" . $mission_title . '" has been submitted by ' . $author_name .
+		"\n\nPlease check the briefing, update the roster, and publish " . $edit_link;
+
+	tcb_roster_admin_post_to_discord_channel( 'operation_coordinators', $discord_message );
 }
 
 
