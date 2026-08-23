@@ -615,23 +615,27 @@ function tcbp_public_brief_plan_wysiwyg_toolbars( $toolbars ) {
 	return $toolbars;
 }
 
-add_filter( 'tiny_mce_before_init', 'tcbp_public_brief_plan_wysiwyg_block_formats', 10, 2 );
+add_filter( 'tiny_mce_before_init', 'tcbp_public_brief_plan_wysiwyg_block_formats' );
 
 /**
- * Restricts the Format dropdown to Paragraph/Heading 5/Heading 6 on the brief_plan WYSIWYG
- * field specifically. ACF's own field settings only offer a toolbar preset choice (which
- * controls which buttons appear, not what's inside the Format dropdown) - this is the actual
- * mechanism that limits the dropdown's contents. Matches on the editor ID containing the field
- * name rather than requiring an exact match, since ACF generates a different editor ID
- * depending on whether the field is rendered in the native wp-admin post editor or the
- * front-end ACFE submission form (both need to be restricted).
+ * Restricts the Format dropdown to Paragraph/Heading 5/Heading 6 for editors using our
+ * "Plan (H5/H6 only)" toolbar preset. ACF's own field settings only offer a toolbar preset
+ * choice (which controls which buttons appear, not what's inside the Format dropdown) - this is
+ * the actual mechanism that limits the dropdown's contents.
  *
- * @param array  $init      The TinyMCE init settings for this editor instance.
- * @param string $editor_id The editor's ID.
+ * Originally this matched on the editor ID containing "brief_plan", on the assumption ACF names
+ * its editors after the field. In fact ACF names them acf-editor-{numeric id} (confirmed by
+ * inspecting the rendered page - the brief_plan editor was id="acf-editor-89"), so the field
+ * name never appears in the ID at all and that match never fired. Matching on the toolbar's own
+ * button list instead - built from tcbp_public_brief_plan_wysiwyg_toolbars() above and unique to
+ * this one preset - works regardless of the editor's numeric ID, and regardless of whether the
+ * field is rendered in the native wp-admin post editor or the front-end ACFE submission form.
+ *
+ * @param array $init The TinyMCE init settings for this editor instance.
  * @return array
  */
-function tcbp_public_brief_plan_wysiwyg_block_formats( $init, $editor_id ) {
-	if ( false !== strpos( $editor_id, 'brief_plan' ) ) {
+function tcbp_public_brief_plan_wysiwyg_block_formats( $init ) {
+	if ( isset( $init['toolbar1'] ) && 'formatselect,bold,italic,bullist,numlist,link,unlink,undo,redo' === $init['toolbar1'] ) {
 		$init['block_formats'] = 'Paragraph=p;Heading 5=h5;Heading 6=h6';
 	}
 	return $init;
