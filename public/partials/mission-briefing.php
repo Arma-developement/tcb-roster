@@ -593,3 +593,46 @@ function tcbp_public_mission_briefing_authorize_save( $post_id ) {
 		wp_die( esc_html__( 'You are no longer authorized to edit this mission briefing.', 'roster' ) );
 	}
 }
+
+add_filter( 'acf/fields/wysiwyg/toolbars', 'tcbp_public_brief_plan_wysiwyg_toolbars' );
+
+/**
+ * Registers a custom WYSIWYG toolbar preset for the brief_plan field (Event Plan group),
+ * displayed as an h4 subsection within the mission briefing (see line ~102 above) - so only
+ * smaller headings make sense within it. Neither of ACF's built-in presets fit: "Full" includes
+ * the whole Heading 1-6 range, "Basic" drops the Format dropdown (and headings) entirely. This
+ * preset keeps the Format dropdown but pairs with tcbp_public_brief_plan_wysiwyg_block_formats()
+ * below to limit its contents to Paragraph/Heading 5/Heading 6. Select "Plan (H5/H6 only)" on
+ * the field's own "Toolbar" setting in the Event Plan field group to use it.
+ *
+ * @param array $toolbars Existing toolbar presets, keyed by name.
+ * @return array
+ */
+function tcbp_public_brief_plan_wysiwyg_toolbars( $toolbars ) {
+	$toolbars['Plan (H5/H6 only)'] = array(
+		1 => array( 'formatselect', 'bold', 'italic', 'bullist', 'numlist', 'link', 'unlink', 'undo', 'redo' ),
+	);
+	return $toolbars;
+}
+
+add_filter( 'tiny_mce_before_init', 'tcbp_public_brief_plan_wysiwyg_block_formats', 10, 2 );
+
+/**
+ * Restricts the Format dropdown to Paragraph/Heading 5/Heading 6 on the brief_plan WYSIWYG
+ * field specifically. ACF's own field settings only offer a toolbar preset choice (which
+ * controls which buttons appear, not what's inside the Format dropdown) - this is the actual
+ * mechanism that limits the dropdown's contents. Matches on the editor ID containing the field
+ * name rather than requiring an exact match, since ACF generates a different editor ID
+ * depending on whether the field is rendered in the native wp-admin post editor or the
+ * front-end ACFE submission form (both need to be restricted).
+ *
+ * @param array  $init      The TinyMCE init settings for this editor instance.
+ * @param string $editor_id The editor's ID.
+ * @return array
+ */
+function tcbp_public_brief_plan_wysiwyg_block_formats( $init, $editor_id ) {
+	if ( false !== strpos( $editor_id, 'brief_plan' ) ) {
+		$init['block_formats'] = 'Paragraph=p;Heading 5=h5;Heading 6=h6';
+	}
+	return $init;
+}
