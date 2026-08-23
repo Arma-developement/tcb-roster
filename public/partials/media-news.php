@@ -60,8 +60,12 @@ function tcbp_public_media_news_submission_callback( $post_id ) {
 	// a large visual - a second copy of it in the content is redundant, so this is just a small
 	// icon/button linking through to the video instead.
 	if ( $video_id ) {
+		// Sized via the .tcb_youtube_icon CSS class (theme stylesheet), not inline style/width/
+		// height attributes - wp_update_post() runs post_content through KSES for users without
+		// unfiltered_html (officers/SNCOs), which strips the style attribute (and possibly
+		// width/height), leaving the icon to render at its native SVG size otherwise.
 		$icon_url = plugins_url() . '/tcb-roster/images/icons/youtube.svg';
-		$content .= '<p><a class="tcb_youtube_link" href="' . esc_url( $youtube_url ) . '"><img src="' . esc_url( $icon_url ) . '" alt="" width="24" height="17" style="vertical-align:middle;margin-right:6px;"> Watch on YouTube</a></p>';
+		$content .= '<p><a class="tcb_youtube_link" href="' . esc_url( $youtube_url ) . '"><img class="tcb_youtube_icon" src="' . esc_url( $icon_url ) . '" alt=""> Watch on YouTube</a></p>';
 	}
 
 	if ( $description ) {
