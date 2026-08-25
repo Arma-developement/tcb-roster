@@ -98,17 +98,17 @@ function tcbp_public_mission_briefing() {
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
-	echo '<h4>3.1 Concept of Operation</h4>';
+	echo '<h4>3.2 Concept of Operation</h4>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
-	echo '<h4>3.2 Coordinatoring Actions</h4>';
+	echo '<h4>3.3 Coordinatoring Actions</h4>';
 
-	echo '<h5>3.2.1 Actions On</h5>';
+	echo '<h5>3.3.1 Actions On</h5>';
 	echo get_field( 'brief_actions_on', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
 
-	echo '<h5>3.2.2 Rules of Engagement</h5>';
+	echo '<h5>3.3.2 Rules of Engagement</h5>';
 	echo get_field( 'brief_rules_of_engagement', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
 

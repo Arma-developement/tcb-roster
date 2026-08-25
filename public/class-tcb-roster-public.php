@@ -55,6 +55,7 @@ class Tcb_Roster_Public {
 		// Refactored code base 2025.
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/attendance.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendation-awards.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendations.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/duties.php';
 		// require_once plugin_dir_path( __DIR__ ) . 'public/partials/json-sync.php';
@@ -110,5 +111,13 @@ class Tcb_Roster_Public {
 			)
 		);
 		wp_enqueue_script( 'tcb_roster_public_slotting_register' );
+
+		// Registered only - the [tcbp_public_award_commendations] shortcode itself calls
+		// wp_enqueue_script() for this one, since it needs to attach page-specific inline data
+		// (the event ID, prefill, and player list) before the script runs. Registered with
+		// in_footer=true (unlike the two scripts above) specifically so that, if enqueued, it
+		// prints after the shortcode's own output rather than in <head> before the shortcode
+		// (which runs during content rendering) has had a chance to output that inline data.
+		wp_register_script( 'tcb_roster_public_commendation_award_register', plugin_dir_url( __FILE__ ) . 'js/tcb-roster-public-commendation-awards.js', array( 'jquery' ), $this->version, true );
 	}
 }

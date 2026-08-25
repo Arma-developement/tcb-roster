@@ -102,7 +102,7 @@ function tcbp_public_mission_overview_header( $heading ) {
  * @param object $current_user          The current user object.
  * @param array  $admin_buttons         Ordered list of admin-only buttons to show, each
  *                                      array( 'href' => ..., 'label' => ... ) - only shown to
- *                                      mission_admin/snco/officer/administrator.
+ *                                      mission_admin/commendation_admin/snco/officer/administrator.
  * @param bool   $show_briefing_button  Whether to show the "Mission Briefing" button for a
  *                                      slotted user.
  */
@@ -124,7 +124,11 @@ function tcbp_public_mission_overview_dynamic_content( $post_id, $current_user, 
 
 	echo '<div class="slotToolButtons" id="slotToolButtons" >';
 
-	$allowed_roles = array( 'mission_admin', 'snco', 'officer', 'administrator' );
+	// commendation_admin included alongside the other admin/duty roles so a user whose only
+	// relevant role is commendation_admin still sees $admin_buttons - it may contain the Award
+	// Commendations button (tcbp_public_commendation_award_button(), commendation-awards.php),
+	// which is gated to exactly that broader set including commendation_admin.
+	$allowed_roles = array( 'mission_admin', 'commendation_admin', 'snco', 'officer', 'administrator' );
 	if ( array_intersect( $allowed_roles, $current_user->roles ) ) {
 		foreach ( $admin_buttons as $button ) {
 			echo '<a href="' . esc_url( $button['href'] ) . '" class="button button-secondary">' . esc_html( $button['label'] ) . '</a>';
@@ -216,19 +220,25 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 
 	echo '</div>';
 
+	$admin_buttons = array(
+		array(
+			'href'  => '/mission-admin-panel/?id=' . $post_id,
+			'label' => 'Mission Admin Panel',
+		),
+		array(
+			'href'  => '/mission-news-panel/?id=' . $post_id,
+			'label' => 'Mission News Panel',
+		),
+	);
+	$commendation_award_button = tcbp_public_commendation_award_button( $post_id, $current_user );
+	if ( $commendation_award_button ) {
+		$admin_buttons[] = $commendation_award_button;
+	}
+
 	tcbp_public_mission_overview_dynamic_content(
 		$post_id,
 		$current_user,
-		array(
-			array(
-				'href'  => '/mission-admin-panel/?id=' . $post_id,
-				'label' => 'Mission Admin Panel',
-			),
-			array(
-				'href'  => '/mission-news-panel/?id=' . $post_id,
-				'label' => 'Mission News Panel',
-			),
-		),
+		$admin_buttons,
 		true
 	);
 }
@@ -289,15 +299,21 @@ function tcbp_public_training_overview( $post_id, $current_user ) {
 
 	echo '</div>';
 
+	$admin_buttons = array(
+		array(
+			'href'  => '/mission-admin-panel/?id=' . $post_id,
+			'label' => 'Admin panel',
+		),
+	);
+	$commendation_award_button = tcbp_public_commendation_award_button( $post_id, $current_user );
+	if ( $commendation_award_button ) {
+		$admin_buttons[] = $commendation_award_button;
+	}
+
 	tcbp_public_mission_overview_dynamic_content(
 		$post_id,
 		$current_user,
-		array(
-			array(
-				'href'  => '/mission-admin-panel/?id=' . $post_id,
-				'label' => 'Admin panel',
-			),
-		),
+		$admin_buttons,
 		false
 	);
 }
