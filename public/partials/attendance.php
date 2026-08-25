@@ -102,14 +102,18 @@ function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $
 		return wp_send_json_success( 'Existing user added' );
 	}
 
-	// New user, so add to a new time stamp. stamp_date/stamp_time are separate ACF fields
-	// (Return Format d/m/Y and H:i:s respectively) - write them in those same formats so they
-	// stay consistent with what mission-admin.php's signup_early() parses them back as.
+	// New user, so add to a new time stamp. stamp_date is an ACF Date Picker field (Return
+	// Format d/m/Y), which always stores internally as Ymd - writing anything else (even a
+	// pre-formatted d/m/Y string) forces ACF to re-parse it, and PHP reads slash-separated
+	// dates as US month/day/year, silently swapping day and month for the 1st-12th of any
+	// month. Ymd is unambiguous, so get_field()/get_sub_field() elsewhere still correctly
+	// return it as d/m/Y per the field's Return Format. stamp_time (Return Format H:i:s) has
+	// no such ambiguity.
 	add_row(
 		'stamp',
 		array(
 			'stamp_user' => $user_id,
-			'stamp_date' => gmdate( 'd/m/Y' ),
+			'stamp_date' => gmdate( 'Ymd' ),
 			'stamp_time' => gmdate( 'H:i:s' ),
 		),
 		$post_id
