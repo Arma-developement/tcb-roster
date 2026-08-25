@@ -114,16 +114,22 @@ function tcbp_public_commendation_award_guess_leadership_type( $slot_name ) {
  * name (tcbp_public_commendation_award_guess_leadership_type()) and adds that slot's user to the
  * candidate list for that type - but only if the guessed slug is actually a real leadership
  * commendation on this site right now, so a guess like "team" quietly drops instead of erroring
- * if that's not (yet) a real taxonomy child/ACF sub-field.
+ * if that's not (yet) a real taxonomy child/ACF sub-field. The mission author is skipped
+ * entirely here, even if they're also slotted as a leader - they're prefilled as Mission
+ * Creation only, never double-counted as a leader too.
  *
- * @param int $post_id The event post ID.
+ * @param int $post_id   The event post ID.
+ * @param int $author_id The event post's author (get_post_field( 'post_author', $post_id )).
  * @return array slug => array of user IDs.
  */
-function tcbp_public_commendation_award_prefill_leadership( $post_id ) {
+function tcbp_public_commendation_award_prefill_leadership( $post_id, $author_id ) {
 	$valid_slugs = wp_list_pluck( tcbp_public_commendation_group_terms( 'leadership_commendations' ), 'slug' );
 
 	$prefill = array();
 	foreach ( tcbp_public_commendation_award_get_occupied_slots( $post_id ) as $slot ) {
+		if ( $slot['user_id'] === $author_id ) {
+			continue;
+		}
 		$slug = tcbp_public_commendation_award_guess_leadership_type( $slot['slot_name'] );
 		if ( ! $slug || ! in_array( $slug, $valid_slugs, true ) ) {
 			continue;
@@ -139,23 +145,25 @@ function tcbp_public_commendation_award_prefill_leadership( $post_id ) {
 }
 
 /**
- * Builds the Mission Creation prefill: the event's post author, plus anyone slotted into a
- * "zeus"-named slot other than the author (so the common case of the author also Zeusing their
- * own mission doesn't need manually de-duplicating). Applied to every real Mission Creation
- * commendation type found, since this is a single blanket rule rather than a per-type guess.
+ * Builds the Mission Creation prefill. Mission Creation commendation types are matched by
+ * keyword in their own slug/name (not a fixed list, so a taxonomy rename/reorder doesn't break
+ * this): a type mentioning "author" is prefilled with just the event's post author; a type
+ * mentioning "zeus" is prefilled with anyone slotted into a "zeus"-named slot, excluding the
+ * author - the author is only ever a mission author, never also counted as zeus, even if they
+ * Zeused their own mission. Any other Mission Creation type (no known keyword match) is left
+ * empty rather than guessed at.
  *
- * @param int $post_id The event post ID.
+ * @param int $post_id   The event post ID.
+ * @param int $author_id The event post's author (get_post_field( 'post_author', $post_id )).
  * @return array slug => array of user IDs.
  */
-function tcbp_public_commendation_award_prefill_mission_creation( $post_id ) {
-	$slugs = wp_list_pluck( tcbp_public_commendation_group_terms( 'mission_creation' ), 'slug' );
-	if ( ! $slugs ) {
+function tcbp_public_commendation_award_prefill_mission_creation( $post_id, $author_id ) {
+	$terms = tcbp_public_commendation_group_terms( 'mission_creation' );
+	if ( ! $terms ) {
 		return array();
 	}
 
-	$author_id = (int) get_post_field( 'post_author', $post_id );
-	$user_ids  = $author_id ? array( $author_id ) : array();
-
+	$zeus_user_ids = array();
 	foreach ( tcbp_public_commendation_award_get_occupied_slots( $post_id ) as $slot ) {
 		if ( false === strpos( strtolower( $slot['slot_name'] ), 'zeus' ) ) {
 			continue;
@@ -163,14 +171,19 @@ function tcbp_public_commendation_award_prefill_mission_creation( $post_id ) {
 		if ( $slot['user_id'] === $author_id ) {
 			continue;
 		}
-		if ( ! in_array( $slot['user_id'], $user_ids, true ) ) {
-			$user_ids[] = $slot['user_id'];
+		if ( ! in_array( $slot['user_id'], $zeus_user_ids, true ) ) {
+			$zeus_user_ids[] = $slot['user_id'];
 		}
 	}
 
 	$prefill = array();
-	foreach ( $slugs as $slug ) {
-		$prefill[ $slug ] = $user_ids;
+	foreach ( $terms as $term ) {
+		$needle = strtolower( $term->slug . ' ' . $term->name );
+		if ( false !== strpos( $needle, 'author' ) ) {
+			$prefill[ $term->slug ] = $author_id ? array( $author_id ) : array();
+		} elseif ( false !== strpos( $needle, 'zeus' ) ) {
+			$prefill[ $term->slug ] = $zeus_user_ids;
+		}
 	}
 	return $prefill;
 }
@@ -242,10 +255,12 @@ function tcbp_public_award_commendations() {
 		),
 	);
 
+	$author_id = (int) get_post_field( 'post_author', $post_id );
+
 	$prefill = array(
-		'leadership'            => tcbp_public_commendation_award_prefill_leadership( $post_id ),
+		'leadership'            => tcbp_public_commendation_award_prefill_leadership( $post_id, $author_id ),
 		'mention_in_despatches' => array(),
-		'mission_creation'      => tcbp_public_commendation_award_prefill_mission_creation( $post_id ),
+		'mission_creation'      => tcbp_public_commendation_award_prefill_mission_creation( $post_id, $author_id ),
 	);
 
 	ob_start();
@@ -271,7 +286,10 @@ function tcbp_public_award_commendations() {
 			$prefill_entries = tcbp_public_sort_user_ids_by_display_name( $prefill_ids );
 
 			echo '<div class="tcb_award_row" data-group="' . esc_attr( $field_name ) . '" data-slug="' . esc_attr( $slug ) . '">';
-			tcbp_public_commendation_image( $image_url, $term->name, $slug, 175, 47 );
+			// A plain <img>, not tcbp_public_commendation_image() (commendations.php) - that
+			// wraps the image in a hover tooltip repeating the title/description, which is
+			// redundant here since both are already shown as plain text next to the image.
+			echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $term->name ) . '" width="175" height="47">';
 			echo '<div class="tcb_award_row_text"><strong>' . esc_html( $term->name ) . '</strong>';
 			if ( $term->description ) {
 				echo '<p>' . esc_html( $term->description ) . '</p>';
