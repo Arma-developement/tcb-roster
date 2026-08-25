@@ -1,6 +1,25 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
 /**
+ * Normalises an ACF field value that identifies a user into a plain int ID, regardless of
+ * whether it came back as an int, a numeric string, a User field's array/object return
+ * format, or an empty/unset value. Used to compare stamp_user against get_current_user_id()
+ * without relying on both sides already sharing the exact same PHP type.
+ *
+ * @param mixed $value The raw field value.
+ * @return int The user ID, or 0 if it couldn't be determined.
+ */
+function tcbp_public_normalize_user_id( $value ) {
+	if ( is_array( $value ) ) {
+		return isset( $value['ID'] ) ? (int) $value['ID'] : 0;
+	}
+	if ( is_object( $value ) ) {
+		return isset( $value->ID ) ? (int) $value->ID : 0;
+	}
+	return (int) $value;
+}
+
+/**
  * Function to remove a user from the attendance roster.
  * The finally param controls if the user is removed from the slotting tool.
  *
@@ -85,12 +104,16 @@ function tcbp_public_attendance_register_user( $post_id, $user_id, $selection, $
 	// New user, add to the appropriate list.
 	add_sub_row( array( 'rsvp', $selection, 'user' ), $user_id, $post_id );
 
-	// Check if user has previously registered.
+	// Check if user has previously registered. Normalise stamp_user before comparing rather
+	// than using === directly against it - a strict-type mismatch here (e.g. a numeric string,
+	// or an ACF User field returning an array/object depending on its Return Format) would
+	// silently never match, causing a fresh stamp row to be added every time a user fully
+	// unregisters and re-registers, instead of preserving their original signup time.
 	$found  = false;
 	$fields = get_field( 'stamp', $post_id );
 	if ( $fields ) {
 		foreach ( $fields as $field ) {
-			if ( $field['stamp_user'] === $user_id ) {
+			if ( tcbp_public_normalize_user_id( $field['stamp_user'] ) === $user_id ) {
 				$found = true;
 				break;
 			}

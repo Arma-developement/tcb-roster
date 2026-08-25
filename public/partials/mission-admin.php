@@ -377,7 +377,8 @@ function tcbp_public_mission_send_password( $post_id ) {
 		}
 
 		foreach ( $rows as $row ) {
-			if ( $user_id !== $row['stamp_user'] ) {
+			// Normalise before comparing - see tcbp_public_normalize_user_id() in attendance.php.
+			if ( $user_id !== tcbp_public_normalize_user_id( $row['stamp_user'] ) ) {
 				continue;
 			}
 
