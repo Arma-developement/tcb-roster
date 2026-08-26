@@ -30,11 +30,12 @@ function tcbp_public_edit_profile() {
 
 	echo '<div class="tcb_edit_user_profile">';
 
-	// tcbp_public_edit_profile_submit() sets this transient once the profile update has actually
-	// completed. ACFE's own success/render state for this form isn't reliable here - same issue
-	// diagnosed for the application form - so this transient decides what's shown below, not
-	// acfe_form()'s own output.
-	$tcbp_transient_key = 'tcbp_profile_updated_' . $user_id;
+	// tcbp_public_edit_profile_submit() sets one of these transients once the profile update has
+	// actually completed. ACFE's own success/render state for this form isn't reliable here -
+	// same issue diagnosed for the application form - so these transients decide what's shown
+	// below, not acfe_form()'s own output.
+	$tcbp_transient_key      = 'tcbp_profile_updated_' . $user_id;
+	$tcbp_discord_error_key  = 'tcbp_profile_discord_error_' . $user_id;
 
 	ob_start();
 	acfe_form(
@@ -55,7 +56,11 @@ function tcbp_public_edit_profile() {
 	);
 	$acfe_form_output = ob_get_clean();
 
-	if ( get_transient( $tcbp_transient_key ) ) {
+	if ( get_transient( $tcbp_discord_error_key ) ) {
+		delete_transient( $tcbp_discord_error_key );
+		echo '<div id="message" class="negative"><p>Your profile was updated, but we couldn\'t find a Discord user with that username - please check it and try again.</p></div>';
+		echo $acfe_form_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	} elseif ( get_transient( $tcbp_transient_key ) ) {
 		delete_transient( $tcbp_transient_key );
 		echo '<div id="message" class="updated"><p>Your profile has been updated.</p></div>';
 	} else {
@@ -109,11 +114,20 @@ function tcbp_public_edit_profile_submit( $form ) {
 
 	$discord_username = get_field( 'fe_discord_username' );
 	update_field( 'discord_username', $discord_username, $profile_id );
+
+	// tcb_roster_admin_query_discord_username() returns false both for an unrecognised
+	// username and for a lookup that couldn't be attempted at all (bridge unreachable/
+	// unconfigured) - either way, the user gets the same "couldn't find that username,
+	// try again" message below rather than being left thinking their profile update fully
+	// succeeded, with no way to know their Discord DM never went out.
+	$discord_lookup_failed = false;
 	if ( $discord_username ) {
 		$discord_id = tcb_roster_admin_query_discord_username( $discord_username );
 		if ( $discord_id ) {
 			update_field( 'discord_id', $discord_id, $profile_id );
 			tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your 3CB website profile has been updated.' );
+		} else {
+			$discord_lookup_failed = true;
 		}
 	}
 
@@ -133,7 +147,14 @@ function tcbp_public_edit_profile_submit( $form ) {
 		SimpleLogger()->info( 'Edited own user profile' );
 	}
 
-	set_transient( 'tcbp_profile_updated_' . $user_id, true, 60 );
+	// Mutually exclusive with the plain "updated" transient below - the render side
+	// (tcbp_public_edit_profile()) checks the Discord-error one first, so a failed lookup
+	// always surfaces instead of silently falling back to the generic success message.
+	if ( $discord_lookup_failed ) {
+		set_transient( 'tcbp_profile_discord_error_' . $user_id, true, 60 );
+	} else {
+		set_transient( 'tcbp_profile_updated_' . $user_id, true, 60 );
+	}
 }
 
 
