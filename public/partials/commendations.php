@@ -42,6 +42,43 @@ function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $hei
 }
 
 /**
+ * Converts a user_id => award count map into display entries sorted by count (descending),
+ * then display name (ascending) for ties. Used for the Leadership/Mention in Despatches/
+ * Mission Creation groups on the commendations archive, which list every recipient once under
+ * a single row per commendation type with their own count shown as a prefix, rather than the
+ * old approach of splitting recipients into separate rows per award-count threshold tier.
+ *
+ * @param array $user_counts user_id => award count.
+ * @return array Each entry: array( 'user_id' => ..., 'display_name' => ..., 'count' => ... ).
+ */
+function tcbp_public_sort_user_ids_by_count_then_display_name( $user_counts ) {
+	$entries = array();
+	foreach ( $user_counts as $user_id => $count ) {
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			continue;
+		}
+		$entries[] = array(
+			'user_id'      => $user_id,
+			'display_name' => $user->get( 'display_name' ),
+			'count'        => $count,
+		);
+	}
+
+	usort(
+		$entries,
+		function ( $a, $b ) {
+			if ( $a['count'] !== $b['count'] ) {
+				return $b['count'] <=> $a['count'];
+			}
+			return strcasecmp( $a['display_name'], $b['display_name'] );
+		}
+	);
+
+	return $entries;
+}
+
+/**
  * Returns the ordered child terms of a tcb-commendation taxonomy group, identified by its
  * parent term's slug. If $order is given, children are sorted to match it, with any child not
  * listed sorted after the listed ones - so a newly added commendation still shows (rather than
@@ -128,8 +165,6 @@ function tcbp_public_archive_commendations() {
 	$height = 94 / 2;
 	$now    = new DateTime( 'now' );
 
-	$image_translation = array( 1, 4, 16, 64, 256, 1024 );
-
 	// Names now come from the tcb-commendation taxonomy's group child terms, so a newly added
 	// sub-field (e.g. "patrol") is picked up automatically once a matching term exists - no code
 	// change needed here, unlike the previous hardcoded per-group lists.
@@ -168,24 +203,21 @@ function tcbp_public_archive_commendations() {
 				}
 			}
 
+			// Leadership/Mention in Despatches/Mission Creation can each be awarded to a player
+			// any number of times - rather than splitting recipients into separate rows per
+			// threshold tier (the old "x1"/"x4"/"x16"... banding), every recipient is listed once
+			// under a single row per commendation type, with their own raw count shown next to
+			// their name (see tcbp_public_sort_user_ids_by_count_then_display_name() below).
 			$sub_field = get_field( 'leadership', $post );
 			if ( $sub_field ) {
 				foreach ( $leadership as $name => $title_ ) {
-					if ( isset( $sub_field[ $name ] ) ) {
-						$value = intval( $sub_field[ $name ] );
-						if ( $value > 0 ) {
-							foreach ( $image_translation as $idx => $img_val ) {
-								if ( $img_val > $value ) {
-									break;
-								}
-							}
-							$index                                     = $name . '-' . $idx;
-							$list_of_leadership_recipients[ $index ][] = $user_id;
-							$list_of_leadership_titles[ $index ]       = array(
-								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
-								'slug'  => $name,
-							);
-						}
+					$value = isset( $sub_field[ $name ] ) ? intval( $sub_field[ $name ] ) : 0;
+					if ( $value > 0 ) {
+						$list_of_leadership_recipients[ $name ][ $user_id ] = $value;
+						$list_of_leadership_titles[ $name ]                 = array(
+							'title' => $title_,
+							'slug'  => $name,
+						);
 					}
 				}
 			}
@@ -193,21 +225,13 @@ function tcbp_public_archive_commendations() {
 			$sub_field = get_field( 'mention_in_despatches', $post );
 			if ( $sub_field ) {
 				foreach ( $mention_in_despatches as $name => $title_ ) {
-					if ( isset( $sub_field[ $name ] ) ) {
-						$value = intval( $sub_field[ $name ] );
-						if ( $value > 0 ) {
-							foreach ( $image_translation as $idx => $img_val ) {
-								if ( $img_val > $value ) {
-									break;
-								}
-							}
-							$index = $name . '-' . $idx;
-							$list_of_mention_in_despatches_recipients[ $index ][] = $user_id;
-							$list_of_mention_in_despatches_titles[ $index ]       = array(
-								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
-								'slug'  => $name,
-							);
-						}
+					$value = isset( $sub_field[ $name ] ) ? intval( $sub_field[ $name ] ) : 0;
+					if ( $value > 0 ) {
+						$list_of_mention_in_despatches_recipients[ $name ][ $user_id ] = $value;
+						$list_of_mention_in_despatches_titles[ $name ]                 = array(
+							'title' => $title_,
+							'slug'  => $name,
+						);
 					}
 				}
 			}
@@ -215,21 +239,13 @@ function tcbp_public_archive_commendations() {
 			$sub_field = get_field( 'mission_creation', $post );
 			if ( $sub_field ) {
 				foreach ( $mission_creation as $name => $title_ ) {
-					if ( isset( $sub_field[ $name ] ) ) {
-						$value = intval( $sub_field[ $name ] );
-						if ( $value > 0 ) {
-							foreach ( $image_translation as $idx => $img_val ) {
-								if ( $img_val > $value ) {
-									break;
-								}
-							}
-							$index = $name . '-' . $idx;
-							$list_of_mission_creation_recipients[ $index ][] = $user_id;
-							$list_of_mission_creation_titles[ $index ]       = array(
-								'title' => $title_ . ' x ' . $image_translation[ $idx - 1 ],
-								'slug'  => $name,
-							);
-						}
+					$value = isset( $sub_field[ $name ] ) ? intval( $sub_field[ $name ] ) : 0;
+					if ( $value > 0 ) {
+						$list_of_mission_creation_recipients[ $name ][ $user_id ] = $value;
+						$list_of_mission_creation_titles[ $name ]                 = array(
+							'title' => $title_,
+							'slug'  => $name,
+						);
 					}
 				}
 			}
@@ -288,14 +304,19 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_leadership_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Leadership Commendations</h4>';
-			krsort( $list_of_leadership_titles );
+			// No krsort() - $list_of_leadership_titles is already in the manual display order
+			// tcbp_public_commendation_group_terms() built $leadership in (troop/section/
+			// fireteam/patrol/asset), since it's populated by iterating that same array above.
 			$column = 0;
 			foreach ( $list_of_leadership_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				// Always the level-1 image - every recipient is listed under this one row
+				// regardless of their own award count, which is shown as a prefix instead (see
+				// tcbp_public_sort_user_ids_by_count_then_display_name()).
+				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
-				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -307,14 +328,13 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_mention_in_despatches_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Mention in Despatches</h4>';
-			krsort( $list_of_mention_in_despatches_titles );
 			$column = 0;
 			foreach ( $list_of_mention_in_despatches_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
-				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -326,14 +346,13 @@ function tcbp_public_archive_commendations() {
 		if ( ! empty( $list_of_mission_creation_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Mission Creation</h4>';
-			krsort( $list_of_mission_creation_titles );
 			$column = 0;
 			foreach ( $list_of_mission_creation_titles as $key => $title ) {
 				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
-				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
-				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
+				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
