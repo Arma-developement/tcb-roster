@@ -55,6 +55,8 @@ class Tcb_Roster_Admin {
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-post-to-discord.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-hide-in-menu.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-query_steam.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-discord-username-check.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-discord-username-resolve.php';
 	}
 
 	/**
