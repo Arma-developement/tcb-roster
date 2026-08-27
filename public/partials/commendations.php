@@ -140,6 +140,54 @@ function tcbp_public_commendation_names_from_terms( $terms ) {
 }
 
 /**
+ * Builds the Mission Creation group's manual display order: "mission author" type(s) first,
+ * then "zeus" type(s), matched by keyword in each term's own slug/name - the same substring
+ * matching tcbp_public_commendation_award_prefill_mission_creation() (commendation-awards.php)
+ * uses to identify these two types, so this stays correct without needing to know their exact
+ * slugs. Any other Mission Creation type (no keyword match) simply isn't in the returned order,
+ * which tcbp_public_commendation_group_terms() already handles by sorting it in after the
+ * listed ones rather than dropping it.
+ *
+ * @return array Ordered list of slugs.
+ */
+function tcbp_public_commendation_mission_creation_order() {
+	$terms = tcbp_public_commendation_group_terms( 'mission_creation' );
+
+	$order = array();
+	foreach ( $terms as $term ) {
+		if ( false !== strpos( strtolower( $term->slug . ' ' . $term->name ), 'author' ) ) {
+			$order[] = $term->slug;
+		}
+	}
+	foreach ( $terms as $term ) {
+		if ( false !== strpos( strtolower( $term->slug . ' ' . $term->name ), 'zeus' ) ) {
+			$order[] = $term->slug;
+		}
+	}
+	return $order;
+}
+
+/**
+ * Re-keys an accumulated slug => title map (built by looping every service-record post, so a
+ * key's position ends up wherever the first post that happened to have that award inserted it)
+ * back into the canonical order given by $ordered_names' own key order - e.g. $leadership,
+ * which tcbp_public_commendation_group_terms() already sorted correctly.
+ *
+ * @param array $accumulated  slug => title data, in whatever order accumulation left it.
+ * @param array $ordered_names slug => name, already in the desired display order.
+ * @return array $accumulated's entries, reordered to match $ordered_names.
+ */
+function tcbp_public_commendation_reorder( $accumulated, $ordered_names ) {
+	$reordered = array();
+	foreach ( $ordered_names as $slug => $name ) {
+		if ( isset( $accumulated[ $slug ] ) ) {
+			$reordered[ $slug ] = $accumulated[ $slug ];
+		}
+	}
+	return $reordered;
+}
+
+/**
  * Shortcode to generate an archive for all commendations.
  */
 function tcbp_public_archive_commendations() {
@@ -170,7 +218,7 @@ function tcbp_public_archive_commendations() {
 	// change needed here, unlike the previous hardcoded per-group lists.
 	$mention_in_despatches = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'mention_in_despatches' ) );
 	$leadership            = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'leadership_commendations', array( 'troop', 'section', 'fireteam', 'patrol', 'asset' ) ) );
-	$mission_creation      = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'mission_creation' ) );
+	$mission_creation      = tcbp_public_commendation_names_from_terms( tcbp_public_commendation_group_terms( 'mission_creation', tcbp_public_commendation_mission_creation_order() ) );
 
 	// Build a list of awards titles and recipients, dynamically from the service records.
 	$list_of_posts = get_posts( $args );
@@ -263,6 +311,19 @@ function tcbp_public_archive_commendations() {
 			}
 		}
 
+		// $list_of_leadership_titles/$list_of_mention_in_despatches_titles/$list_of_mission_creation_titles
+		// were built inside the loop above, one service-record post at a time - each post only
+		// inserts the commendation types IT has, in $leadership/etc.'s order, but a key's
+		// position in the combined array is fixed by whichever post's insertion first created
+		// it, not by that per-group order (e.g. if the first post processed only has a
+		// "section" award, "section" ends up first overall even though $leadership lists
+		// "troop" before it). Re-keying against $leadership/etc. (already in the correct order
+		// via tcbp_public_commendation_group_terms()) restores it, keeping only the types that
+		// actually have recipients.
+		$list_of_leadership_titles             = tcbp_public_commendation_reorder( $list_of_leadership_titles ?? array(), $leadership );
+		$list_of_mention_in_despatches_titles  = tcbp_public_commendation_reorder( $list_of_mention_in_despatches_titles ?? array(), $mention_in_despatches );
+		$list_of_mission_creation_titles       = tcbp_public_commendation_reorder( $list_of_mission_creation_titles ?? array(), $mission_creation );
+
 		if ( ! empty( $list_of_service_award_titles ) ) {
 			echo '<div class="tcb_award">';
 			echo '<h4>Long Service Medals</h4>';
@@ -316,7 +377,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -334,7 +395,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -352,7 +413,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">x' . esc_html( $entry['count'] ) . ' ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
