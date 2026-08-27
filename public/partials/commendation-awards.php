@@ -95,6 +95,7 @@ function tcbp_public_commendation_award_guess_leadership_type( $slot_name ) {
 		'troop commander'  => 'troop',
 		'troop 2ic'        => 'troop',
 		'section leader'   => 'section',
+		'squad leader'     => 'section',
 		'fire team leader' => 'fireteam',
 		'fireteam leader'  => 'fireteam',
 		'team leader'      => 'team',
