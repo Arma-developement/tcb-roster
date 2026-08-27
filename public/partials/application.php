@@ -100,6 +100,20 @@ function tcbp_public_edit_application() {
 			<p>A Recruitment Manager will be in contact via Discord.</p>
 			<p>If you have not already done so, please join the <a href="https://discord.gg/5pCCQf9jPQ">3CB Discord</a></p>.
 		</div>';
+
+		// Set by tcbp_public_submit_application_action() alongside the transient above, if the
+		// Discord username entered on the application couldn't be resolved - the applicant's
+		// confirmation DM never went out, so tell them here rather than leaving that failure
+		// silent, and point them at the profile form (already fixed to report this same failure
+		// itself) to correct it.
+		$tcbp_discord_error_key = 'tcbp_app_discord_error_' . $user_id;
+		if ( get_transient( $tcbp_discord_error_key ) ) {
+			delete_transient( $tcbp_discord_error_key );
+			echo '<div id="message" class="negative">
+				<p>We could not find a Discord user with the username you entered, so we were unable to send you a confirmation message on Discord.</p>
+				<p>Please <a href="/edit-user-profile/">edit your profile</a> and correct your Discord username so we can reach you.</p>
+			</div>';
+		}
 	} elseif ( tcbp_public_user_is_banned_from_applying( $profile_id ) ) {
 		// A display-only gate, not the real enforcement - see tcbp_public_validate_application_submission()
 		// for the server-side check that actually blocks the submission.
@@ -222,6 +236,13 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	// Check Discord Username in the profile.
 	$discord_username = get_field( 'app_discord_username', $post_id_ );
 	update_field( 'discord_username', $discord_username, $profile_id );
+
+	// tcb_roster_admin_query_discord_username() returns false for an unrecognised username -
+	// without tracking that, the applicant's confirmation DM silently never goes out and they'd
+	// have no way to know why (same failure mode already fixed for the profile-edit form, see
+	// tcbp_public_edit_profile_submit() in user-profile.php). tcbp_public_edit_application()
+	// surfaces this via a transient, the same way it already does for the submission itself.
+	$discord_lookup_failed = false;
 	if ( $discord_username ) {
 		$discord_id = tcb_roster_admin_query_discord_username( $discord_username );
 		if ( $discord_id ) {
@@ -229,6 +250,8 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 
 			// DM applicant.
 			tcb_roster_admin_post_to_discord_dm( array( $discord_id ), 'Your application has been submitted. A Recruitment Manager will be in contact.' );
+		} else {
+			$discord_lookup_failed = true;
 		}
 	}
 
@@ -237,6 +260,10 @@ function tcbp_public_submit_application_action( $post_id_ ) {
 	$message .= "\nPlease check the application and update the status <" . home_url( '/application-archive' ) . "> \n";
 	$message .= "\nThe applicant's discord ID is " . $discord_username . "\n";
 	tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
+
+	if ( $discord_lookup_failed ) {
+		set_transient( 'tcbp_app_discord_error_' . $user_id, true, 60 );
+	}
 
 	set_transient( 'tcbp_app_submitted_' . $user_id, true, 60 );
 }
