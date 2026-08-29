@@ -44,7 +44,7 @@ function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $hei
 		echo esc_html( $description );
 	}
 	if ( $extra_text ) {
-		echo '<br><br>' . esc_html( $extra_text );
+		echo '<br>' . esc_html( $extra_text );
 	}
 	echo '</span>';
 	echo '</span>';
