@@ -375,3 +375,42 @@ function tcbp_public_edit_app_interview() {
 
 	return ob_get_clean();
 }
+
+add_action( 'acf/save_post', 'tcbp_public_interview_transition_status', 20 );
+
+/**
+ * Automatically transitions an application's tcb-selection status once the interview form's
+ * last question (Interview_evaluation, a Yes/No radio: "yes" = can proceed to Basic Training,
+ * "no" = reject the applicant) is answered - "yes" moves the application to Candidate phase,
+ * "no" moves it to Rejected. Previously this had to be done as a separate manual step via the
+ * "Edit Status" page after saving the interview form.
+ *
+ * @param mixed $post_id_ ACF's post_id for whatever was just saved. Only application posts have
+ *                        an Interview_evaluation field, so get_field() returning nothing for it
+ *                        doubles as the type guard here - there's no post type slug to check
+ *                        against in code, since the "application" post type (like the field
+ *                        groups) is registered entirely through ACFE's own UI.
+ */
+function tcbp_public_interview_transition_status( $post_id_ ) {
+
+	$evaluation = get_field( 'Interview_evaluation', $post_id_ );
+	if ( ! $evaluation || empty( $evaluation['value'] ) ) {
+		return;
+	}
+
+	// Only auto-transition while the application is still actually at the Interview stage -
+	// re-saving an old interview record after the applicant has already moved further along
+	// (candidate, recruit, etc.) shouldn't silently reset their status backwards.
+	if ( ! has_term( 'interview', 'tcb-selection', $post_id_ ) ) {
+		return;
+	}
+
+	$new_status_slug = ( 'yes' === $evaluation['value'] ) ? 'candidate' : 'rejected';
+
+	$term = get_term_by( 'slug', $new_status_slug, 'tcb-selection' );
+	if ( ! $term || is_wp_error( $term ) ) {
+		return;
+	}
+
+	wp_set_post_terms( $post_id_, array( (int) $term->term_id ), 'tcb-selection' );
+}
