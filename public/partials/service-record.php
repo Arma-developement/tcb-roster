@@ -34,10 +34,17 @@ define( 'TCBP_DUTY_CM', 62 );
  * nonce-gated button, because it's triggered by an already-authenticated form save rather than a
  * bare page GET a forged link could trigger.
  *
- * @param int $user_id The user to create a service record for.
+ * @param int   $user_id      The user to create a service record for.
+ * @param int   $rank_term_id Optional tcb-rank term ID (e.g. TCBP_RANK_RECRUIT) to set on the
+ *                            record - only applied when a new record is actually created here,
+ *                            never on one that already existed, so this can't clobber a rank
+ *                            someone has since changed by re-triggering the same transition.
+ * @param array $training     Optional list of "courses_completed" values (e.g.
+ *                            array( 'basic-1', 'basic-2' )) - same "only on actual creation"
+ *                            rule as $rank_term_id.
  * @return int The service record post ID (existing or newly created), or 0 on failure.
  */
-function tcbp_public_sr_create_if_missing( $user_id ) {
+function tcbp_public_sr_create_if_missing( $user_id, $rank_term_id = 0, $training = array() ) {
 
 	$profile_id = 'user_' . $user_id;
 	$post_id    = get_field( 'service_record', $profile_id );
@@ -89,6 +96,13 @@ function tcbp_public_sr_create_if_missing( $user_id ) {
 
 	$user->remove_role( 'subscriber' );
 	$user->add_role( 'limited_member' );
+
+	if ( $rank_term_id ) {
+		wp_set_post_terms( $post_id, array( (int) $rank_term_id ), 'tcb-rank' );
+	}
+	if ( $training ) {
+		update_field( 'courses_completed', $training, $post_id );
+	}
 
 	return $post_id;
 }

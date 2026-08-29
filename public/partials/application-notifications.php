@@ -138,7 +138,9 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 			// it's always in place by the time anyone needs to view/edit it, the same way
 			// tcbp_public_sr_create_if_missing() already runs for the Archived/Marine case
 			// below. This is what lets the manual "Create Service Record" button go away.
-			tcbp_public_sr_create_if_missing( $user_id );
+			// Rank/training are only applied if this call actually creates a new record - see
+			// tcbp_public_sr_create_if_missing()'s own doc comment.
+			tcbp_public_sr_create_if_missing( $user_id, TCBP_RANK_RECRUIT, array( 'basic-1', 'basic-2' ) );
 
 			tcbp_public_notify_once(
 				$post_id_,
@@ -176,10 +178,11 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 		case 'archived':
 			// tcbp_public_sr_create_if_missing()/tcbp_public_sr_promote_to_marine() (both
 			// service-record.php) do all the work - creating a service record if the applicant
-			// doesn't have one yet, syncing WP role/tcb-rank, and firing the Marine
+			// doesn't have one yet (rank/training only applied on actual creation - see that
+			// function's own doc comment), syncing WP role/tcb-rank, and firing the Marine
 			// congratulations message exactly once (idempotent, so this is also safe to run
 			// again if this application is later re-saved while still Archived).
-			$service_record_id = tcbp_public_sr_create_if_missing( $user_id );
+			$service_record_id = tcbp_public_sr_create_if_missing( $user_id, TCBP_RANK_MARINE, array( 'basic-1', 'basic-2' ) );
 			if ( ! $service_record_id ) {
 				break;
 			}
