@@ -42,14 +42,46 @@ function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $hei
 }
 
 /**
- * Converts a user_id => award count map into display entries sorted by count (descending),
- * then display name (ascending) for ties. Used for the Leadership/Mention in Despatches/
- * Mission Creation groups on the commendations archive, which list every recipient once under
- * a single row per commendation type with their own count shown as a prefix, rather than the
- * old approach of splitting recipients into separate rows per award-count threshold tier.
+ * Converts a raw award count into a display level, 1-5, using the same threshold bands
+ * originally used to pick a ribbon-image tier (1/4/16/64/256/1024) before Leadership/Mention in
+ * Despatches/Mission Creation were consolidated onto a single row per commendation type - reused
+ * here purely to compute the per-player level shown next to their name, not to pick an image.
+ *
+ * @param int $count The raw award count.
+ * @return int The level, 1-5 (very high counts cap at 5).
+ */
+function tcbp_public_commendation_award_level( $count ) {
+	$thresholds = array( 1, 4, 16, 64, 256, 1024 );
+	$level      = 5; // A count meeting/exceeding every threshold caps at the top level.
+	foreach ( $thresholds as $idx => $threshold ) {
+		if ( $threshold > $count ) {
+			$level = $idx;
+			break;
+		}
+	}
+	return max( 1, $level );
+}
+
+/**
+ * Renders a 1-5 level as a Roman numeral for display.
+ *
+ * @param int $level 1-5.
+ * @return string
+ */
+function tcbp_public_commendation_award_level_roman( $level ) {
+	$numerals = array( 1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V' );
+	return isset( $numerals[ $level ] ) ? $numerals[ $level ] : (string) $level;
+}
+
+/**
+ * Converts a user_id => award count map into display entries sorted by level (descending, see
+ * tcbp_public_commendation_award_level()), then display name (ascending) for ties. Used for the
+ * Leadership/Mention in Despatches/Mission Creation groups on the commendations archive, which
+ * list every recipient once under a single row per commendation type with their own level shown
+ * as a prefix, rather than the old approach of splitting recipients into separate rows per tier.
  *
  * @param array $user_counts user_id => award count.
- * @return array Each entry: array( 'user_id' => ..., 'display_name' => ..., 'count' => ... ).
+ * @return array Each entry: array( 'user_id' => ..., 'display_name' => ..., 'level' => ... ).
  */
 function tcbp_public_sort_user_ids_by_count_then_display_name( $user_counts ) {
 	$entries = array();
@@ -61,15 +93,15 @@ function tcbp_public_sort_user_ids_by_count_then_display_name( $user_counts ) {
 		$entries[] = array(
 			'user_id'      => $user_id,
 			'display_name' => $user->get( 'display_name' ),
-			'count'        => $count,
+			'level'        => tcbp_public_commendation_award_level( $count ),
 		);
 	}
 
 	usort(
 		$entries,
 		function ( $a, $b ) {
-			if ( $a['count'] !== $b['count'] ) {
-				return $b['count'] <=> $a['count'];
+			if ( $a['level'] !== $b['level'] ) {
+				return $b['level'] <=> $a['level'];
 			}
 			return strcasecmp( $a['display_name'], $b['display_name'] );
 		}
@@ -377,7 +409,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -395,7 +427,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -413,7 +445,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">[' . esc_html( $entry['count'] ) . '] ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
