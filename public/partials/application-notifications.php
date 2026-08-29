@@ -169,7 +169,7 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 				$post_id_,
 				'_tcbp_notified_rejected',
 				function () use ( $user_id ) {
-					$applicant_message = "Thanks very much for your application. Unfortunately you were not successful at this time. We'd welcome a new application again in the future, if the situation changes.";
+					$applicant_message = "Thanks very much for your application.\n\nUnfortunately you were not successful on this occasion.\n\nWe'd welcome a new application again in the future, if the situation changes.";
 					tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Outcome', $applicant_message );
 				}
 			);

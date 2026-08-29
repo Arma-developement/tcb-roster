@@ -111,6 +111,7 @@ function tcbp_public_edit_application() {
 			delete_transient( $tcbp_discord_error_key );
 			echo '<div id="message" class="negative">
 				<p>We could not find a Discord user with the username you entered, so we were unable to send you a confirmation message on Discord.</p>
+				<p>This can happen if you have not yet joined the 3CB Discord, or if the username was entered incorrectly.</p>
 				<p>Please <a href="/edit-user-profile/">edit your profile</a> and correct your Discord username so we can reach you.</p>
 			</div>';
 		}
