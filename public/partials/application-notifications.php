@@ -134,6 +134,12 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 			break;
 
 		case 'recruit':
+			// Create the service record here (idempotent - a no-op if one already exists) so
+			// it's always in place by the time anyone needs to view/edit it, the same way
+			// tcbp_public_sr_create_if_missing() already runs for the Archived/Marine case
+			// below. This is what lets the manual "Create Service Record" button go away.
+			tcbp_public_sr_create_if_missing( $user_id );
+
 			tcbp_public_notify_once(
 				$post_id_,
 				'_tcbp_notified_recruit',

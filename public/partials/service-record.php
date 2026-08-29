@@ -146,8 +146,8 @@ function tcbp_public_sr_promote_to_marine( $user_id, $service_record_id ) {
 add_shortcode( 'tcbp_public_sr_form', 'tcbp_public_sr_form' );
 
 /**
- * Called buy a shortcode to display the service record form.
- * This function will create a new service record post if one does not exist.
+ * Called buy a shortcode to display the service record form. Assumes a service record already
+ * exists - see tcbp_public_sr_create_if_missing() for how one gets created automatically.
  * Data is preloaded and 3 separate ACF groups are used to manage the form.
  */
 function tcbp_public_sr_form() {
@@ -182,30 +182,15 @@ function tcbp_public_sr_form() {
 
 	echo '<h2>' . esc_html( $display_name ) . '</h2>';
 
-	// Create a new page if one does not exist.
+	// A service record should already exist by the time this page is reached - it's now
+	// created automatically as soon as an applicant reaches the Recruit stage (or, for the
+	// enrol-existing-member path, Archived/Marine directly) - see
+	// tcbp_public_sr_create_if_missing(), called from application-notifications.php. The
+	// manual "Create Service Record" nonce-confirmed button that used to live here has been
+	// removed along with it; if a record genuinely doesn't exist yet, there's nothing to edit.
 	if ( ! $post_id ) {
-
-		// Only create a new service record (and promote the user's role) on an explicit,
-		// nonce-verified confirmation - never as a side effect of simply rendering this page.
-		// This used to run unconditionally on a bare GET, so just loading this URL (including a
-		// forged link clicked by a privileged staff member) silently created the record and
-		// promoted the target user's WP role from subscriber to limited_member, with no
-		// confirmation step at all.
-		$create_nonce_action = 'tcbp_create_sr_' . $user_id;
-		$confirmed            = isset( $_GET['tcbp_create_sr'], $_GET['_wpnonce'] )
-			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), $create_nonce_action );
-
-		if ( ! $confirmed ) {
-			$confirm_url = wp_nonce_url(
-				add_query_arg( array( 'id' => $user_id, 'tcbp_create_sr' => 1 ) ),
-				$create_nonce_action
-			);
-			echo '<p>No service record exists yet for ' . esc_html( $display_name ) . '.</p>';
-			echo '<p><a href="' . esc_url( $confirm_url ) . '" class="button button-secondary">Create Service Record</a></p>';
-			return ob_get_clean();
-		}
-
-		$post_id = tcbp_public_sr_create_if_missing( $user_id );
+		echo '<p>No service record exists yet for ' . esc_html( $display_name ) . '.</p>';
+		return ob_get_clean();
 	}
 
 	echo '<div class="tcb_service_record_form">';
