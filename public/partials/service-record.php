@@ -24,6 +24,125 @@ define( 'TCBP_DUTY_ATI', 61 );
 define( 'TCBP_DUTY_OM', 58 );
 define( 'TCBP_DUTY_CM', 62 );
 
+/**
+ * Creates a service record for a user if they don't already have one - linking it via the
+ * "service_record"/"user_id" ACF fields and promoting their WP role from subscriber to
+ * limited_member. Extracted from tcbp_public_sr_form()'s manual "Create Service Record" flow so
+ * the same creation logic can also run automatically from a genuine authenticated state change
+ * (e.g. an application reaching Archived, via tcbp_public_sr_promote_to_marine()) - safe to call
+ * without an extra confirmation step in that context, unlike tcbp_public_sr_form()'s own
+ * nonce-gated button, because it's triggered by an already-authenticated form save rather than a
+ * bare page GET a forged link could trigger.
+ *
+ * @param int $user_id The user to create a service record for.
+ * @return int The service record post ID (existing or newly created), or 0 on failure.
+ */
+function tcbp_public_sr_create_if_missing( $user_id ) {
+
+	$profile_id = 'user_' . $user_id;
+	$post_id    = get_field( 'service_record', $profile_id );
+	if ( $post_id ) {
+		return $post_id;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+	if ( ! $user ) {
+		return 0;
+	}
+
+	$display_name = $user->get( 'display_name' );
+	$page_slug    = 'service-record-' . $user_id;
+
+	if ( get_page_by_path( $page_slug, OBJECT, 'service-record' ) ) {
+		// A page with this slug already exists but isn't linked from the profile - don't
+		// create a duplicate; leave it for a human to sort out.
+		return 0;
+	}
+
+	$new_page = array(
+		'post_type'    => 'service-record',
+		'post_title'   => $display_name . "'s Service Record",
+		'post_content' => 'Test Page Content',
+		'post_status'  => 'publish',
+		'post_author'  => 1,
+		'post_name'    => $page_slug,
+	);
+
+	$post_id = wp_insert_post( $new_page );
+	if ( ! $post_id || is_wp_error( $post_id ) ) {
+		return 0;
+	}
+
+	update_field( 'service_record', $post_id, $profile_id );
+	update_field( 'user_id', $user_id, $post_id );
+
+	$user->remove_role( 'subscriber' );
+	$user->add_role( 'limited_member' );
+
+	return $post_id;
+}
+
+/**
+ * Fully promotes a user to Marine and notifies them, regardless of which of the two routes
+ * triggered it: their application reaching Archived
+ * (tcbp_public_application_stage_notifications(), application-notifications.php), or their
+ * tcb-rank being set directly to Marine on the service record
+ * (tcbp_public_edit_sr_info_submission_callback() below). Each route calls this, and it brings
+ * both sides into sync - the application's tcb-selection status, and the WP role/tcb-rank - so
+ * it doesn't matter which one happened first, then fires the Marine congratulations message
+ * exactly once (tcbp_public_notify_once(), application-notifications.php, keyed on the service
+ * record so it's shared regardless of entry route).
+ *
+ * @param int $user_id           The user being promoted.
+ * @param int $service_record_id Their service record post ID.
+ */
+function tcbp_public_sr_promote_to_marine( $user_id, $service_record_id ) {
+
+	if ( ! $user_id || ! $service_record_id ) {
+		return;
+	}
+
+	$user = get_user_by( 'id', $user_id );
+	if ( ! $user ) {
+		return;
+	}
+
+	// Sync the application side - archive it if it isn't already, so both routes converge on
+	// the same end state regardless of which one was used to get here. Matched by term ID (not
+	// name/slug ambiguity) - see tcbp_public_interview_transition_status() (application.php)
+	// for why.
+	$application_id = get_field( 'application', 'user_' . $user_id );
+	if ( $application_id && ! has_term( 'archived', 'tcb-selection', $application_id ) ) {
+		$term = get_term_by( 'slug', 'archived', 'tcb-selection' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			wp_set_post_terms( $application_id, array( (int) $term->term_id ), 'tcb-selection' );
+		}
+	}
+
+	// Sync the rank/role side - idempotent regardless of which one (if either) is already set,
+	// since this may be running as a consequence of the rank having just been set directly (in
+	// which case tcbp_public_sr_assign_role_by_rank() already set the role, and this is a
+	// harmless no-op). Matched by TCBP_RANK_MARINE (term ID), same reasoning as the constants
+	// defined at the top of this file.
+	if ( in_array( 'limited_member', $user->roles, true ) ) {
+		$user->remove_role( 'limited_member' );
+		$user->add_role( 'member' );
+	}
+	if ( ! has_term( TCBP_RANK_MARINE, 'tcb-rank', $service_record_id ) ) {
+		wp_set_post_terms( $service_record_id, array( TCBP_RANK_MARINE ), 'tcb-rank' );
+	}
+
+	tcbp_public_notify_once(
+		$service_record_id,
+		'_tcbp_notified_marine',
+		function () use ( $user_id ) {
+			$onboarding_url    = home_url( '/information-centre/marine-onboarding' );
+			$applicant_message = "Congratulations, you're now a Marine!\n\nPlease follow the onboarding instructions: " . $onboarding_url;
+			tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Marine', $applicant_message );
+		}
+	);
+}
+
 add_shortcode( 'tcbp_public_sr_form', 'tcbp_public_sr_form' );
 
 /**
@@ -86,25 +205,7 @@ function tcbp_public_sr_form() {
 			return ob_get_clean();
 		}
 
-		$page_slug = 'service-record-' . $user_id; // Slug of the Post.
-		$new_page  = array(
-			'post_type'    => 'service-record',
-			'post_title'   => $display_name . "'s Service Record",
-			'post_content' => 'Test Page Content',
-			'post_status'  => 'publish',
-			'post_author'  => 1,
-			'post_name'    => $page_slug,
-		);
-
-		if ( ! get_page_by_path( $page_slug, OBJECT, 'service-record' ) ) { // Check If Page Not Exits.
-			$post_id = wp_insert_post( $new_page );
-			update_field( 'service_record', $post_id, $profile_id );
-			update_field( 'user_id', $user_id, $post_id ); // Required to link service record to user.
-
-			// Update the user's roles.
-			$user->remove_role( 'subscriber' );
-			$user->add_role( 'limited_member' );
-		}
+		$post_id = tcbp_public_sr_create_if_missing( $user_id );
 	}
 
 	echo '<div class="tcb_service_record_form">';
@@ -308,6 +409,13 @@ function tcbp_public_edit_sr_info_submission_callback( $post_id_ ) {
 	tcbp_public_sr_check_sr_name( $user_id, $post_id_ );
 	tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ );
 	tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ );
+
+	// Setting rank directly to Marine here is the second of the two routes to becoming a
+	// Marine (the other being an application reaching Archived) - keep both routes in sync,
+	// see tcbp_public_sr_promote_to_marine() above.
+	if ( has_term( TCBP_RANK_MARINE, 'tcb-rank', $post_id_ ) ) {
+		tcbp_public_sr_promote_to_marine( $user_id, $post_id_ );
+	}
 }
 
 
@@ -464,49 +572,6 @@ function tcbp_public_sr_check_sr_name( $user_id, $post_id_ ) {
 	wp_update_post( $update );
 }
 
-
-/**
- * Utility function to promote a user to Marine.
- *
- * @param int $user_id The user id containing the service record information.
- * @param int $post_id_ The post id of the service record.
- * @return bool True if the promotion actually happened, false otherwise (e.g. already
- *              promoted, application not archived, or no such user) - used by
- *              application-notifications.php to fire the Marine congratulations message
- *              exactly once, right when the promotion actually occurs.
- */
-function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
-
-	if ( empty( $user_id ) ) {
-		return false;
-	}
-
-	$user = get_user_by( 'id', $user_id );
-
-	// Early out for no user.
-	if ( ! $user ) {
-		return false;
-	}
-
-	// Re-verify the user's application has actually reached "archived" status, rather than
-	// trusting the caller - this changes the user's WP role, so it shouldn't rely solely on
-	// whatever gate happens to sit in front of it today.
-	$application_id = get_field( 'application', 'user_' . $user_id );
-	if ( ! $application_id || ! has_term( 'archived', 'tcb-selection', $application_id ) ) {
-		return false;
-	}
-
-	if ( in_array( 'limited_member', $user->roles, true ) ) {
-		$user->remove_role( 'limited_member' );
-		$user->add_role( 'member' );
-
-		wp_set_post_terms( $post_id_, 'Marine', 'tcb-rank' );
-
-		return true;
-	}
-
-	return false;
-}
 
 
 /**

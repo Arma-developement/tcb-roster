@@ -71,8 +71,8 @@ add_action( 'acf/save_post', 'tcbp_public_application_stage_notifications', 30 )
 
 /**
  * Dispatches the stage-appropriate notification(s) whenever an application's tcb-selection
- * status reaches Interview, Candidate, Recruit, or (via promotion to Marine) Archived - for the
- * first time. Priority 30 so this always runs after
+ * status reaches Interview, Candidate, Recruit, Selection, Rejected, or (via promotion to
+ * Marine) Archived - for the first time. Priority 30 so this always runs after
  * tcbp_public_interview_transition_status()'s priority-20 auto-transition, meaning a single
  * interview-form submission that moves an application straight to Candidate/Rejected already
  * sees that new status here, in the same save.
@@ -127,7 +127,7 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 					tcb_roster_admin_post_to_discord_channel( '679687679863947264', $message );
 
 					$onboarding_url    = home_url( '/information-centre/candidate-onboarding' );
-					$applicant_message = "Congratulations, you're now a Candidate!\nPlease follow the onboarding instructions: " . $onboarding_url . "\n\nPlease look out for a message from an admin in the candidate-lobby to organise training.";
+					$applicant_message = "Congratulations, you're now a Candidate!\n\nPlease follow the onboarding instructions: " . $onboarding_url . "\n\nPlease look out for a message from an admin in the candidate-lobby to organise training.";
 					tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Candidate', $applicant_message );
 				}
 			);
@@ -139,8 +139,19 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 				'_tcbp_notified_recruit',
 				function () use ( $user_id ) {
 					$onboarding_url    = home_url( '/information-centre/recruit-onboarding' );
-					$applicant_message = "Congratulations, you're now a Recruit!\nPlease follow the onboarding instructions: " . $onboarding_url;
+					$applicant_message = "Congratulations, you're now a Recruit!\n\nPlease follow the onboarding instructions: " . $onboarding_url;
 					tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Recruit', $applicant_message );
+				}
+			);
+			break;
+
+		case 'selection':
+			tcbp_public_notify_once(
+				$post_id_,
+				'_tcbp_notified_selection',
+				function () use ( $display_name, $application_url ) {
+					$message = '{@Admins}' . "\nRecruit " . $display_name . " has entered the selection phase.\n\nPlease leave feedback here: " . $application_url;
+					tcb_roster_admin_post_to_discord_channel( 'recruitment-managers', $message );
 				}
 			);
 			break;
@@ -157,26 +168,16 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 			break;
 
 		case 'archived':
-			$profile_id        = 'user_' . $user_id;
-			$service_record_id = get_field( 'service_record', $profile_id );
+			// tcbp_public_sr_create_if_missing()/tcbp_public_sr_promote_to_marine() (both
+			// service-record.php) do all the work - creating a service record if the applicant
+			// doesn't have one yet, syncing WP role/tcb-rank, and firing the Marine
+			// congratulations message exactly once (idempotent, so this is also safe to run
+			// again if this application is later re-saved while still Archived).
+			$service_record_id = tcbp_public_sr_create_if_missing( $user_id );
 			if ( ! $service_record_id ) {
 				break;
 			}
-
-			$promoted = tcbp_public_sr_check_promotion_to_marine( $user_id, $service_record_id );
-			if ( ! $promoted ) {
-				break;
-			}
-
-			tcbp_public_notify_once(
-				$service_record_id,
-				'_tcbp_notified_marine',
-				function () use ( $user_id ) {
-					$onboarding_url    = home_url( '/information-centre/marine-onboarding' );
-					$applicant_message = "Congratulations, you're now a Marine!\nPlease follow the onboarding instructions: " . $onboarding_url;
-					tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Marine', $applicant_message );
-				}
-			);
+			tcbp_public_sr_promote_to_marine( $user_id, $service_record_id );
 			break;
 
 		default:
