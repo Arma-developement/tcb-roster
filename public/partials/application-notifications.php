@@ -124,7 +124,7 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 					// Discord channel ID, no named case needed (see the default branch in
 					// tcb_roster_admin_post_to_discord_channel(), tcb-roster-admin-post-to-discord.php).
 					$message = "{@Training Basic}\nBasic Training required for a new applicant: " . $display_name . "\n\n" . $application_url;
-					tcb_roster_admin_post_to_discord_channel( '679687679863947264', $message );
+					tcb_roster_admin_post_to_discord_channel( 'basic-training-instructors', $message );
 
 					$onboarding_url    = home_url( '/information-centre/candidate-onboarding' );
 					$applicant_message = "Congratulations, you're now a Candidate!\n\nPlease follow the onboarding instructions: " . $onboarding_url . "\n\nPlease look out for a message from an admin in the candidate-lobby to organise training.";

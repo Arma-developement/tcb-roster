@@ -80,6 +80,13 @@ function tcb_roster_admin_post_to_discord_channel( $channel, $message ) {
 		case 'operation_coordinators':
 			$channel_id = '384646925837795328';
 			break;
+		case 'arma-3':
+			$channel_id = '384646672874995712';
+			break;
+		case 'basic-training-instructors':
+			$channel_id = '679687679863947264';
+			break;
+
 		default:
 			// Anything else is treated as a raw Discord channel/thread ID (e.g. a thread ID
 			// returned by tcb_roster_admin_create_discord_thread()) rather than one of the named
