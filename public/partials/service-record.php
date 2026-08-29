@@ -41,8 +41,19 @@ function tcbp_public_sr_create_if_missing( $user_id ) {
 
 	$profile_id = 'user_' . $user_id;
 	$post_id    = get_field( 'service_record', $profile_id );
+
+	// The referenced post ID can go stale if the service record was deleted after being
+	// linked - WordPress doesn't clean up unrelated postmeta (like this profile field)
+	// pointing at a deleted post. Trusting a stale ID here meant this returned early thinking
+	// a record already existed, so neither a new one got created nor (since the role
+	// promotion below only ever runs as part of that creation) was the user promoted to
+	// limited_member - same check tcbp_public_has_pending_application() (application.php)
+	// already does for the equivalent stale-application-reference case.
 	if ( $post_id ) {
-		return $post_id;
+		$status = get_post_status( $post_id );
+		if ( $status && 'trash' !== $status && 'service-record' === get_post_type( $post_id ) ) {
+			return $post_id;
+		}
 	}
 
 	$user = get_user_by( 'id', $user_id );
