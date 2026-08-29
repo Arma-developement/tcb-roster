@@ -505,6 +505,38 @@ function tcbp_public_mission_briefing_submission_callback( $post_id_ ) {
 		set_post_thumbnail( $post_id_, $featured_image['ID'] );
 	}
 
+	// Copy the mission maker's proposed date/times (Event Briefing group - a separate set of
+	// fields from the event's own event_start_date/event_start_time/event_end_time, so a
+	// proposal doesn't directly overwrite the real schedule until the admin's briefing review
+	// actually completes) into the event's real Date & Time group. Written as Ymd/H:i:s - ACF's
+	// own unambiguous internal storage formats - rather than the pre-formatted display strings
+	// get_field() returns, which would otherwise force ACF to re-parse a formatted string and
+	// risk exactly the kind of misparse already found and fixed for stamp_date elsewhere in this
+	// plugin (see attendance.php).
+	$proposed_start_date = get_field( 'proposed_event_start_date', $post_id_ );
+	if ( $proposed_start_date ) {
+		$date = DateTime::createFromFormat( 'Y-m-d', $proposed_start_date );
+		if ( $date ) {
+			update_field( 'event_start_date', $date->format( 'Ymd' ), $post_id_ );
+		}
+	}
+
+	$proposed_start_time = get_field( 'proposed_event_start_time', $post_id_ );
+	if ( $proposed_start_time ) {
+		$start_time = DateTime::createFromFormat( 'g:i a', $proposed_start_time );
+		if ( $start_time ) {
+			update_field( 'event_start_time', $start_time->format( 'H:i:s' ), $post_id_ );
+		}
+	}
+
+	$proposed_end_time = get_field( 'proposed_event_end_time', $post_id_ );
+	if ( $proposed_end_time ) {
+		$end_time = DateTime::createFromFormat( 'g:i a', $proposed_end_time );
+		if ( $end_time ) {
+			update_field( 'event_end_time', $end_time->format( 'H:i:s' ), $post_id_ );
+		}
+	}
+
 	// Notify the Operations Coordinators that a new briefing needs reviewing. The edit link is
 	// built directly rather than via get_edit_post_link(), since that checks the *current*
 	// user's (the submitter's) capabilities and would return nothing for a member without
