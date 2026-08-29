@@ -370,7 +370,7 @@ function tcbp_public_edit_app_interview() {
 	echo '</div>';
 
 	if ( function_exists( 'SimpleLogger' ) ) {
-		SimpleLogger()->info( 'Edited ' . $display_name . "'s Commendations" );
+		SimpleLogger()->info( 'Edited ' . $display_name . "'s Interview" );
 	}
 
 	return ob_get_clean();

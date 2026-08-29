@@ -53,6 +53,7 @@ class Tcb_Roster_Public {
 		$this->version     = $version;
 
 		// Refactored code base 2025.
+		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application-notifications.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/application.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/attendance.php';
 		require_once plugin_dir_path( __DIR__ ) . 'public/partials/commendation-awards.php';

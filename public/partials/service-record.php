@@ -470,18 +470,22 @@ function tcbp_public_sr_check_sr_name( $user_id, $post_id_ ) {
  *
  * @param int $user_id The user id containing the service record information.
  * @param int $post_id_ The post id of the service record.
+ * @return bool True if the promotion actually happened, false otherwise (e.g. already
+ *              promoted, application not archived, or no such user) - used by
+ *              application-notifications.php to fire the Marine congratulations message
+ *              exactly once, right when the promotion actually occurs.
  */
 function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
 
 	if ( empty( $user_id ) ) {
-		return;
+		return false;
 	}
 
 	$user = get_user_by( 'id', $user_id );
 
 	// Early out for no user.
 	if ( ! $user ) {
-		return;
+		return false;
 	}
 
 	// Re-verify the user's application has actually reached "archived" status, rather than
@@ -489,7 +493,7 @@ function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
 	// whatever gate happens to sit in front of it today.
 	$application_id = get_field( 'application', 'user_' . $user_id );
 	if ( ! $application_id || ! has_term( 'archived', 'tcb-selection', $application_id ) ) {
-		return;
+		return false;
 	}
 
 	if ( in_array( 'limited_member', $user->roles, true ) ) {
@@ -497,7 +501,11 @@ function tcbp_public_sr_check_promotion_to_marine( $user_id, $post_id_ ) {
 		$user->add_role( 'member' );
 
 		wp_set_post_terms( $post_id_, 'Marine', 'tcb-rank' );
+
+		return true;
 	}
+
+	return false;
 }
 
 
