@@ -16,13 +16,19 @@ add_shortcode( 'tcbp_public_archive_commendations', 'tcbp_public_archive_commend
  *
  * @param string $image_url The ribbon image URL.
  * @param string $title     The commendation's display title.
- * @param string $slug      The commendation's slug, for looking up its taxonomy description -
- *                          pass '' to skip the lookup (e.g. Long Service Medals, which aren't in
- *                          the taxonomy).
- * @param int    $width     Image width in pixels.
- * @param int    $height    Image height in pixels.
+ * @param string $slug       The commendation's slug, for looking up its taxonomy description -
+ *                           pass '' to skip the lookup (e.g. Long Service Medals, which aren't in
+ *                           the taxonomy).
+ * @param int    $width      Image width in pixels.
+ * @param int    $height     Image height in pixels.
+ * @param string $extra_text Optional extra line shown after the description, on its own line
+ *                           with a blank line above it (e.g. "Awarded 5 times." on a service
+ *                           record's own leveled commendations - see
+ *                           tcb24_service_record_commendation_level_group(),
+ *                           service-record-commendation.php in the theme). Omitted entirely if
+ *                           not given, so every other caller is unaffected.
  */
-function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $height ) {
+function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $height, $extra_text = '' ) {
 	$description = '';
 	if ( $slug ) {
 		$term = get_term_by( 'slug', $slug, 'tcb-commendation' );
@@ -36,6 +42,9 @@ function tcbp_public_commendation_image( $image_url, $title, $slug, $width, $hei
 	echo '<span class="tcb_commendation_tooltip_text"><strong>' . esc_html( $title ) . '</strong>';
 	if ( $description ) {
 		echo esc_html( $description );
+	}
+	if ( $extra_text ) {
+		echo '<br><br>' . esc_html( $extra_text );
 	}
 	echo '</span>';
 	echo '</span>';
