@@ -53,20 +53,32 @@ function tcbp_public_mission_briefing() {
 	echo '<h5>1.3.2 IED/Mine Threat</h5>';
 	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>1.3.3 CBRN Threat</h5>';
-	echo get_field( 'brief_cbrn_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	// CBRN Threat/Other forces/NGO and Media are optional - only shown when the mission maker
+	// actually entered something, unlike the other sections on this page (which always show
+	// their heading regardless of content).
+	$brief_cbrn_threat = get_field( 'brief_cbrn_threat', $post_id_ );
+	if ( $brief_cbrn_threat ) {
+		echo '<h5>1.3.3 CBRN Threat</h5>';
+		echo $brief_cbrn_threat; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 
 	echo '<h4>1.4 Other Factors</h4>';
 
-	echo '<h5>1.4.1 Other forces</h5>';
-	echo get_field( 'brief_other_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$brief_other_forces = get_field( 'brief_other_forces', $post_id_ );
+	if ( $brief_other_forces ) {
+		echo '<h5>1.4.1 Other forces</h5>';
+		echo $brief_other_forces; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	echo '<h5>1.4.2 Civilians</h5>';
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>1.4.3 NGO and Media</h5>';
-	echo get_field( 'brief_ngo_media', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$brief_ngo_media = get_field( 'brief_ngo_media', $post_id_ );
+	if ( $brief_ngo_media ) {
+		echo '<h5>1.4.3 NGO and Media</h5>';
+		echo $brief_ngo_media; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 
 	echo '<h4>1.5 Friendly Forces</h4>';
