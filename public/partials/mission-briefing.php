@@ -53,11 +53,20 @@ function tcbp_public_mission_briefing() {
 	echo '<h5>1.3.2 IED/Mine Threat</h5>';
 	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
+	echo '<h5>1.3.3 CBRN Threat</h5>';
+	echo get_field( 'brief_cbrn_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h4>1.4 Other factors</h4>';
 
-	echo '<h5>1.4.1 Civilians</h5>';
+	echo '<h4>1.4 Other Factors</h4>';
+
+	echo '<h5>1.4.1 Other forces</h5>';
+	echo get_field( 'brief_other_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>1.4.2 Civilians</h5>';
 	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	echo '<h5>1.4.3 NGO and Media</h5>';
+	echo get_field( 'brief_ngo_media', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
 	echo '<h4>1.5 Friendly Forces</h4>';
