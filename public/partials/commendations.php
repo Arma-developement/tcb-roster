@@ -90,7 +90,9 @@ function tcbp_public_commendation_award_level_roman( $level ) {
  * as a prefix, rather than the old approach of splitting recipients into separate rows per tier.
  *
  * @param array $user_counts user_id => award count.
- * @return array Each entry: array( 'user_id' => ..., 'display_name' => ..., 'level' => ... ).
+ * @return array Each entry: array( 'user_id' => ..., 'display_name' => ..., 'level' => ...,
+ *               'count' => ... ) - 'count' is the raw award count, e.g. for an "Awards: N"
+ *               tooltip on the player's name.
  */
 function tcbp_public_sort_user_ids_by_count_then_display_name( $user_counts ) {
 	$entries = array();
@@ -103,6 +105,7 @@ function tcbp_public_sort_user_ids_by_count_then_display_name( $user_counts ) {
 			'user_id'      => $user_id,
 			'display_name' => $user->get( 'display_name' ),
 			'level'        => tcbp_public_commendation_award_level( $count ),
+			'count'        => $count,
 		);
 	}
 
@@ -418,7 +421,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_leadership_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><span class="tcb_commendation_tooltip"><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a><span class="tcb_commendation_tooltip_text">Awards: ' . esc_html( $entry['count'] ) . '</span></span></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -436,7 +439,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mention_in_despatches_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><span class="tcb_commendation_tooltip"><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a><span class="tcb_commendation_tooltip_text">Awards: ' . esc_html( $entry['count'] ) . '</span></span></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
@@ -454,7 +457,7 @@ function tcbp_public_archive_commendations() {
 				tcbp_public_commendation_image( $path . $key . '-1.png', $title['title'], $title['slug'], $width, $height );
 				echo '<ul>';
 				foreach ( tcbp_public_sort_user_ids_by_count_then_display_name( $list_of_mission_creation_recipients[ $key ] ) as $entry ) {
-					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a></li>';
+					echo '<li><span class="tcb_commendation_tooltip"><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( tcbp_public_commendation_award_level_roman( $entry['level'] ) ) . ' - ' . esc_html( $entry['display_name'] ) . '</a><span class="tcb_commendation_tooltip_text">Awards: ' . esc_html( $entry['count'] ) . '</span></span></li>';
 				}
 				$column = ( ++$column ) % 3;
 				echo '</ul>';
