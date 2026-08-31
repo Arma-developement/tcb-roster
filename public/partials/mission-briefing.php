@@ -126,7 +126,7 @@ function tcbp_public_mission_briefing() {
 
 	$brief_command_intent = get_field( 'brief_command_intent', $post_id_ );
 	if ( $brief_command_intent ) {
-		echo '<h4>3.1 Commander's Intent</h4>';
+		echo '<h4>3.1 Commander\'s Intent</h4>';
 		echo $brief_command_intent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}	
 	
@@ -139,12 +139,6 @@ function tcbp_public_mission_briefing() {
 	
 	echo '<h5>3.2.1 Phasing</h5>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	$brief_reactions = get_field( 'brief_reactions', $post_id_ );
-	if ( $brief_reactions ) {
-		echo '<h5>3.2.2 Reactions</h5>';
-		echo $brief_reactions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}	
 
 	$brief_support_units = get_field( 'brief_support_units', $post_id_ );
 	if ( $brief_support_units ) {
