@@ -82,8 +82,18 @@ function tcbp_public_mission_briefing() {
 
 
 	echo '<h4>1.5 Friendly Forces</h4>';
+
+	echo '<h5>1.5.1 Unit composition</h5>';
 	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
+	echo '<h5>1.5.2 Mission</h5>';
+	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
+	if ( $brief_friendly_forces_conops ) {
+		echo '<h5>1.5.3 CONOPS</h5>';
+		echo $brief_friendly_forces_conops; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	echo '<h4>1.6 Attachments</h4>';
 	echo get_field( 'brief_support', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -114,11 +124,6 @@ function tcbp_public_mission_briefing() {
 
 	echo '<h3>3 Execution</h3>';
 	
-
-	echo "<h4>3.1 Commander's intent</h4>";
-	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-
 	echo '<h4>3.2 Concept of Operation</h4>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
@@ -143,13 +148,25 @@ function tcbp_public_mission_briefing() {
 	
 	echo '<h4>4.1 Material Logistics</h4>';
 
-	echo '<h5>4.1.1 Vehicles</h5>';
-	echo get_field( 'brief_vehicles', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<h5>4.1.2 Supplies</h5>';
+	echo '<h5>4.1.1 Supplies</h5>';
 	echo get_field( 'brief_supplies', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>4.1.3 Section Composition</h5>';
+	echo '<h5>4.1.2 Vehicles</h5>';
+	echo get_field( 'brief_vehicles', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	$brief_vehicles_r3p = get_field( 'brief_vehicles_r3p', $post_id_ );
+	if ( $brief_vehicles_r3p ) {
+		echo '<h5>4.1.3 Vehicles R3P</h5>';
+		echo $brief_vehicles_r3p; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	
+	$brief_vehicles_repair = get_field( 'brief_vehicles_repair', $post_id_ );
+	if ( $brief_vehicles_repair ) {
+		echo '<h5>4.1.4 Vehicles Repair / Salvage</h5>';
+		echo $brief_vehicles_repair; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	echo '<h5>4.1.5 Section Composition</h5>';
 	echo get_field( 'brief_section_composition', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 
@@ -158,6 +175,11 @@ function tcbp_public_mission_briefing() {
 	echo '<h5>4.2.1 Reinforcements</h5>';
 	echo get_field( 'brief_reinforcements', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
+	$brief_medical = get_field( 'brief_medical', $post_id_ );
+	if ( $brief_medical ) {
+		echo '<h5>4.2.2 Medical Considerations</h5>';
+		echo $brief_medical; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 	
 	echo '</div>';
 

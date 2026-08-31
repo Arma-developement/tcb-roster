@@ -447,8 +447,5 @@ function tcbp_public_commendation_announce_discord( $summary, $mission_title ) {
 		$lines[] = $user->display_name . ' — ' . implode( ', ', $titles );
 	}
 
-	// '494511486715297794' is the test channel for announcements during development - see
-	// tcb-roster-admin-post-to-discord.php's default case, which treats any numeric channel ID
-	// as a raw Discord channel ID rather than needing a named case added for it.
 	tcb_roster_admin_post_to_discord_channel( 'arma-3', implode( "\n", $lines ) );
 }
