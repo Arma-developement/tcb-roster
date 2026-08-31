@@ -627,17 +627,22 @@ function tcbp_public_mission_briefing_edit() {
 
 	// The fields previously listed here explicitly (brief_mission/brief_execution/brief_plan/
 	// brief_actions_on/brief_rules_of_engagement/brief_command_and_signals, spanning several ACF
-	// groups) are now consolidated into a single group (group_638a3690e4548), with its own ACFE
-	// Form ("submit-plan") - the same acfe_form() pattern tcbp_public_mission_briefing_submit()
-	// already uses for the initial submission, rather than acf_form() with a hand-picked field
-	// list. brief_plan's field key (field_638a3691f4cde) is unchanged by this move, so
+	// groups) are now consolidated into a single group (group_638a3690e4548) - referencing the
+	// whole group here instead of a hand-picked field-key list, so any field added to/removed
+	// from it is automatically picked up. Deliberately still acf_form(), not the "submit-plan"
+	// ACFE Form: that form's own Post action only offers Current Post/Current Post Parent/Post
+	// Selector for its target post ID, none of which can express "whatever post_id this shortcode
+	// was given" - Current Post resolves to the hosting page (this shortcode's page, not the
+	// mission), not the dynamic $post_id_ from the URL. acf_form()'s own 'post_id' parameter
+	// (below) is respected directly, which is what actually made this work correctly before.
+	// brief_plan's field key (field_638a3691f4cde) is unchanged by the group consolidation, so
 	// tcbp_public_mission_briefing_authorize_save() below still correctly detects a submission of
 	// this form without needing any change.
-	acfe_form(
+	acf_form(
 		array(
-			'name'    => 'submit-plan',
-			'post_id' => $post_id_,
-			'return'  => '/mission-briefing/?id=' . $post_id_,
+			'post_id'      => $post_id_,
+			'field_groups' => array( 'group_638a3690e4548' ),
+			'return'       => '/mission-briefing/?id=' . $post_id_,
 		)
 	);
 
