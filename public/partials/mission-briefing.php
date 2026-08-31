@@ -104,7 +104,7 @@ function tcbp_public_mission_briefing() {
 
 	echo '<div class="tcb_mission_briefing">';
 
-	echo '<h3>2.Mission</h3>';
+	echo '<h3>2 Mission</h3>';
 	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	// Early out for subscribers on private missions.
@@ -123,18 +123,47 @@ function tcbp_public_mission_briefing() {
 
 
 	echo '<h3>3 Execution</h3>';
+
+	$brief_command_intent = get_field( 'brief_command_intent', $post_id_ );
+	if ( $brief_command_intent ) {
+		echo '<h4>3.1 Command Intent</h4>';
+		echo $brief_command_intent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}	
 	
-	echo '<h4>3.2 Concept of Operation</h4>';
+	echo '<h4>3.2 CONOPS</h4>';
+
+	$brief_general_description = get_field( 'brief_general_description', $post_id_ );
+	if ( $brief_general_description ) {
+		echo $brief_general_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}	
+	
+	echo '<h5>3.2.1 Operations per Phase</h5>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
+	$brief_reactions = get_field( 'brief_reactions', $post_id_ );
+	if ( $brief_reactions ) {
+		echo '<h5>3.2.2 Reactions</h5>';
+		echo $brief_reactions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}	
 
-	echo '<h4>3.3 Coordinatoring Actions</h4>';
+	$brief_support_units = get_field( 'brief_support_units', $post_id_ );
+	if ( $brief_support_units ) {
+		echo '<h4>3.3 Tasks/Missions to Support Units</h4>';
+		echo $brief_support_units; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}	
 
-	echo '<h5>3.3.1 Actions On</h5>';
+	echo '<h4>3.4 Coordinating Instructions</h4>';
+
+	$brief_coordinating_instructions = get_field( 'brief_coordinating_instructions', $post_id_ );
+	if ( $brief_coordinating_instructions ) {
+		echo $brief_coordinating_instructions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}	
+
+	echo '<h5>3.4.1 Actions On</h5>';
 	echo get_field( 'brief_actions_on', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
 
-	echo '<h5>3.3.2 Rules of Engagement</h5>';
+	echo '<h5>3.4.2 Rules of Engagement</h5>';
 	echo get_field( 'brief_rules_of_engagement', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
 
