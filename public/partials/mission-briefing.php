@@ -212,7 +212,13 @@ function tcbp_public_mission_briefing() {
 
 	echo '<h3>5 Command and Signals</h3>';
 	echo get_field( 'brief_command_and_signals', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '<p><a href="/information-centre/command-and-signals-tfar/">SOP: C&S<br></a></p>';
+	echo '<p><a href="/information-centre/command-and-signals-acre/">SOP: C&S</a></p>';
+
+	$brief_comms = get_field( 'brief_comms', $post_id_ );
+	if ( $brief_comms ) {
+		echo '<h5>5.1 Communications</h5>';
+		echo $brief_comms; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	echo '</div>';
 
