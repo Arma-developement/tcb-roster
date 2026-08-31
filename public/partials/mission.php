@@ -199,8 +199,19 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	// access control as above, just without these five sections. No category (or any category
 	// other than actions, e.g. "default") shows them as before.
 	if ( ! has_term( 'actions', 'event_category', $post_id ) ) {
-		echo '<h3>Execution</h3>';
-		echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
+
+		if ( $brief_friendly_forces_conops ) {
+			echo '<h3>Mission</h3>';
+			echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+			echo '<h3>CONOPS</h3>';
+			echo $brief_friendly_forces_conops; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			echo '<h3>Execution</h3>';
+			echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 
 		echo '<h3>Intel</h3>';
 		echo get_field( 'brief_intel' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
