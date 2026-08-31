@@ -83,10 +83,10 @@ function tcbp_public_mission_briefing() {
 
 	echo '<h4>1.5 Friendly Forces</h4>';
 
-	echo '<h5>1.5.1 Unit composition</h5>';
+	echo '<h5>1.5.1 Unit Composition</h5>';
 	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>1.5.2 Higher command intent</h5>';
+	echo '<h5>1.5.2 Higher Commander\'s Intent</h5>';
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
@@ -126,7 +126,7 @@ function tcbp_public_mission_briefing() {
 
 	$brief_command_intent = get_field( 'brief_command_intent', $post_id_ );
 	if ( $brief_command_intent ) {
-		echo '<h4>3.1 Command Intent</h4>';
+		echo '<h4>3.1 Commander's Intent</h4>';
 		echo $brief_command_intent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}	
 	
@@ -137,7 +137,7 @@ function tcbp_public_mission_briefing() {
 		echo $brief_general_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}	
 	
-	echo '<h5>3.2.1 Operations per Phase</h5>';
+	echo '<h5>3.2.1 Phasing</h5>';
 	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	$brief_reactions = get_field( 'brief_reactions', $post_id_ );
@@ -148,7 +148,7 @@ function tcbp_public_mission_briefing() {
 
 	$brief_support_units = get_field( 'brief_support_units', $post_id_ );
 	if ( $brief_support_units ) {
-		echo '<h4>3.3 Tasks/Missions to Support Units</h4>';
+		echo '<h4>3.3 Tasks to Support Units</h4>';
 		echo $brief_support_units; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}	
 
@@ -185,13 +185,13 @@ function tcbp_public_mission_briefing() {
 
 	$brief_vehicles_r3p = get_field( 'brief_vehicles_r3p', $post_id_ );
 	if ( $brief_vehicles_r3p ) {
-		echo '<h5>4.1.3 Vehicles R3P</h5>';
+		echo '<h5>4.1.3 Vehicles Service Support</h5>';
 		echo $brief_vehicles_r3p; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	
 	$brief_vehicles_repair = get_field( 'brief_vehicles_repair', $post_id_ );
 	if ( $brief_vehicles_repair ) {
-		echo '<h5>4.1.4 Vehicles Repair / Salvage</h5>';
+		echo '<h5>4.1.4 Vehicles BDR and Salvaging</h5>';
 		echo $brief_vehicles_repair; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
@@ -206,7 +206,7 @@ function tcbp_public_mission_briefing() {
 
 	$brief_medical = get_field( 'brief_medical', $post_id_ );
 	if ( $brief_medical ) {
-		echo '<h5>4.2.2 Medical Considerations</h5>';
+		echo '<h5>4.2.2 Medical Support</h5>';
 		echo $brief_medical; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	
