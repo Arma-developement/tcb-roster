@@ -86,7 +86,7 @@ function tcbp_public_mission_briefing() {
 	echo '<h5>1.5.1 Unit composition</h5>';
 	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-	echo '<h5>1.5.2 Mission</h5>';
+	echo '<h5>1.5.2 Higher command intent</h5>';
 	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );

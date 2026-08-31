@@ -203,7 +203,7 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 		$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
 
 		if ( $brief_friendly_forces_conops ) {
-			echo '<h3>Mission</h3>';
+			echo '<h3>Higher Command Intent</h3>';
 			echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 			echo '<h3>CONOPS</h3>';
