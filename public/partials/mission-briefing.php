@@ -625,22 +625,18 @@ function tcbp_public_mission_briefing_edit() {
 
 	echo '<div class="tcb_mission_briefing_edit">';
 
-	acf_form(
+	// The fields previously listed here explicitly (brief_mission/brief_execution/brief_plan/
+	// brief_actions_on/brief_rules_of_engagement/brief_command_and_signals, spanning several ACF
+	// groups) are now consolidated into a single group (group_638a3690e4548), with its own ACFE
+	// Form ("submit-plan") - the same acfe_form() pattern tcbp_public_mission_briefing_submit()
+	// already uses for the initial submission, rather than acf_form() with a hand-picked field
+	// list. brief_plan's field key (field_638a3691f4cde) is unchanged by this move, so
+	// tcbp_public_mission_briefing_authorize_save() below still correctly detects a submission of
+	// this form without needing any change.
+	acfe_form(
 		array(
 			'name'    => 'submit-plan',
 			'post_id' => $post_id_,
-			// Field keys, not names: acf_form() otherwise resolves a name to its key via the field
-			// group's Location rules, falling back to the post's own per-field reference metadata
-			// if that fails - a fallback that doesn't exist for a field never yet saved on this
-			// post. Keys resolve directly and don't depend on either.
-			'fields'  => array(
-				'field_638ca355cf0fa', // brief_mission.
-				'field_638ca355d2ccc', // brief_execution.
-				'field_638a3691f4cde', // brief_plan.
-				'field_639b76831fd8f', // brief_actions_on.
-				'field_638ca35613222', // brief_rules_of_engagement.
-				'field_638ca35616d9d', // brief_command_and_signals.
-			),
 			'return'  => '/mission-briefing/?id=' . $post_id_,
 		)
 	);
