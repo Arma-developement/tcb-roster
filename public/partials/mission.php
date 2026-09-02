@@ -190,7 +190,7 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	$show_time = tcbp_public_mission_post_content_enabled( $post_id, 'time' );
 	$show_met  = tcbp_public_mission_post_content_enabled( $post_id, 'met' );
 	if ( $show_time || $show_met ) {
-		echo '<div class="container briefing-meta">';
+		echo '<div class="container briefing-meta tcb_briefing_meta_tight">';
 		if ( $show_time ) {
 			echo '<div class="one-half column">';
 			echo get_field( 'brief_start_time', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
