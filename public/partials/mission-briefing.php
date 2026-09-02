@@ -3,6 +3,18 @@
 add_shortcode( 'tcbp_public_mission_briefing', 'tcbp_public_mission_briefing' );
 
 /**
+ * Same as tcbp_public_briefing_l2()/tcbp_public_briefing_l3() below, for text sitting directly
+ * under an h3 with no h4 of its own (e.g. "2 Mission", "5 Command and Signals").
+ *
+ * @param string $content Already-formatted HTML (e.g. from get_field()).
+ */
+function tcbp_public_briefing_l1( $content ) {
+	if ( $content ) {
+		echo '<div class="tcb_briefing_l1">' . $content . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
+/**
  * Echoes $content wrapped in a div indented to match this page's "level 2" headings (h4, e.g.
  * "1.2 Environment"). CSS alone can't cleanly express "indent until the next heading" here - a
  * general-sibling selector (h4 ~ p) would also catch a *later* h4 section that has no h5 of its
@@ -131,7 +143,7 @@ function tcbp_public_mission_briefing() {
 	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>2 Mission</h3>';
-	echo get_field( 'brief_mission', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l1( get_field( 'brief_mission', $post_id_ ) );
 
 	// Early out for subscribers on private missions.
 	$brief_mission_type_array = get_field( 'brief_mission_type', $post_id_ );
@@ -146,7 +158,6 @@ function tcbp_public_mission_briefing() {
 	////////////////////////////
 
 	echo '<div class="tcb_mission_briefing">';
-
 
 	echo '<h3>3 Execution</h3>';
 
@@ -175,11 +186,11 @@ function tcbp_public_mission_briefing() {
 	$brief_coordinating_instructions = get_field( 'brief_coordinating_instructions', $post_id_ );
 	tcbp_public_briefing_l2( $brief_coordinating_instructions );
 
-	echo '<h5>3.4.1 Actions On</h5>';
-	tcbp_public_briefing_l3( get_field( 'brief_actions_on', $post_id_ ) . get_field( 'brief_actions_on_update', $post_id_ ) . '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>' );
+	echo '<h4>3.5 Actions On</h4>';
+	tcbp_public_briefing_l2( get_field( 'brief_actions_on', $post_id_ ) . get_field( 'brief_actions_on_update', $post_id_ ) . '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>' );
 
-	echo '<h5>3.4.2 Rules of Engagement</h5>';
-	tcbp_public_briefing_l3( get_field( 'brief_rules_of_engagement', $post_id_ ) . get_field( 'brief_rules_of_engagement_update', $post_id_ ) . '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>' );
+	echo '<h4>3.6 Rules of Engagement</h4>';
+	tcbp_public_briefing_l2( get_field( 'brief_rules_of_engagement', $post_id_ ) . get_field( 'brief_rules_of_engagement_update', $post_id_ ) . '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>' );
 
 	echo '</div>';
 
@@ -231,8 +242,7 @@ function tcbp_public_mission_briefing() {
 	echo '<div class="tcb_mission_briefing">';
 
 	echo '<h3>5 Command and Signals</h3>';
-	echo get_field( 'brief_command_and_signals', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '<p><a href="/information-centre/command-and-signals-acre/">SOP: C&S</a></p>';
+	tcbp_public_briefing_l1( get_field( 'brief_command_and_signals', $post_id_ ) . '<p><a href="/information-centre/command-and-signals-acre/">SOP: C&S</a></p>' );
 
 	$brief_comms = get_field( 'brief_comms', $post_id_ );
 	if ( $brief_comms ) {
