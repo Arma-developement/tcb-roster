@@ -192,12 +192,12 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	if ( $show_time || $show_met ) {
 		echo '<div class="container briefing-meta">';
 		if ( $show_time ) {
-			echo '<div class="one-half column"><h3>Time</h3>';
+			echo '<div class="one-half column">';
 			echo get_field( 'brief_start_time', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
 		}
 		if ( $show_met ) {
-			echo '<div class="one-half column"><h3>Met</h3>';
+			echo '<div class="one-half column">';
 			echo get_field( 'brief_weather', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
 		}
