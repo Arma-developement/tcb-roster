@@ -1,6 +1,31 @@
 <?php // phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
 /**
+ * Checks whether a given key is enabled in the event's "event_post_content" checkbox field -
+ * used to gate the optional Time/Met/Higher Commander's Intent/CONOPS/Vehicles/Reinforcements
+ * sections on the standard mission overview, each opted into per-event rather than always
+ * showing. Handles the field returning either plain value strings or value/label arrays (ACF's
+ * checkbox field can be configured either way), rather than assuming one specific Return Format.
+ *
+ * @param int    $post_id The event post ID.
+ * @param string $key     The checkbox value to look for, e.g. "time", "higher_com".
+ * @return bool
+ */
+function tcbp_public_mission_post_content_enabled( $post_id, $key ) {
+	$values = get_field( 'event_post_content', $post_id );
+	if ( ! $values ) {
+		return false;
+	}
+	foreach ( $values as $value ) {
+		$value = is_array( $value ) ? ( isset( $value['value'] ) ? $value['value'] : '' ) : $value;
+		if ( $key === $value ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Determines whether a subscriber is blocked from a mission based on its visibility type.
  * Private, private-action, mini-op and patrol-op missions are members only - subscribers can't
  * view, attend, or slot into them, and neither can they view training events (identified by the
@@ -159,6 +184,26 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	tcbp_public_mission_overview_header( 'Mission Details' );
 
 	echo '<h3>Situation</h3>';
+
+	// Time/Met - a two-column row above Situation, each independently opted into per-event via
+	// the event_post_content checkbox field, rather than always shown.
+	$show_time = tcbp_public_mission_post_content_enabled( $post_id, 'time' );
+	$show_met  = tcbp_public_mission_post_content_enabled( $post_id, 'met' );
+	if ( $show_time || $show_met ) {
+		echo '<div class="container briefing-meta">';
+		if ( $show_time ) {
+			echo '<div class="one-half column"><h3>Time</h3>';
+			echo get_field( 'brief_start_time', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
+		}
+		if ( $show_met ) {
+			echo '<div class="one-half column"><h3>Met</h3>';
+			echo get_field( 'brief_weather', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
+		}
+		echo '</div>';
+	}
+
 	echo get_field( 'brief_situation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<h3>Mission</h3>';
@@ -200,17 +245,19 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	// other than actions, e.g. "default") shows them as before.
 	if ( ! has_term( 'actions', 'event_category', $post_id ) ) {
 
-		$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
-
-		if ( $brief_friendly_forces_conops ) {
+		// Higher Commander's Intent/CONOPS - each independently opted into per-event via
+		// event_post_content, same as Time/Met above. Previously these were coupled together
+		// (CONOPS's own content decided whether Higher Commander's Intent showed too, with
+		// "Execution" as a fallback heading for the same brief_execution field) - now each has
+		// its own dedicated heading and its own checkbox.
+		if ( tcbp_public_mission_post_content_enabled( $post_id, 'higher_com' ) ) {
 			echo '<h3>Higher Commander\'s Intent</h3>';
-			echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo get_field( 'brief_execution', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 
+		if ( tcbp_public_mission_post_content_enabled( $post_id, 'conops' ) ) {
 			echo '<h3>CONOPS</h3>';
-			echo $brief_friendly_forces_conops; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		} else {
-			echo '<h3>Execution</h3>';
-			echo get_field( 'brief_execution' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo get_field( 'brief_friendly_forces_conops', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		echo '<h3>Intel</h3>';
@@ -225,8 +272,26 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 		echo '</div>';
 		echo '</div>';
 
-		echo '<h3>Section Composition</h3>';
-		echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// Vehicles, if opted in, sits to the right of Section Composition as a two-column row;
+		// otherwise Section Composition is shown alone, full width, as it always was.
+		if ( tcbp_public_mission_post_content_enabled( $post_id, 'vehicles' ) ) {
+			echo '<div class="container briefing-meta"><div class="one-half column"><h3>Section Composition</h3>';
+			echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
+
+			echo '<div class="one-half column"><h3>Vehicles</h3>';
+			echo get_field( 'brief_vehicles', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
+			echo '</div>';
+		} else {
+			echo '<h3>Section Composition</h3>';
+			echo get_field( 'brief_section_composition' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+
+		if ( tcbp_public_mission_post_content_enabled( $post_id, 'reinforcements' ) ) {
+			echo '<h3>Reinforcements</h3>';
+			echo get_field( 'brief_reinforcements', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 	echo '</div>';
