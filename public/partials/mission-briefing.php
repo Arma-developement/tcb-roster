@@ -3,6 +3,33 @@
 add_shortcode( 'tcbp_public_mission_briefing', 'tcbp_public_mission_briefing' );
 
 /**
+ * Echoes $content wrapped in a div indented to match this page's "level 2" headings (h4, e.g.
+ * "1.2 Environment"). CSS alone can't cleanly express "indent until the next heading" here - a
+ * general-sibling selector (h4 ~ p) would also catch a *later* h4 section that has no h5 of its
+ * own (e.g. "1.6 Attachments"), once any h5 has appeared anywhere earlier in the same box - so
+ * each content block is wrapped explicitly at the point it's rendered instead. Does nothing if
+ * $content is empty, so an empty/conditional field doesn't leave a stray empty div.
+ *
+ * @param string $content Already-formatted HTML (e.g. from get_field()).
+ */
+function tcbp_public_briefing_l2( $content ) {
+	if ( $content ) {
+		echo '<div class="tcb_briefing_l2">' . $content . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
+/**
+ * Same as tcbp_public_briefing_l2() above, for "level 3" headings (h5, e.g. "1.2.1 Time").
+ *
+ * @param string $content Already-formatted HTML (e.g. from get_field()).
+ */
+function tcbp_public_briefing_l3( $content ) {
+	if ( $content ) {
+		echo '<div class="tcb_briefing_l3">' . $content . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
+/**
  * Function to handle the mission briefing.
  */
 function tcbp_public_mission_briefing() {
@@ -29,29 +56,28 @@ function tcbp_public_mission_briefing() {
 	echo '<h3>1.Situation</h3>';
 
 	echo '<h4>1.1 General</h4>';
-	echo get_field( 'brief_situation', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l2( get_field( 'brief_situation', $post_id_ ) );
 
 
 	echo '<h4>1.2 Environment</h4>';
 
 	echo '<h5>1.2.1 Time</h5>';
-	echo get_field( 'brief_start_time', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_start_time', $post_id_ ) );
 
 	echo '<h5>1.2.2 Met</h5>';
-	echo get_field( 'brief_weather', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_weather', $post_id_ ) );
 
 	echo '<h5>1.2.3 Terrain</h5>';
-	echo get_field( 'brief_map', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo get_field( 'brief_terrain', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_map', $post_id_ ) . get_field( 'brief_terrain', $post_id_ ) );
 
 
 	echo '<h4>1.3 Threats</h4>';
 
 	echo '<h5>1.3.1 Enemy Forces</h5>';
-	echo get_field( 'brief_enemy_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_enemy_forces', $post_id_ ) );
 
 	echo '<h5>1.3.2 IED/Mine Threat</h5>';
-	echo get_field( 'brief_iedmine_threat', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_iedmine_threat', $post_id_ ) );
 
 	// CBRN Threat/Other forces/NGO and Media are optional - only shown when the mission maker
 	// actually entered something, unlike the other sections on this page (which always show
@@ -59,7 +85,7 @@ function tcbp_public_mission_briefing() {
 	$brief_cbrn_threat = get_field( 'brief_cbrn_threat', $post_id_ );
 	if ( $brief_cbrn_threat ) {
 		echo '<h5>1.3.3 CBRN Threat</h5>';
-		echo $brief_cbrn_threat; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_cbrn_threat );
 	}
 
 
@@ -68,35 +94,35 @@ function tcbp_public_mission_briefing() {
 	$brief_other_forces = get_field( 'brief_other_forces', $post_id_ );
 	if ( $brief_other_forces ) {
 		echo '<h5>1.4.1 Other forces</h5>';
-		echo $brief_other_forces; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_other_forces );
 	}
 
 	echo '<h5>1.4.2 Civilians</h5>';
-	echo get_field( 'brief_civilians', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_civilians', $post_id_ ) );
 
 	$brief_ngo_media = get_field( 'brief_ngo_media', $post_id_ );
 	if ( $brief_ngo_media ) {
 		echo '<h5>1.4.3 NGO and Media</h5>';
-		echo $brief_ngo_media; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_ngo_media );
 	}
 
 
 	echo '<h4>1.5 Friendly Forces</h4>';
 
 	echo '<h5>1.5.1 Force Composition</h5>';
-	echo get_field( 'brief_friendly_forces', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_friendly_forces', $post_id_ ) );
 
 	echo '<h5>1.5.2 Higher Commander\'s Intent</h5>';
-	echo get_field( 'brief_execution', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_execution', $post_id_ ) );
 
 	$brief_friendly_forces_conops = get_field( 'brief_friendly_forces_conops', $post_id_ );
 	if ( $brief_friendly_forces_conops ) {
 		echo '<h5>1.5.3 CONOPS</h5>';
-		echo $brief_friendly_forces_conops; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_friendly_forces_conops );
 	}
 
 	echo '<h4>1.6 Attachments</h4>';
-	echo get_field( 'brief_support', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l2( get_field( 'brief_support', $post_id_ ) );
 
 	echo '</div>';
 
@@ -127,39 +153,33 @@ function tcbp_public_mission_briefing() {
 	$brief_command_intent = get_field( 'brief_command_intent', $post_id_ );
 	if ( $brief_command_intent ) {
 		echo '<h4>3.1 Commander\'s Intent</h4>';
-		echo $brief_command_intent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}	
-	
+		tcbp_public_briefing_l2( $brief_command_intent );
+	}
+
 	echo '<h4>3.2 CONOPS</h4>';
 
 	$brief_general_description = get_field( 'brief_general_description', $post_id_ );
-	if ( $brief_general_description ) {
-		echo $brief_general_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}	
-	
+	tcbp_public_briefing_l2( $brief_general_description );
+
 	echo '<h5>3.2.1 Phasing</h5>';
-	echo get_field( 'brief_plan', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_plan', $post_id_ ) );
 
 	$brief_support_units = get_field( 'brief_support_units', $post_id_ );
 	if ( $brief_support_units ) {
 		echo '<h4>3.3 Tasks to Support Units</h4>';
-		echo $brief_support_units; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}	
+		tcbp_public_briefing_l2( $brief_support_units );
+	}
 
 	echo '<h4>3.4 Coordinating Instructions</h4>';
 
 	$brief_coordinating_instructions = get_field( 'brief_coordinating_instructions', $post_id_ );
-	if ( $brief_coordinating_instructions ) {
-		echo $brief_coordinating_instructions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}	
+	tcbp_public_briefing_l2( $brief_coordinating_instructions );
 
 	echo '<h5>3.4.1 Actions On</h5>';
-	echo get_field( 'brief_actions_on', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>';
+	tcbp_public_briefing_l3( get_field( 'brief_actions_on', $post_id_ ) . get_field( 'brief_actions_on_update', $post_id_ ) . '<p><a href="/information-centre/generic-actions-on/">SOP: Actions On</a></p>' );
 
 	echo '<h5>3.4.2 Rules of Engagement</h5>';
-	echo get_field( 'brief_rules_of_engagement', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>';
+	tcbp_public_briefing_l3( get_field( 'brief_rules_of_engagement', $post_id_ ) . get_field( 'brief_rules_of_engagement_update', $post_id_ ) . '<p><a href="/information-centre/rules-of-engagement/">SOP: ROE<br></a></p>' );
 
 	echo '</div>';
 
@@ -172,38 +192,38 @@ function tcbp_public_mission_briefing() {
 	echo '<h4>4.1 Material Logistics</h4>';
 
 	echo '<h5>4.1.1 Supplies</h5>';
-	echo get_field( 'brief_supplies', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_supplies', $post_id_ ) );
 
 	echo '<h5>4.1.2 Vehicles</h5>';
-	echo get_field( 'brief_vehicles', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_vehicles', $post_id_ ) );
 
 	$brief_vehicles_r3p = get_field( 'brief_vehicles_r3p', $post_id_ );
 	if ( $brief_vehicles_r3p ) {
 		echo '<h5>4.1.3 Vehicles Service Support</h5>';
-		echo $brief_vehicles_r3p; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_vehicles_r3p );
 	}
-	
+
 	$brief_vehicles_repair = get_field( 'brief_vehicles_repair', $post_id_ );
 	if ( $brief_vehicles_repair ) {
 		echo '<h5>4.1.4 Vehicles BDR and Salvaging</h5>';
-		echo $brief_vehicles_repair; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_vehicles_repair );
 	}
 
 	echo '<h5>4.1.5 Section Composition</h5>';
-	echo get_field( 'brief_section_composition', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_section_composition', $post_id_ ) );
 
 
 	echo '<h4>4.2 Personnel Logistics</h4>';
 
 	echo '<h5>4.2.1 Reinforcements</h5>';
-	echo get_field( 'brief_reinforcements', $post_id_ ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	tcbp_public_briefing_l3( get_field( 'brief_reinforcements', $post_id_ ) );
 
 	$brief_medical = get_field( 'brief_medical', $post_id_ );
 	if ( $brief_medical ) {
 		echo '<h5>4.2.2 Medical Support</h5>';
-		echo $brief_medical; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_medical );
 	}
-	
+
 	echo '</div>';
 
 	////////////////////////////
@@ -217,7 +237,7 @@ function tcbp_public_mission_briefing() {
 	$brief_comms = get_field( 'brief_comms', $post_id_ );
 	if ( $brief_comms ) {
 		echo '<h5>5.1 Communications</h5>';
-		echo $brief_comms; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		tcbp_public_briefing_l3( $brief_comms );
 	}
 
 	echo '</div>';
