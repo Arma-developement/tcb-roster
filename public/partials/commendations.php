@@ -353,6 +353,18 @@ function tcbp_public_archive_commendations() {
 					);
 				}
 			}
+
+			$list_of_awards = get_field( 'meetups', $post );
+			if ( $list_of_awards ) {
+				foreach ( $list_of_awards as $award ) {
+					$index = $award['value'];
+					$list_of_meetup_recipients[ $index ][] = $user_id;
+					$list_of_meetup_titles[ $index ]       = array(
+						'title' => $award['label'],
+						'slug'  => $index,
+					);
+				}
+			}
 		}
 
 		// $list_of_leadership_titles/$list_of_mention_in_despatches_titles/$list_of_mission_creation_titles
@@ -484,6 +496,25 @@ function tcbp_public_archive_commendations() {
 			}
 			echo '</div>';
 		}
+
+		if ( ! empty( $list_of_meetup_titles ) ) {
+			echo '<div class="tcb_award">';
+			echo '<h4>Meetups</h4>';
+			ksort( $list_of_meetup_titles );
+			$column = 0;
+			foreach ( $list_of_meetup_titles as $key => $title ) {
+				echo '<div class="tcb_award_col' . esc_attr( $column + 1 ) . '">';
+				tcbp_public_commendation_image( $path . $key . '.png', $title['title'], $title['slug'], $width, $height );
+				echo '<ul>';
+				foreach ( tcbp_public_sort_user_ids_by_display_name( $list_of_meetup_recipients[ $key ] ) as $entry ) {
+					echo '<li><a href="/service-record/service-record-' . esc_attr( $entry['user_id'] ) . '">' . esc_html( $entry['display_name'] ) . '</a></li>';
+				}
+				$column = ( ++$column ) % 3;
+				echo '</ul>';
+				echo '</div>';
+			}
+			echo '</div>';
+		}
 	}
 	wp_reset_postdata();
 	echo '</div>';
@@ -525,7 +556,7 @@ function tcbp_public_commendation_descriptions() {
 		'leadership_commendations' => array( 'troop', 'section', 'fireteam', 'patrol', 'asset' ),
 	);
 
-	$groups = array( 'campaign_medals', 'leadership_commendations', 'mention_in_despatches', 'mission_creation', 'community_awards' );
+	$groups = array( 'campaign_medals', 'leadership_commendations', 'mention_in_despatches', 'mission_creation', 'community_awards', 'meetups' );
 	foreach ( $groups as $group_slug ) {
 		tcbp_public_commendation_descriptions_group(
 			$group_slug,
