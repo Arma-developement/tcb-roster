@@ -183,9 +183,6 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 
 	tcbp_public_mission_overview_header( 'Mission Details' );
 
-	echo '<h3>Situation</h3>';
-	echo get_field( 'brief_situation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
 	// Time/Met - a two-column row above Situation, each independently opted into per-event via
 	// the event_post_content checkbox field, rather than always shown.
 	$show_time = tcbp_public_mission_post_content_enabled( $post_id, 'time' );
@@ -193,17 +190,20 @@ function tcbp_public_standard_mission_overview( $post_id, $current_user ) {
 	if ( $show_time || $show_met ) {
 		echo '<div class="container briefing-meta">';
 		if ( $show_time ) {
-			echo '<div class="one-half column"><h3>Time</h3>';
+			echo '<div class="one-third column"><h3>Time</h3>';
 			echo get_field( 'brief_start_time', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
 		}
 		if ( $show_met ) {
-			echo '<div class="one-half column"><h3>Met</h3>';
+			echo '<div class="one-third column"><h3>Met</h3>';
 			echo get_field( 'brief_weather', $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
 		}
 		echo '</div>';
 	}
+
+	echo '<h3>Situation</h3>';
+	echo get_field( 'brief_situation' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<h3>Mission</h3>';
 	echo get_field( 'brief_mission' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
