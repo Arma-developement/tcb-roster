@@ -230,10 +230,6 @@ function tcbp_public_sr_form() {
 	);
 	echo '</div>';
 
-	if ( function_exists( 'SimpleLogger' ) ) {
-		SimpleLogger()->info( 'Edited ' . $display_name . "'s Service Record" );
-	}
-
 	return ob_get_clean();
 }
 
@@ -304,10 +300,6 @@ function tcbp_public_edit_sr_info() {
 	);
 
 	echo '</div>';
-
-	if ( function_exists( 'SimpleLogger' ) ) {
-		SimpleLogger()->info( 'Edited ' . $display_name . "'s Service Record" );
-	}
 
 	return ob_get_clean();
 }
@@ -428,6 +420,246 @@ function tcbp_public_edit_sr_info_submission_callback( $post_id_ ) {
 	}
 }
 
+add_filter( 'acf/pre_save_post', 'tcbp_public_sr_log_snapshot_before_save', 10, 1 );
+
+/**
+ * Snapshots every field about to be saved on a service-record post, before ACF writes any of
+ * them - the "before" half of the edit-detail logging done by tcbp_public_sr_log_edit() below.
+ * Must be a filter (not an action) and must return $post_id unchanged - acf/pre_save_post is
+ * ACF's own hook for this, firing before any field's value is actually written, which is the
+ * only point at which the "old" value can still be read. Covers all three of the service-record
+ * edit forms (info/rank/duty, training, commendations) the same way, since each just submits a
+ * different subset of fields under the same $_POST['acf'] shape - whichever field keys are
+ * present here are exactly the ones that form rendered.
+ *
+ * @param int|string $post_id_ The post (or "new_post"/"user_N"/etc.) ACF is about to save.
+ * @return int|string $post_id_, unchanged.
+ */
+function tcbp_public_sr_log_snapshot_before_save( $post_id_ ) {
+
+	if ( 'service-record' !== get_post_type( $post_id_ ) ) {
+		return $post_id_;
+	}
+
+	if ( empty( $_POST['acf'] ) || ! is_array( $_POST['acf'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return $post_id_;
+	}
+
+	$before = array();
+	foreach ( array_keys( $_POST['acf'] ) as $field_key ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$field = acf_get_field( $field_key );
+		if ( ! $field ) {
+			continue;
+		}
+		$before[ $field_key ] = tcbp_public_sr_log_field_display_value( $field, $post_id_ );
+	}
+
+	tcbp_public_sr_log_snapshot(
+		array(
+			'post_id' => $post_id_,
+			'before'  => $before,
+		)
+	);
+
+	return $post_id_;
+}
+
+/**
+ * Holds the snapshot taken above for the rest of the same request, so tcbp_public_sr_log_edit()
+ * (hooked later, on acf/save_post) can compare against it once the save has actually happened.
+ * A function-local static rather than a bare global - both hooks only ever run (at most) once
+ * per request, so there's nothing to gain from anything fancier.
+ *
+ * @param array|null $set Pass an array to store it; omit to just read back the current value.
+ * @return array|null
+ */
+function tcbp_public_sr_log_snapshot( $set = null ) {
+	static $snapshot = null;
+	if ( null !== $set ) {
+		$snapshot = $set;
+	}
+	return $snapshot;
+}
+
+add_action( 'acf/save_post', 'tcbp_public_sr_log_edit', 50, 1 );
+
+/**
+ * Logs a detailed record of who edited a service record and exactly what changed, field by
+ * field - covers all three edit forms (info/rank/duty, training, commendations), since
+ * acf/pre_save_post/acf/save_post fire the same way regardless of which one was submitted.
+ * Priority 50 so this always runs after every other acf/save_post callback that might further
+ * change the record (e.g. tcbp_public_edit_sr_info_submission_callback()'s role sync above), so
+ * "after" reflects the fully-settled state. Only fires when there's at least one real change -
+ * unlike the blanket "Edited X's Service Record/Training Record/Commendations" logging this
+ * replaces (previously in tcbp_public_sr_form()/tcbp_public_edit_sr_info()/
+ * tcbp_public_edit_sr_training()/tcbp_public_edit_sr_ribbons()), which fired on every page view
+ * of an edit form - submitted or not - and never said what actually changed. "Who" doesn't need
+ * to be embedded here - Simple History already records the acting user against every entry.
+ *
+ * @param int $post_id_ The service-record post ACF just saved.
+ */
+function tcbp_public_sr_log_edit( $post_id_ ) {
+
+	if ( 'service-record' !== get_post_type( $post_id_ ) ) {
+		return;
+	}
+
+	$snapshot = tcbp_public_sr_log_snapshot();
+	if ( empty( $snapshot ) || (int) $snapshot['post_id'] !== (int) $post_id_ ) {
+		return;
+	}
+
+	$changes = array();
+	foreach ( $snapshot['before'] as $field_key => $old_value ) {
+		$field = acf_get_field( $field_key );
+		if ( ! $field ) {
+			continue;
+		}
+		$new_value = tcbp_public_sr_log_field_display_value( $field, $post_id_ );
+		if ( $old_value === $new_value ) {
+			continue;
+		}
+		$changes[ $field['label'] ] = array(
+			'from' => $old_value,
+			'to'   => $new_value,
+		);
+	}
+
+	if ( ! $changes ) {
+		return;
+	}
+
+	$user_id      = get_field( 'user_id', $post_id_ );
+	$target_user  = $user_id ? get_user_by( 'id', $user_id ) : false;
+	$display_name = $target_user ? $target_user->display_name : get_the_title( $post_id_ );
+
+	$change_descriptions = array();
+	foreach ( $changes as $label => $change ) {
+		$change_descriptions[] = $label . ': "' . $change['from'] . '" to "' . $change['to'] . '"';
+	}
+
+	if ( function_exists( 'SimpleLogger' ) ) {
+		SimpleLogger()->info(
+			'Edited ' . $display_name . "'s Service Record - " . implode( '; ', $change_descriptions ),
+			array(
+				'target_user_id' => $user_id,
+				'service_record' => $post_id_,
+				'changes'        => $changes,
+			)
+		);
+	}
+}
+
+/**
+ * Renders one ACF field's current value as a short, human-readable string for the edit-detail
+ * log above - deliberately bypassing get_field()'s own configured return_format for
+ * taxonomy/choice fields (which may be set to return raw IDs, unreadable in a log entry) in
+ * favour of always resolving to the same names/labels an admin would recognise on the form,
+ * regardless of how the field happens to be configured.
+ *
+ * @param array $field   The ACF field array (from acf_get_field()).
+ * @param int   $post_id The post to read the field's current value from.
+ * @return string
+ */
+function tcbp_public_sr_log_field_display_value( $field, $post_id ) {
+
+	switch ( $field['type'] ) {
+
+		case 'taxonomy':
+			$terms = get_the_terms( $post_id, $field['taxonomy'] );
+			if ( ! $terms || is_wp_error( $terms ) ) {
+				return '';
+			}
+			return implode( ', ', wp_list_pluck( $terms, 'name' ) );
+
+		case 'select':
+		case 'checkbox':
+		case 'radio':
+			$raw = get_field( $field['key'], $post_id, false );
+			$raw = is_array( $raw ) ? $raw : ( '' === (string) $raw ? array() : array( $raw ) );
+			$labels = array();
+			foreach ( $raw as $value ) {
+				$labels[] = isset( $field['choices'][ $value ] ) ? $field['choices'][ $value ] : $value;
+			}
+			return implode( ', ', $labels );
+
+		// A Group field (e.g. the leadership/mention_in_despatches/mission_creation
+		// commendation counts) - named per sub-field rather than flattened, so a change to one
+		// count doesn't lose which commendation it belongs to. Zero counts are left out, same
+		// as the archive/description pages already only show commendations with recipients -
+		// showing every uninvolved sub-field at 0 on every edit would bury the actual change.
+		case 'group':
+			$raw = get_field( $field['key'], $post_id, true );
+			if ( ! is_array( $raw ) || empty( $field['sub_fields'] ) ) {
+				return tcbp_public_sr_log_stringify( $raw );
+			}
+			$parts = array();
+			foreach ( $field['sub_fields'] as $sub_field ) {
+				$sub_value = isset( $raw[ $sub_field['name'] ] ) ? $raw[ $sub_field['name'] ] : null;
+				$sub_str   = tcbp_public_sr_log_stringify( $sub_value );
+				if ( '' !== $sub_str && '0' !== $sub_str ) {
+					$parts[] = $sub_field['label'] . ': ' . $sub_str;
+				}
+			}
+			return implode( ', ', $parts );
+
+		default:
+			return tcbp_public_sr_log_stringify( get_field( $field['key'], $post_id, true ) );
+	}
+}
+
+/**
+ * Flattens whatever get_field() returns (a scalar, a WP_Term/WP_Post/WP_User object, an array of
+ * any of those, ACF's own {value,label} choice-array shape, etc.) into a short display string,
+ * for field types not special-cased in tcbp_public_sr_log_field_display_value() above.
+ *
+ * @param mixed $value
+ * @return string
+ */
+function tcbp_public_sr_log_stringify( $value ) {
+
+	if ( is_array( $value ) ) {
+		// ACF's own {value,label} choice-array shape - show just the label.
+		if ( isset( $value['label'] ) && array_key_exists( 'value', $value ) ) {
+			return (string) $value['label'];
+		}
+		$parts = array();
+		foreach ( $value as $item ) {
+			$part = tcbp_public_sr_log_stringify( $item );
+			if ( '' !== $part ) {
+				$parts[] = $part;
+			}
+		}
+		return implode( ', ', $parts );
+	}
+
+	if ( is_object( $value ) ) {
+		if ( isset( $value->label ) ) {
+			return (string) $value->label;
+		}
+		if ( isset( $value->name ) ) {
+			return (string) $value->name;
+		}
+		if ( isset( $value->post_title ) ) {
+			return (string) $value->post_title;
+		}
+		if ( isset( $value->display_name ) ) {
+			return (string) $value->display_name;
+		}
+		return wp_json_encode( $value );
+	}
+
+	if ( is_bool( $value ) ) {
+		return $value ? 'Yes' : 'No';
+	}
+
+	if ( null === $value ) {
+		return '';
+	}
+
+	return (string) $value;
+}
+
 
 add_shortcode( 'tcbp_public_edit_sr_training', 'tcbp_public_edit_sr_training' );
 
@@ -482,10 +714,6 @@ function tcbp_public_edit_sr_training() {
 	);
 
 	echo '</div>';
-
-	if ( function_exists( 'SimpleLogger' ) ) {
-		SimpleLogger()->info( 'Edited ' . $display_name . "'s Training Record" );
-	}
 
 	return ob_get_clean();
 }
@@ -544,10 +772,6 @@ function tcbp_public_edit_sr_ribbons() {
 	);
 
 	echo '</div>';
-
-	if ( function_exists( 'SimpleLogger' ) ) {
-		SimpleLogger()->info( 'Edited ' . $display_name . "'s Commendations" );
-	}
 
 	return ob_get_clean();
 }
