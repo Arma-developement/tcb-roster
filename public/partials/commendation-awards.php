@@ -93,13 +93,12 @@ function tcbp_public_commendation_award_guess_leadership_type( $slot_name ) {
 
 	$patterns = array(
 		'troop commander'  => 'troop',
-		//'troop 2ic'        => 'troop',
 		'section leader'   => 'section',
 		'squad leader'     => 'section',
 		'fire team leader' => 'fireteam',
 		'fireteam leader'  => 'fireteam',
-		'team leader'      => 'team',
-		'team'             => 'team',
+		'team leader'      => 'patrol',
+		'team'             => 'patrol',
 	);
 
 	foreach ( $patterns as $needle => $slug ) {
