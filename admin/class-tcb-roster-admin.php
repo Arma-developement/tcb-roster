@@ -59,6 +59,7 @@ class Tcb_Roster_Admin {
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-discord-username-resolve.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-user-field-display-name.php';
 		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-notification-backfill.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/partials/tcb-roster-admin-rank-role-audit.php';
 	}
 
 	/**

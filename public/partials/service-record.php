@@ -864,6 +864,60 @@ function tcbp_public_sr_check_demotion_to_subscriber( $user_id, $post_id_ ) {
 
 
 /**
+ * The WP role(s) a given tcb-rank term should carry - the single source of truth for what
+ * tcbp_public_sr_assign_role_by_rank() below actually grants, also reused read-only by the
+ * rank/role audit tool (admin/partials/tcb-roster-admin-rank-role-audit.php) so that tool can
+ * never drift out of sync with what a fresh promotion actually assigns. Every commissioned/
+ * senior rank deliberately includes "member" alongside its own role (nco/snco/officer) - e.g. an
+ * Officer holds both "officer" and "member" - since role-gated content (the wiki included) is
+ * generally configured against "member" as the baseline, not enumerated per senior role.
+ *
+ * @param int $rank_term_id The tcb-rank term ID.
+ * @return string[] The role slug(s) this rank should carry.
+ */
+function tcbp_public_sr_roles_for_rank( $rank_term_id ) {
+	switch ( $rank_term_id ) {
+		case TCBP_RANK_RESERVE:
+		case TCBP_RANK_MARINE:
+			return array( 'member' );
+		case TCBP_RANK_RECRUIT:
+			return array( 'limited_member' );
+		case TCBP_RANK_LANCE_CORPORAL:
+		case TCBP_RANK_CORPORAL:
+			return array( 'nco', 'member' );
+		case TCBP_RANK_SERGEANT:
+		case TCBP_RANK_COLOUR_SERGEANT:
+			return array( 'snco', 'member' );
+		case TCBP_RANK_OFFICER:
+			return array( 'officer', 'member' );
+		default:
+			return array( 'subscriber' );
+	}
+}
+
+/**
+ * The full set of rank-tier roles to strip before applying tcbp_public_sr_roles_for_rank()'s
+ * result, for a given rank - separated out from that function since "editor" is only ever
+ * included here (never something a rank itself grants) so that a separately-granted "editor"
+ * capability (e.g. wiki editing rights) survives a Recruit/Marine/junior-NCO rank change instead
+ * of being silently stripped, while still being reset on promotion into/out of Sergeant and
+ * above, where editor rights are assumed to come with the role instead.
+ *
+ * @param int $rank_term_id The tcb-rank term ID.
+ * @return string[] Every role that should be removed before the new rank's roles are added.
+ */
+function tcbp_public_sr_rank_reset_roles( $rank_term_id ) {
+	$all_roles = array( 'subscriber', 'limited_member', 'member', 'nco', 'snco', 'officer' );
+
+	$keeps_editor_untouched = array( TCBP_RANK_SERGEANT, TCBP_RANK_COLOUR_SERGEANT, TCBP_RANK_OFFICER );
+	if ( ! in_array( $rank_term_id, $keeps_editor_untouched, true ) ) {
+		array_push( $all_roles, 'editor' );
+	}
+
+	return $all_roles;
+}
+
+/**
  * Utility function to assign a user role based on rank.
  *
  * @param int $user_id The user id containing the service record information.
@@ -903,38 +957,8 @@ function tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ ) {
 		}
 	}
 
-	$all_roles = array( 'subscriber', 'limited_member', 'member', 'nco', 'snco', 'officer' );
-
-	switch ( $rank_term_id ) {
-		case TCBP_RANK_RESERVE:
-			$allowed_roles = array( 'member' );
-			array_push( $all_roles, 'editor' );
-			break;
-		case TCBP_RANK_RECRUIT:
-			$allowed_roles = array( 'limited_member' );
-			array_push( $all_roles, 'editor' );
-			break;
-		case TCBP_RANK_MARINE:
-			$allowed_roles = array( 'member' );
-			array_push( $all_roles, 'editor' );
-			break;
-		case TCBP_RANK_LANCE_CORPORAL:
-		case TCBP_RANK_CORPORAL:
-			$allowed_roles = array( 'nco', 'member' );
-			array_push( $all_roles, 'editor' );
-			break;
-		case TCBP_RANK_SERGEANT:
-		case TCBP_RANK_COLOUR_SERGEANT:
-			$allowed_roles = array( 'snco', 'member' );
-			break;
-		case TCBP_RANK_OFFICER:
-			$allowed_roles = array( 'officer', 'member' );
-			break;
-		default:
-			$allowed_roles = array( 'subscriber' );
-			array_push( $all_roles, 'editor' );
-			break;
-	}
+	$all_roles     = tcbp_public_sr_rank_reset_roles( $rank_term_id );
+	$allowed_roles = tcbp_public_sr_roles_for_rank( $rank_term_id );
 
 	// Remove all rank related roles.
 	$roles = $user->roles;
