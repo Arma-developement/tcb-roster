@@ -49,9 +49,12 @@ function tcbp_public_archive_training() {
 		return;
 	}
 
-	$args = array(
-		'numberposts' => -1,
-		'post_type'   => 'service-record',
+	// Retired players aren't listed.
+	$args = tcbp_public_sr_exclude_retired(
+		array(
+			'numberposts' => -1,
+			'post_type'   => 'service-record',
+		)
 	);
 
 	ob_start();

@@ -168,6 +168,162 @@ function tcbp_public_sr_promote_to_marine( $user_id, $service_record_id ) {
 	);
 }
 
+/**
+ * The tcb-rank term ID of the "Retired" rank. Unlike the other ranks (fixed IDs, TCBP_RANK_*,
+ * above) this one wasn't known when the constants were written, so the ID is looked up once by
+ * slug and then remembered in an option - from then on it's matched by ID, not slug, for the same
+ * rename-proofing reason as the others (a term's slug is editable by anyone with
+ * manage_categories). Read paths never create anything; only $create (used when someone is
+ * actually being retired) inserts the term if it doesn't exist yet.
+ *
+ * @param bool $create Whether to create the term if it doesn't exist yet.
+ * @return int The term ID, or 0 if there's no Retired rank (yet).
+ */
+function tcbp_public_sr_retired_rank_id( $create = false ) {
+	static $cached = null;
+	if ( null !== $cached && ( $cached || ! $create ) ) {
+		return $cached;
+	}
+
+	$term_id = (int) get_option( 'tcbp_rank_retired_term_id' );
+	if ( $term_id ) {
+		$term = get_term( $term_id, 'tcb-rank' );
+		if ( ! $term || is_wp_error( $term ) ) {
+			$term_id = 0;
+		}
+	}
+
+	if ( ! $term_id ) {
+		$term = get_term_by( 'slug', 'rtd', 'tcb-rank' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$term_id = (int) $term->term_id;
+		} elseif ( $create ) {
+			$inserted = wp_insert_term(
+				'Retired',
+				'tcb-rank',
+				array(
+					'slug'        => 'rtd',
+					'description' => 'Former members who have retired from 3CB.',
+				)
+			);
+			if ( ! is_wp_error( $inserted ) ) {
+				$term_id = (int) $inserted['term_id'];
+			}
+		}
+		if ( $term_id ) {
+			update_option( 'tcbp_rank_retired_term_id', $term_id );
+		}
+	}
+
+	$cached = $term_id;
+	return $cached;
+}
+
+/**
+ * Adds a "not Retired" condition to a service-record get_posts()/WP_Query args array, so
+ * duty/commendation/training listings leave retired players out. A record with no rank at all
+ * still passes, same as before. Safe to call when there's no Retired rank yet - returns the args
+ * untouched.
+ *
+ * @param array $query_args get_posts()/WP_Query args for the service-record post type.
+ * @return array The args with the exclusion added.
+ */
+function tcbp_public_sr_exclude_retired( $query_args ) {
+	$retired_id = tcbp_public_sr_retired_rank_id();
+	if ( ! $retired_id ) {
+		return $query_args;
+	}
+
+	$not_retired = array(
+		'taxonomy' => 'tcb-rank',
+		'field'    => 'term_id',
+		'terms'    => array( $retired_id ),
+		'operator' => 'NOT IN',
+	);
+
+	if ( empty( $query_args['tax_query'] ) ) {
+		$query_args['tax_query'] = array( $not_retired ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+	} else {
+		$query_args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'relation' => 'AND',
+			$query_args['tax_query'],
+			$not_retired,
+		);
+	}
+
+	return $query_args;
+}
+
+/**
+ * Removes every duty from a service record and the duty-derived WP roles (recruit_admin etc.)
+ * from its user. A retired player can't hold a duty - clearing the duty terms as well as the
+ * roles matters, since tcbp_public_sr_assign_role_by_duty() rebuilds the roles from the terms on
+ * the next service-record save by an officer, which would otherwise quietly hand them back.
+ *
+ * @param int $user_id           The retired user.
+ * @param int $service_record_id Their service record post ID.
+ */
+function tcbp_public_sr_strip_duties( $user_id, $service_record_id ) {
+	wp_set_post_terms( $service_record_id, array(), 'tcb-duty' );
+
+	$user = $user_id ? get_user_by( 'id', $user_id ) : false;
+	if ( ! $user ) {
+		return;
+	}
+	foreach ( array( 'recruit_admin', 'training_admin', 'mission_admin', 'commendation_admin' ) as $role ) {
+		if ( in_array( $role, $user->roles, true ) ) {
+			$user->remove_role( $role );
+		}
+	}
+}
+
+/**
+ * Retires a player: sets their service record's rank to Retired (creating the rank if it doesn't
+ * exist yet), syncs their WP roles to it (tcbp_public_sr_roles_for_rank() gives any rank it
+ * doesn't know the "subscriber" role, i.e. the same access as a non-member), and clears their
+ * duties. Called when their application is moved to the "retired" status
+ * (tcbp_public_application_stage_notifications(), application-notifications.php).
+ *
+ * Changing the status of an application is open to recruit_admin/snco, who otherwise can't touch
+ * a senior member's service record (see tcbp_public_edit_sr_info()) - so retiring someone who
+ * holds nco/snco/officer is limited to officers/administrators here too, rather than being a
+ * back door around that.
+ *
+ * @param int $user_id The user being retired.
+ * @return bool True if the service record was retired, false if there was nothing to do or it
+ *              wasn't permitted.
+ */
+function tcbp_public_sr_retire( $user_id ) {
+
+	$user = $user_id ? get_user_by( 'id', $user_id ) : false;
+	if ( ! $user ) {
+		return false;
+	}
+
+	$service_record_id = (int) get_field( 'service_record', 'user_' . $user_id );
+	if ( ! $service_record_id || 'service-record' !== get_post_type( $service_record_id ) || 'trash' === get_post_status( $service_record_id ) ) {
+		return false;
+	}
+
+	if ( array_intersect( array( 'nco', 'snco', 'officer' ), $user->roles ) && ! array_intersect( array( 'officer', 'administrator' ), wp_get_current_user()->roles ) ) {
+		if ( function_exists( 'SimpleLogger' ) ) {
+			SimpleLogger()->warning( 'Not retiring ' . $user->display_name . ' - only an officer can retire a senior member' );
+		}
+		return false;
+	}
+
+	$retired_id = tcbp_public_sr_retired_rank_id( true );
+	if ( ! $retired_id ) {
+		return false;
+	}
+
+	wp_set_post_terms( $service_record_id, array( $retired_id ), 'tcb-rank' );
+	tcbp_public_sr_assign_role_by_rank( $user_id, $service_record_id );
+	tcbp_public_sr_strip_duties( $user_id, $service_record_id );
+
+	return true;
+}
+
 add_shortcode( 'tcbp_public_sr_form', 'tcbp_public_sr_form' );
 
 /**
@@ -411,6 +567,14 @@ function tcbp_public_edit_sr_info_submission_callback( $post_id_ ) {
 	tcbp_public_sr_check_sr_name( $user_id, $post_id_ );
 	tcbp_public_sr_assign_role_by_rank( $user_id, $post_id_ );
 	tcbp_public_sr_assign_role_by_duty( $user_id, $post_id_ );
+
+	// A retired player can't hold duties, however Retired got set (here, or via their application
+	// - see tcbp_public_sr_retire()) - without this, the duty terms just saved above would hand
+	// the duty roles straight back.
+	$retired_rank_id = tcbp_public_sr_retired_rank_id();
+	if ( $retired_rank_id && has_term( $retired_rank_id, 'tcb-rank', $post_id_ ) ) {
+		tcbp_public_sr_strip_duties( $user_id, $post_id_ );
+	}
 
 	// Setting rank directly to Marine here is the second of the two routes to becoming a
 	// Marine (the other being an application reaching Archived) - keep both routes in sync,

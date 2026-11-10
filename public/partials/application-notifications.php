@@ -72,7 +72,8 @@ add_action( 'acf/save_post', 'tcbp_public_application_stage_notifications', 30 )
 /**
  * Dispatches the stage-appropriate notification(s) whenever an application's tcb-selection
  * status reaches Interview, Candidate, Recruit, Selection, Rejected, or (via promotion to
- * Marine) Archived - for the first time. Priority 30 so this always runs after
+ * Marine) Archived - for the first time. Retired isn't a notification - it retires the player's
+ * service record instead (see tcbp_public_sr_retire()). Priority 30 so this always runs after
  * tcbp_public_interview_transition_status()'s priority-20 auto-transition, meaning a single
  * interview-form submission that moves an application straight to Candidate/Rejected already
  * sees that new status here, in the same save.
@@ -90,6 +91,12 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 		return;
 	}
 	$status = $terms[0];
+
+	// Leaving Retired re-arms the retire step below, so being retired again later (after being
+	// reinstated) applies again rather than being skipped as already done.
+	if ( 'retired' !== $status ) {
+		delete_post_meta( $post_id_, '_tcbp_retired_applied' );
+	}
 
 	$user_id = (int) get_post_field( 'post_author', $post_id_ );
 	$user    = get_user_by( 'id', $user_id );
@@ -173,6 +180,18 @@ function tcbp_public_application_stage_notifications( $post_id_ ) {
 					tcbp_public_notify_user_by_preference( $user_id, $applicant_message, '3CB Application - Outcome', $applicant_message );
 				}
 			);
+			break;
+
+		case 'retired':
+			// Retires the player's service record (Retired rank, roles synced, duties cleared) -
+			// see tcbp_public_sr_retire(). Applied once per time the application reaches this
+			// status, not on every re-save, so a rank someone has since set by hand (e.g. after
+			// reinstating them) isn't reverted by an unrelated edit. The flag is only set once the
+			// retire actually went through, so one that was skipped (no service record yet, or a
+			// senior member being retired by a non-officer) can be retried on a later save.
+			if ( ! get_post_meta( $post_id_, '_tcbp_retired_applied', true ) && tcbp_public_sr_retire( $user_id ) ) {
+				update_post_meta( $post_id_, '_tcbp_retired_applied', current_time( 'mysql' ) );
+			}
 			break;
 
 		case 'archived':

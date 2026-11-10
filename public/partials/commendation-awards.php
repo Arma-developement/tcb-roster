@@ -196,11 +196,14 @@ function tcbp_public_commendation_award_prefill_mission_creation( $post_id, $aut
  * @return array
  */
 function tcbp_public_commendation_award_all_players() {
+	// Retired players are left out, same as the commendations archive.
 	$post_ids = get_posts(
-		array(
-			'post_type'      => 'service-record',
-			'posts_per_page' => -1,
-			'fields'         => 'ids',
+		tcbp_public_sr_exclude_retired(
+			array(
+				'post_type'      => 'service-record',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			)
 		)
 	);
 

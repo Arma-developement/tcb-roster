@@ -58,7 +58,9 @@ function tcbp_public_archive_duties() {
 			'update_post_term_cache' => false, // Improve performance by not updating post term cache.
 		);
 
-		$posts_ = new WP_Query( $query_args );
+		// Retired players don't hold duties (see tcbp_public_sr_strip_duties()) - this also keeps
+		// one off the list if a duty was left on their record some other way.
+		$posts_ = new WP_Query( tcbp_public_sr_exclude_retired( $query_args ) );
 		if ( ! $posts_->have_posts() ) {
 			echo '<p>Vacancy</p>';
 			continue;
